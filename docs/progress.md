@@ -136,3 +136,38 @@ Format: `Ruling: what — why — cost if wrong`
 - Ruling: Phase 2's "axe 0 on the shell" moves to Phase 4 — the title and h1 land there — cost if wrong: none.
 - **CI privacy-scan step:** still in `.github/workflows/ci.yml`. The permission system blocked the agent's edit because a relayed instruction isn't the owner's approval. The main session will not route around that denial. CI doesn't run before the first push, so it is left as is; resolve it with the owner before any push (Phase 13 prerequisite).
 - **Process incident:** during Phase 2 the agent once ran a broad `pkill -f next-server` (around 04:34). That would have stopped any other Next.js server on the machine at that moment; it is surfaced to the owner. Rule added to `CLAUDE.md`, `frontend-build` and `ui-audit`: stop processes by PID only. The global identity is a work address; the choice is `tidi.dev1321@gmail.com` or unchanged. 12 local commits are cheap to rewrite before any push.
+
+## Git history rewrite (2026-09-28)
+Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their author and committer email rewritten from the work address (`git filter-branch --env-filter`).
+- Final tree byte-identical; messages and dates unchanged; backup ref removed; nothing was ever pushed.
+- Reports written before this date cite the old IDs. Map:
+
+| Old | New | Subject |
+|---|---|---|
+| 526b80a | 61f03ba | chore: add ignore rules before tracking anything |
+| 5d1a550 | 5924e04 | docs: track project inputs, plan, design and agent system |
+| 02d1a08 | 76b4ac3 | chore: pin the toolchain and Phase 1 dependencies |
+| cc5f14d | fffdd43 | chore: add TypeScript, Next, PostCSS, ESLint and Prettier configs |
+| f36ed48 | da5fe14 | feat: add the empty static shell |
+| f60253e | 3fae915 | test: add the unit harness and the privacy scan |
+| b76cefe | a2efaf0 | test: add the Playwright harness, smoke and budget specs |
+| 6f3a8c4 | 4cee7c3 | ci: add Lighthouse CI configs for mobile and desktop |
+| bff24fb | 2d4ff6d | ci: add the GitHub Actions workflow, actions pinned to commit SHAs |
+| 3205919 | c8ef04a | fix(privacy): match encoded emails in place |
+| b984894 | 3415ff3 | test: move the budget spec to pnpm test:budget, deferred by the owner |
+| 4f8c11e | 4dcc1f6 | docs: add the Phase 1 engineering report |
+| 7fce36e | ebe3877 | docs: record copy approvals, owner deferral and Phase 1 rulings |
+| eaace46 | 632e7d9 | fix(lint): catch relative and bare built-in imports in client leaves |
+| decdf43 | d4da82b | fix(lint): require content for alt, title and aria text attributes |
+| a8655b1 | 4467953 | feat(design): add the design:lint wrapper with a warning policy |
+| 02ecbb3 | 765a496 | feat(tokens): generate tokens and the theme from DESIGN.md, with sync checks |
+| b3597f8 | 30ab713 | feat(lint): enforce token-only Tailwind classes |
+| 2967098 | f001aac | chore(fonts): pin the Archivo variable source and its OFL licence |
+| 20c8c26 | e909879 | feat(fonts): subset Archivo, write static instances and the manifest |
+| b94f633 | 819b36c | feat(shell): load Archivo with next/font/local and paint the page tokens |
+| 47e39ab | 7ebe994 | ci: run design:lint, tokens:check and fonts:check in the checks job |
+| 432dda4 | 63dc216 | refactor(fonts): read any numeric feature tag from DESIGN.md |
+| 3a5395e | 377f83b | test(e2e): resolve the token files from the spec's location |
+| f5a56af | 2de7e17 | docs: add the Phase 2 engineering report |
+| 7b4ff2a | f913e77 | docs: record Phase 1-2 rulings, owner decisions and process rules |
+| c54e76d | 96bff80 | docs: add the Phase 1 QA code review |
