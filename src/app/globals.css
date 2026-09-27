@@ -1,3 +1,12 @@
 /* Tailwind scans src/ only, so prose in docs/ and DESIGN.md never becomes
-   CSS. Tokens, theme and reset arrive in Phase 2 (contrib-engineering §4.1). */
+   CSS; the token files and font assets hold no class names, so they are not
+   scanned either. Order (contrib-engineering §4.1): Tailwind, the reset that
+   removes its default theme, the tokens exported from DESIGN.md, the theme
+   generated from DESIGN.md, then the hand-mapped supplement. */
 @import "tailwindcss" source("..");
+@source not "../styles";
+@source not "../assets";
+@import "../styles/theme-reset.css";
+@import "../styles/tokens.generated.css";
+@import "../styles/theme.generated.css";
+@import "../styles/theme.supplement.css";

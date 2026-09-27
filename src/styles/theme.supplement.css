@@ -1,0 +1,63 @@
+/*
+ * Hand-mapped from DESIGN.md prose: the values its front matter can't hold
+ * (DESIGN.md → Known Gaps 1; contrib-engineering §4.2). Every value here is
+ * compared with DESIGN.md by tests/unit/tokens.test.ts, and nothing else may
+ * be declared. Names follow Tailwind's theme namespaces, so each value is
+ * also a class: `duration-feedback`, `ease-out`, `md:`, `@bench:`,
+ * `z-skip-link`, `stroke-ink`, `scroll-mt-anchor`, `gap-section`.
+ */
+@theme {
+  /* Typography table: the clamp() of each fluid role, replacing the
+     exported 375 px size. Fixed roles (body-sm, ui-strong, wordmark) keep
+     the exported size. */
+  --text-display: clamp(3.75rem, 2.606rem + 4.883vw, 7rem);
+  --text-heading-section: clamp(2rem, 1.736rem + 1.127vw, 2.75rem);
+  --text-heading-sheet: clamp(1.5rem, 1.324rem + 0.751vw, 2rem);
+  --text-name: clamp(1.5rem, 1.324rem + 0.751vw, 2rem);
+  --text-lead: clamp(1.125rem, 1.081rem + 0.188vw, 1.25rem);
+  --text-body: clamp(1rem, 0.978rem + 0.094vw, 1.0625rem);
+  --text-label: clamp(0.8125rem, 0.79rem + 0.094vw, 0.875rem);
+  --text-label-strong: clamp(0.8125rem, 0.79rem + 0.094vw, 0.875rem);
+
+  /* Layout → Rhythm: sections 64 → 96 px apart, sheets 48 → 64 px. */
+  --spacing-section: clamp(4rem, 3.296rem + 3.005vw, 6rem);
+  --spacing-sheet: clamp(3rem, 2.648rem + 1.502vw, 4rem);
+
+  /* Motion → Tokens. Tailwind reads `duration-<name>` from
+     --transition-duration-<name>. */
+  --transition-duration-feedback: 120ms;
+  --transition-duration-fade: 150ms;
+  --transition-duration-pulse: 160ms;
+  --transition-duration-verdict: 200ms;
+  --transition-duration-shake: 240ms;
+  --transition-duration-travel: 360ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+
+  /* Responsive Behavior: md from 768 px, lg from 1024 px. */
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+
+  /* Container-query thresholds on the plate's inner width: the bench turns
+     wide at 480 px, the drawings at 880 px. */
+  --container-bench: 480px;
+  --container-drawing: 880px;
+
+  /* Layout → Layers: the skip link is the only raised layer. */
+  --z-index-skip-link: 100;
+
+  /* Drawing grammar: ink and construction strokes 1.5 px, proof 2 px,
+     construction and replaced nodes dashed 6 4. */
+  --stroke-width-ink: 1.5px;
+  --stroke-width-proof: 2px;
+  --stroke-dash: 6 4;
+
+  /* Layout → Layers: anchor targets. */
+  --scroll-margin-anchor: 24px;
+}
+
+@layer base {
+  :where([id]) {
+    scroll-margin-top: var(--scroll-margin-anchor);
+  }
+}

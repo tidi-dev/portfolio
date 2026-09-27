@@ -18,8 +18,10 @@
     "test:budget": "RUN_BUDGET=1 playwright test tests/e2e/budget.spec.ts --project=chromium-desktop",
     "lhci": "lhci autorun --config=lighthouserc.json && lhci autorun --config=lighthouserc.desktop.json",
     "privacy:scan": "tsx scripts/privacy/scan.ts",
-    "check": "pnpm design:lint && pnpm lint && pnpm typecheck && pnpm test",
-    "design:lint": "tsx scripts/design/lint.ts"
+    "design:lint": "tsx scripts/design/lint.ts",
+    "tokens": "tsx scripts/tokens/build.ts",
+    "tokens:check": "tsx scripts/tokens/check.ts",
+    "check": "pnpm design:lint && pnpm tokens:check && pnpm lint && pnpm typecheck && pnpm test"
   },
   "dependencies": {
     "next": "16.3.6",
