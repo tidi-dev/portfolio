@@ -17,8 +17,8 @@
   },
   "variable": {
     "file": "src/assets/fonts/archivo.woff2",
-    "bytes": 94168,
-    "sha256": "513aa6952d1ba780508b86002f2c465b96074e08ef1ce5a4092c19eb6d3e5e68",
+    "bytes": 94208,
+    "sha256": "7bd2004b8f6e29062ccc7c86e120128023e7b4fe46d60d6ec834dde9603dd740",
     "axes": {
       "wght": [
         400,
@@ -70,8 +70,8 @@
         "display",
         "wordmark"
       ],
-      "bytes": 55820,
-      "sha256": "a0761bfa78bd668c109ec021badddc3259cd6ce1f3140d3bc83c4163dbfca7f1"
+      "bytes": 56184,
+      "sha256": "15941f1e8383462ef9523dba2cb6f94a28167589fecb9dcfc19caf9f3493806d"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth125.ttf",
@@ -80,8 +80,8 @@
       "roles": [
         "heading-section"
       ],
-      "bytes": 55912,
-      "sha256": "897ccca6c6dff951563a9c38352e08944ea42a15a99e75b3e60ed636f701c9d1"
+      "bytes": 56276,
+      "sha256": "d5a3f15b3cf6938d23437d6f9691a1c636ff7c28dc9167029defb8efde36a280"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth112.ttf",
@@ -90,8 +90,8 @@
       "roles": [
         "heading-sheet"
       ],
-      "bytes": 55896,
-      "sha256": "f3980ea6d5097ca3d9b5f9211038f5dece9d8a88bf159a844734f2c7cc5d6fc1"
+      "bytes": 56260,
+      "sha256": "473d1622a065918f6b5c02b8b047fda8050b557208ce2cf1294e9edf26d46b94"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth100.ttf",
@@ -100,8 +100,8 @@
       "roles": [
         "ui-strong"
       ],
-      "bytes": 55844,
-      "sha256": "9d1a891f97340572df027506485b8f6253e74e452ea346904eea88bbc6e7bcd7"
+      "bytes": 56208,
+      "sha256": "6984836531b2c93a42a3210f56299a208d97c839ac66d82d6559b7f2e49615fd"
     },
     {
       "file": "src/assets/og/archivo-wght500-wdth100.ttf",
@@ -110,8 +110,8 @@
       "roles": [
         "name"
       ],
-      "bytes": 55964,
-      "sha256": "c88e81eea4dbd9927b64c75d324c6b9e37087e484cd578640d198511962aa8cb"
+      "bytes": 56328,
+      "sha256": "575a9a2b49e358e5470014117cb60c3d5d873fa501187980ebe7f73cc20ef8cd"
     },
     {
       "file": "src/assets/og/archivo-wght400-wdth100.ttf",
@@ -122,8 +122,8 @@
         "body",
         "body-sm"
       ],
-      "bytes": 55556,
-      "sha256": "628223fa33e70ce93db5b572f2b3d5a5ecbf33bbaf47614227875ab6f2ac3d69"
+      "bytes": 55920,
+      "sha256": "e3ca4f5cb8d681d29b57ac67928b82a7bf5b40f076fdac99646127fc8abd654c"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth87.5.ttf",
@@ -132,8 +132,8 @@
       "roles": [
         "label-strong"
       ],
-      "bytes": 55756,
-      "sha256": "4223410d3ab59c05fbb6fb939f230dac6f8ed7abf86e3672c343c74ec6dd751f"
+      "bytes": 56120,
+      "sha256": "1d2ae322f566c6815f07b98e1b8927597867f576f6236382a39cea8b54ec451c"
     },
     {
       "file": "src/assets/og/archivo-wght600-wdth87.5.ttf",
@@ -142,8 +142,8 @@
       "roles": [
         "label"
       ],
-      "bytes": 55756,
-      "sha256": "60e4390c98b3f3e9fbdf65ac3a5861a59e0ffa5a6fed6b0e4bf460e19577e1fe"
+      "bytes": 56120,
+      "sha256": "6232a4ec9ad84a0ab765b26fc5fc6f02fe707be91dee11cdd780188d17ad6602"
     }
   ],
   "codePoints": {

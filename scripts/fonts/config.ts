@@ -50,6 +50,13 @@ export const DEFAULT_FEATURES = [
   "rvrn",
 ] as const;
 
+/**
+ * The naming-table records that carry the OFL (condition 2: every copy
+ * carries the licence): 0 copyright, 13 licence description, 14 licence
+ * URL. HarfBuzz keeps IDs 0–6 by default and drops 13 and 14.
+ */
+export const LICENCE_NAME_IDS = [0, 13, 14] as const;
+
 export const OUTPUT = {
   /** The one preloaded web font, loaded by next/font/local. */
   variable: "src/assets/fonts/archivo.woff2",

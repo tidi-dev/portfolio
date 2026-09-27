@@ -2,10 +2,10 @@ import { brotliDecompressSync } from "node:zlib";
 
 /**
  * Just enough of the OpenType and WOFF2 formats to verify the font outputs:
- * the character map (cmap), the variation axes (fvar) and the layout
- * feature tags (GSUB, GPOS). WOFF2 tables are read with Node's brotli; the
- * three tables read here are never transformed (only glyf, loca and hmtx
- * can be).
+ * the character map (cmap), the variation axes (fvar), the layout feature
+ * tags (GSUB, GPOS) and the naming table (name). WOFF2 tables are read with
+ * Node's brotli; the tables read here are never transformed (only glyf,
+ * loca and hmtx can be).
  */
 
 export type FontTables = ReadonlyMap<string, Buffer>;
@@ -223,6 +223,59 @@ export function featureTags(
     tags.add(tagAt(layout, list + 2 + index * 6));
   }
   return [...tags].sort();
+}
+
+export interface NameRecord {
+  readonly platformId: number;
+  readonly encodingId: number;
+  readonly languageId: number;
+  readonly nameId: number;
+  readonly text: string;
+}
+
+/** The naming table's records, decoded: UTF-16BE for Unicode and Windows, Latin-1 for Mac. */
+export function nameRecords(tables: FontTables): NameRecord[] {
+  const name = table(tables, "name");
+  const count = name.readUInt16BE(2);
+  const storage = name.readUInt16BE(4);
+  return Array.from({ length: count }, (_, index) => {
+    const record = 6 + index * 12;
+    const platformId = name.readUInt16BE(record);
+    const length = name.readUInt16BE(record + 8);
+    const start = storage + name.readUInt16BE(record + 10);
+    const raw = Buffer.from(name.subarray(start, start + length));
+    return {
+      platformId,
+      encodingId: name.readUInt16BE(record + 2),
+      languageId: name.readUInt16BE(record + 4),
+      nameId: name.readUInt16BE(record + 6),
+      text:
+        platformId === 1
+          ? raw.toString("latin1")
+          : raw.swap16().toString("utf16le"),
+    };
+  });
+}
+
+/** Windows, Unicode BMP, US English: the records every consumer reads. */
+export const WINDOWS_ENGLISH = {
+  platformId: 3,
+  encodingId: 1,
+  languageId: 0x409,
+} as const;
+
+/** One name as Windows US English records it, or undefined. */
+export function nameString(
+  tables: FontTables,
+  nameId: number,
+): string | undefined {
+  return nameRecords(tables).find(
+    (record) =>
+      record.nameId === nameId &&
+      record.platformId === WINDOWS_ENGLISH.platformId &&
+      record.encodingId === WINDOWS_ENGLISH.encodingId &&
+      record.languageId === WINDOWS_ENGLISH.languageId,
+  )?.text;
 }
 
 /** Compact ranges, e.g. [0x41, 0x42, 0x43, 0x61] → ["0041-0043", "0061"]. */

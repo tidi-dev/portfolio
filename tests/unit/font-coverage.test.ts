@@ -1,13 +1,19 @@
 import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { instanceFile, OUTPUT } from "../../scripts/fonts/config";
+import {
+  instanceFile,
+  LICENCE_NAME_IDS,
+  OUTPUT,
+  SOURCE,
+} from "../../scripts/fonts/config";
 import { typographyStyles } from "../../scripts/fonts/pipeline";
 import {
   axes,
   codePoints,
   featureTags,
   fromRanges,
+  nameString,
   readTables,
 } from "../../scripts/fonts/sfnt";
 import { contentLines } from "../support/content-trace/corpus";
@@ -154,6 +160,32 @@ describe("static instances for Satori and the résumé", () => {
       expect(codePoints(tables)).toEqual([...covered].sort((a, b) => a - b));
     },
   );
+});
+
+describe("every font file carries the OFL in its naming table (OFL condition 2; QA review of Phase 2, M1)", () => {
+  const source = readTables(read(SOURCE.file));
+
+  it("the source's copyright, licence and licence URL records are the OFL's", () => {
+    expect(nameString(source, 0)).toContain("The Archivo Project Authors");
+    expect(nameString(source, 13)).toContain(
+      "licensed under the SIL Open Font License, Version 1.1",
+    );
+    expect(nameString(source, 14)).toBe("http://scripts.sil.org/OFL");
+  });
+
+  it.each(
+    [
+      OUTPUT.variable,
+      ...manifest.instances.map((instance) => instance.file),
+    ].map((file) => [file]),
+  )("%s keeps name IDs 0, 13 and 14 exactly as the source has them", (file) => {
+    const tables = readTables(read(file));
+    for (const nameId of LICENCE_NAME_IDS) {
+      expect(nameString(tables, nameId), `name ID ${String(nameId)}`).toBe(
+        nameString(source, nameId),
+      );
+    }
+  });
 });
 
 describe("next/font/local loads the subset (src/app/layout.tsx)", () => {

@@ -9,6 +9,7 @@ import { REPO_ROOT } from "../lib/repo";
 import {
   DEFAULT_FEATURES,
   instanceFile,
+  LICENCE_NAME_IDS,
   OUTPUT,
   SOURCE,
   UNICODE_RANGES,
@@ -18,9 +19,11 @@ import {
   codePoints,
   featureTags,
   fromRanges,
+  nameString,
   readTables,
   toRanges,
   type Axis,
+  type FontTables,
 } from "./sfnt";
 
 export interface Style {
@@ -133,6 +136,21 @@ function sameList(a: readonly number[], b: readonly number[]): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index]);
 }
 
+/** Refuses a font whose copyright or licence records differ from the source's. */
+function assertLicenceNames(
+  label: string,
+  tables: FontTables,
+  source: FontTables,
+): void {
+  for (const nameId of LICENCE_NAME_IDS) {
+    if (nameString(tables, nameId) !== nameString(source, nameId)) {
+      throw new Error(
+        `${label}: name ID ${String(nameId)} is not the source's (the OFL must travel with the font)`,
+      );
+    }
+  }
+}
+
 function axisSummary(found: readonly Axis[]): Record<string, [number, number]> {
   return Object.fromEntries(
     found.map((axis) => [axis.tag, [axis.min, axis.max]]),
@@ -156,7 +174,8 @@ export async function generateFontFiles(
   const requested = requestedCodePoints();
   const text = String.fromCodePoint(...requested);
 
-  const sourceCodePoints = new Set(codePoints(readTables(source)));
+  const sourceTables = readTables(source);
+  const sourceCodePoints = new Set(codePoints(sourceTables));
   const expected = requested.filter((code) => sourceCodePoints.has(code));
 
   const variationAxes = { wght: ranges.wght, wdth: ranges.wdth };
@@ -165,8 +184,10 @@ export async function generateFontFiles(
     targetFormat: "woff2",
     variationAxes,
     keepFeatures,
+    preserveNameIds: LICENCE_NAME_IDS,
   });
   const variableTables = readTables(variable);
+  assertLicenceNames("the woff2", variableTables, sourceTables);
   const covered = codePoints(variableTables);
   const variableAxes = axes(variableTables);
   const gsub = featureTags(variableTables, "GSUB");
@@ -225,8 +246,14 @@ export async function generateFontFiles(
       targetFormat: "sfnt",
       variationAxes: { wght: style.wght, wdth: style.wdth },
       keepFeatures,
+      preserveNameIds: LICENCE_NAME_IDS,
     });
     const tables = readTables(ttf);
+    assertLicenceNames(
+      `instance ${String(style.wght)}/${String(style.wdth)}`,
+      tables,
+      sourceTables,
+    );
     if (axes(tables).length !== 0)
       throw new Error(
         `instance ${String(style.wght)}/${String(style.wdth)} is not static`,
