@@ -32,10 +32,10 @@ function isIncluded(section: string | undefined): boolean {
 }
 
 /**
- * The normalised corpus, one entry per line (or table cell), so that a match
- * never spans two lines of info.md.
+ * The content sections of info.md as written, one entry per line (or table
+ * cell): the text the site may render. Font coverage reads these unchanged.
  */
-export function corpusLines(infoMd: string): string[] {
+export function contentLines(infoMd: string): string[] {
   const lines = infoMd.split(/\r?\n/);
   const corpus: string[] = [];
   let section: string | undefined;
@@ -77,5 +77,15 @@ export function corpusLines(infoMd: string): string[] {
     corpus.push(line);
   });
 
-  return corpus.map(normalise).filter((entry) => entry !== "");
+  return corpus;
+}
+
+/**
+ * The normalised corpus, one entry per line (or table cell), so that a match
+ * never spans two lines of info.md.
+ */
+export function corpusLines(infoMd: string): string[] {
+  return contentLines(infoMd)
+    .map(normalise)
+    .filter((entry) => entry !== "");
 }
