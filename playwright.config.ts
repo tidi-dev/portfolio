@@ -5,8 +5,12 @@ const PORT = 3100;
 const BASE_URL = `http://localhost:${String(PORT)}`;
 
 // The budget spec measures bytes, which do not depend on the browser: it runs
-// once, in chromium-desktop.
-const CHROMIUM_DESKTOP_ONLY = [/budget\.spec\.ts$/];
+// once, in chromium-desktop. The owner deferred the performance budget on
+// 2026-09-28 ("skip performance budget ... for now"), so it is left out of
+// `pnpm test:e2e` and runs only through `pnpm test:budget` until the main
+// session re-enables it.
+const BUDGET_SPEC = /budget\.spec\.ts$/;
+const RUN_BUDGET = process.env.RUN_BUDGET === "1";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -29,16 +33,17 @@ export default defineConfig({
     {
       name: "chromium-desktop",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: RUN_BUDGET ? [] : [BUDGET_SPEC],
     },
     {
       name: "chromium-mobile",
       use: { ...devices["Pixel 7"] },
-      testIgnore: CHROMIUM_DESKTOP_ONLY,
+      testIgnore: [BUDGET_SPEC],
     },
     {
       name: "webkit-mobile",
       use: { ...devices["iPhone 15"] },
-      testIgnore: CHROMIUM_DESKTOP_ONLY,
+      testIgnore: [BUDGET_SPEC],
     },
     {
       // Firefox runs the layout and keyboard specs (ruling in docs/progress.md),
