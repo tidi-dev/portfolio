@@ -43,8 +43,8 @@ Source of truth for workflow state. It survives context resets: trust this file 
 ## Phases
 | Phase | Status | Evidence |
 |---|---|---|
-| 1 Foundation | in progress (2026-09-28) | |
-| 2 Tokens and fonts | pending | |
+| 1 Foundation | **complete** (2026-09-28) | `docs/reports/phase-01-engineering.md`; main-session gate re-run green; QA PASS WITH MINOR (`docs/reviews/phase-01-code-review.md`). Minors routed: M1 and M2 to Phase 2, M5 to Phase 3, M3 and M4 to Phase 4 |
+| 2 Tokens and fonts | in progress (2026-09-28) | |
 | 3 Content layer | pending | |
 | 4 Shell and hero | pending | |
 | 5 Sheet anatomy and CyberRock, then Checkpoint 1 | pending | |
@@ -120,4 +120,19 @@ Format: `Ruling: what — why — cost if wrong`
   - structural ids (section ids) are exempt, as non-visible keys marked in the schema
   - Why: they are configuration, not claims about the owner. Cost if wrong: add them to `info.md`.
 - Ruling: before the first push, CI must be green. Either Lighthouse is re-enabled and passing, or its CI step is disabled with a logged ruling. Added to the Phase 13 prerequisites — CI doesn't run until a push — cost if wrong: a red first CI run.
-- Pending the owner: which git identity commits use. The global identity is a work address; the choice is `tidi.dev1321@gmail.com` or unchanged. 12 local commits are cheap to rewrite before any push.
+- Ruling: Phase 1's QA review runs in parallel with Phase 2. QA is read-only and runs no build or e2e. A Critical finding pauses Phase 2, and Important findings are fixed before Phase 2 closes — the owner asked to "focus on building", and Phase 1 is config-level, so later fixes are cheap — cost if wrong: minor rework in Phase 2.
+- Phase 1 verified by the main session (2026-09-28): an independent gate run was green (74/74 unit, a static build, a 0-finding privacy scan, 52/52 e2e). The log is in the scratchpad `phase1-gate.log`. Status: verified; QA review pending.
+- Owner decisions (2026-09-28):
+  - **Git identity:** `tidi.dev1321@gmail.com`, repo-local (set 2026-09-28; the global setting is unchanged). The earlier commits get their author email rewritten once Phase 2's agent stops. Old hashes in reports are mapped after the rewrite.
+  - **Privacy scan:** turned off. Removed from the local gate and CI; the script is kept. Phase 3 gets no separate privacy test; exclusion is structural.
+- Was pending: which git identity commits use (now answered above).
+
+### Phase 2 rulings (2026-09-28)
+- **Accepted:** `frontend-engineer`'s Phase 2 deviations 1–9 (`docs/reports/phase-02-engineering.md`):
+  - Tailwind-namespace supplement names; full theme reset; the trimmed font features (94 KB)
+  - the axe test pinning the two content-absence violations until Phase 4
+  - lint restrictions beyond §4.3; `@source not` exclusions; the no-`harfbuzzjs` verifier
+  - Why: each is explained and verified, with no visual change. Cost if wrong: per-item one-line reverts, noted in the report.
+- Ruling: Phase 2's "axe 0 on the shell" moves to Phase 4 — the title and h1 land there — cost if wrong: none.
+- **CI privacy-scan step:** still in `.github/workflows/ci.yml`. The permission system blocked the agent's edit because a relayed instruction isn't the owner's approval. The main session will not route around that denial. CI doesn't run before the first push, so it is left as is; resolve it with the owner before any push (Phase 13 prerequisite).
+- **Process incident:** during Phase 2 the agent once ran a broad `pkill -f next-server` (around 04:34). That would have stopped any other Next.js server on the machine at that moment; it is surfaced to the owner. Rule added to `CLAUDE.md`, `frontend-build` and `ui-audit`: stop processes by PID only. The global identity is a work address; the choice is `tidi.dev1321@gmail.com` or unchanged. 12 local commits are cheap to rewrite before any push.

@@ -195,16 +195,21 @@ Run `nvm use` first. `.nvmrc` is 24, and Corepack supplies pnpm 10.34.5.
 
 Local gate, in order:
 1. `pnpm install --frozen-lockfile`
-2. `pnpm check`: design lint, lint (ESLint + Prettier), typecheck, unit tests (Vitest)
+2. `pnpm check`: `design:lint`, `tokens:check`, `fonts:check`, lint (ESLint + Prettier), typecheck, unit tests (Vitest)
 3. `pnpm build`
-4. `pnpm privacy:scan`: `src/`, `public/`, `.next/`
-5. `pnpm test:e2e`: Playwright + axe; chromium desktop and mobile, webkit mobile, Firefox for layout and keyboard
+4. `pnpm test:e2e`: Playwright + axe; chromium desktop and mobile, webkit mobile, Firefox for layout and keyboard
 
 **Deferred by the owner** (2026-09-28, "skip performance budget, scan, seo for now"), re-enabled before release:
 - `pnpm test:budget` (byte budgets)
 - `pnpm lhci` (Lighthouse, mobile then desktop)
+- `pnpm privacy:scan` (build-output privacy scan; the script is kept)
 
-Other commands: `pnpm format` (Prettier write), `npx @google/design.md lint DESIGN.md`.
+Other commands:
+- `pnpm tokens` and `pnpm fonts`: regenerate the token and font files after a `DESIGN.md` or font change. The `:check` variants verify them.
+- `pnpm design:lint`: the DESIGN.md linter with the warning policy.
+- `pnpm format`: Prettier write.
+
+Agents stop only the processes they started, by PID. Never kill by name or pattern (`pkill`, `killall`).
 
 Test layers:
 - **Unit** (test-first): content schema, utilities, metadata and JSON-LD builders, state logic.

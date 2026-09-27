@@ -103,11 +103,12 @@ During Phase 1 the owner wrote to `frontend-engineer`: *"skip performance budget
 - Phase 11, except the items moved to Phase 4
 - Phase 12's performance criteria
 
-**Kept, because they protect the owner or are the build itself:**
+**Also suspended:** the build-output privacy scan (the owner, 2026-09-28: "Turn it off too"). The script and its unit tests stay for re-enabling. Private details stay out structurally: the content model holds only the opted-in channels, so Phase 3 gets no separate privacy test.
+
+**Kept, because they are the build itself:**
 - accessibility gates: axe, keyboard, focus
 - the layout matrix and width sweep
 - design checkpoints, code review, content traceability
-- the privacy scan (finished in Phase 1; no further work)
 
 **Moved:** the document `<title>` and meta description, both approved in `info.md`, move to Phase 4. They are WCAG 2.4.2, not only SEO, and Phase 4 requires axe 0.
 
@@ -272,7 +273,7 @@ Every `info.md` fact the site uses exists exactly once, typed and validated.
 - [ ] **Modules:** `src/content/*`, one module per `info.md` section, written `as const satisfies` the Zod schemas.
 - [ ] **Formatting:** `lib/format/*` (typography, period, en-US numbers).
 - [ ] **Builders:** `lib/content/facts.ts`; the section registry.
-- [ ] **Tests:** content, traceability, privacy, format and facts.
+- [ ] **Tests:** content, traceability, format and facts. There is no privacy test (owner deferral).
 
 ### Expected Outputs
 Content modules, their schemas and tests, and a report mapping each `info.md` section to its module.
@@ -282,7 +283,7 @@ Content modules, their schemas and tests, and a report mapping each `info.md` se
 - **Guards:**
   - an unsourced string fails traceability (shown)
   - invalid content fails `next build` with a readable Zod path (shown, then reverted)
-- **Privacy:** the test forbids [private email removed], phone patterns, "accepting quests" and the reference. The location is allowed (O4) and appears only in the contact module.
+- **Structural privacy:** `contact.ts` holds only the opted-in channels (email tidi.dev1321@gmail.com, Telegram, GitHub) and the location (O4). The schema has no fields for the phone number, the second email or the reference.
 - **Fonts:** font coverage passes on the content modules.
 
 ### Dependencies
@@ -738,6 +739,18 @@ From the `DESIGN.md` amendment and O4, both 2026-09-28. This plan wins over the 
   - §3.4 privacy test: the location is allowed (O4) and appears only in `contact.ts`
   - §6 JSON-LD: `address` allowed (locality and country only)
 - **contrib-design:** updated by `design-lead` (§3, §9; §1.3, §1.5 and §7 for the location).
+
+**From Phase 2 (2026-09-28):**
+- **contrib-engineering §4.2:** supplement tokens use Tailwind's theme namespaces, so utilities exist without arbitrary values:
+  - `--transition-duration-*`
+  - `--z-index-skip-link`
+  - `--stroke-width-{ink,proof}`
+  - `--scroll-margin-anchor`
+  - `--spacing-{section,sheet}`
+  - Values are unchanged.
+- **The reset** clears the whole default theme (`--*: initial`).
+- **Font subset:** it keeps the browser-default layout features plus `tnum`/`lnum` (94,168 B; every feature would be 102,748 B). No DESIGN.md role renders differently.
+- **Phase 2's "axe 0 on the shell"** moves to Phase 4. The shell's two content-absence violations (`document-title`, `page-has-heading-one`) are pinned exactly until the title and h1 exist.
 
 ## Coverage checklist
 | Item | Phase(s) |

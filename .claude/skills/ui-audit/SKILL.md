@@ -64,6 +64,7 @@ Independently verify, with evidence, that the running site matches `DESIGN.md` a
   - Minor: polish
 - Don't trust the implementer's report; check for yourself. Don't soften findings.
 - Read-only on source files. Write only under `docs/reviews/`.
+- Stop the servers you start by their PID only. Never `pkill`, `killall` or pattern-kill.
 
 ## Expected Output
 `docs/reviews/<phase>-ui-audit.md` containing:
