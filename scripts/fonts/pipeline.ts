@@ -35,11 +35,6 @@ export interface AxisRange {
   readonly max: number;
 }
 
-const FEATURE_TAGS: Readonly<Record<string, string>> = {
-  "'tnum' 1": "tnum",
-  "'lnum' 1": "lnum",
-};
-
 function sha256(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
@@ -73,18 +68,18 @@ export function typographyStyles(designMd: string): Style[] {
   );
 }
 
-/** The OpenType features the typography tokens switch on (tnum, lnum). */
+/** The OpenType features the typography tokens switch on, e.g. tnum, lnum. */
 export function requiredFeatures(designMd: string): string[] {
   const features = new Set<string>();
   for (const [role, token] of lint(designMd).designSystem.typography) {
-    for (const part of (token.fontFeature ?? "")
-      .split(",")
-      .filter((p) => p.trim() !== "")) {
-      const tag = FEATURE_TAGS[part.trim()];
-      if (tag === undefined)
+    const parts = (token.fontFeature ?? "").split(",");
+    for (const part of parts.filter((text) => text.trim() !== "")) {
+      const tag = /^\s*'([a-z0-9]{4})'\s+1\s*$/.exec(part)?.[1];
+      if (tag === undefined) {
         throw new Error(
-          `typography.${role}: unknown fontFeature "${part.trim()}"`,
+          `typography.${role}: unreadable fontFeature "${part.trim()}"`,
         );
+      }
       features.add(tag);
     }
   }
