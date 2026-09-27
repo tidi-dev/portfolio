@@ -1,0 +1,33 @@
+# Private: the owner's original résumé holds a phone number and a third
+# party's contact details. Never tracked, at any level (plan O2, ruling D10).
+DaiHo Resume.pdf
+
+# OS
+.DS_Store
+
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Test and audit output
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.lighthouseci/
+
+# Review evidence that can be regenerated (contrib-verification §3.4)
+docs/reviews/**/screens/
+docs/reviews/**/raw/
+
+# Environment
+.env*
+
+# Logs
+*.log
