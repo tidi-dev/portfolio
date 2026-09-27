@@ -133,6 +133,11 @@ Format: `Ruling: what — why — cost if wrong`
   - Phases 4–10 run back to back in fresh-agent chunks (4+5, 6, 7+8, 9, 10), with fast checks only.
   - The full gate, the complete QA review (including re-verifying the Phase 2 fix round), content verification and the design check run once in Phase 12, then fixes.
 - Phase 3: done (`docs/reports/phase-03-engineering.md`), including the Phase 2 fix round (I1, I2 and three minors). Its verification is folded into the final checks.
+- **Owner action and decision (2026-09-28):** the owner deleted `tests/` (37 files) and the test scripts in `package.json` during Phases 4+5, then chose **"Add tests back at the end"**.
+  - Phases 6–10 build without writing tests. Fast checks are static only: design lint, tokens, fonts, lint, typecheck, build.
+  - After Phase 10, a lean test suite is written, covering key flows (handshake, theme toggle, menu, skip link, video facade) and accessibility (axe in both themes, keyboard, overflow at key widths).
+  - The final checks then run it together with the QA review, content verification and the design check.
+  - The deleted tests stay in git history (commits before the deletion).
 - Ruling: `info.md` gains three owner-sourced items that the build needs, with no new facts:
   - the owner's section labels (from `profile.md`)
   - the house-rule bold phrases (from `profile.md`)

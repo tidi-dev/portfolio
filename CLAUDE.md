@@ -193,6 +193,8 @@ The checkpoint (row 8) runs after the first visual phase and again before releas
 # Testing & Verification
 Run `nvm use` first. `.nvmrc` is 24, and Corepack supplies pnpm 10.34.5.
 
+**Current mode** (owner, 2026-09-28): tests were removed during the build and a lean suite returns after Phase 10. Until then the gate is static: design lint, tokens, fonts, lint, typecheck, build. The test commands below apply again once the suite is back.
+
 Local gate, in order:
 1. `pnpm install --frozen-lockfile`
 2. `pnpm check`: `design:lint`, `tokens:check`, `fonts:check`, lint (ESLint + Prettier), typecheck, unit tests (Vitest)

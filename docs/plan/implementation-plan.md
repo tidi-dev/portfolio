@@ -139,7 +139,8 @@ Run by the main session with the owner, through `portfolio-content` B. Options a
 - **Phase 13 is on hold** until the owner decides hosting (O1) and the first push (O2). After Phase 12 the site is release-ready locally.
 - **Owner override (2026-09-28):** "no need to run every check after each phase. finish all phases and run all checks".
   - **Between phases:** no main-session gate re-runs, per-phase QA reviews or mid-build design checkpoint.
-  - **Build agents:** they run only fast checks (`pnpm check`, plus the e2e specs they add or change, in chromium) and commit.
+  - **Build agents:** they run only fast checks and commit. The owner removed `tests/` during Phases 4+5 and chose "Add tests back at the end", so fast checks are static only (design lint, tokens, fonts, lint, typecheck, build), and no tests are written in Phases 6–10.
+  - **Test suite:** a lean one (key flows plus accessibility) is written after Phase 10, then run with the final checks.
   - **Chunks, one fresh agent each:** 4 + 5, then 6, then 7 + 8, then 9, then 10.
   - **At the end (Phase 12), once:**
     - the full local gate across all browsers
