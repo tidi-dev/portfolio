@@ -1,3 +1,4 @@
+import { builtinModules } from "node:module";
 import js from "@eslint/js";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
@@ -8,6 +9,9 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 const TS_FILES = ["**/*.{ts,tsx,mts,cts}"];
+
+// Bare built-in specifiers (`fs`, `fs/promises`, `path`); `node:*` is a pattern.
+const NODE_BUILTINS = builtinModules.filter((name) => !name.startsWith("_"));
 
 export default defineConfig([
   globalIgnores([
@@ -59,7 +63,8 @@ export default defineConfig([
   },
 
   // Client leaves stay small and never reach content, SEO builders or
-  // Node built-ins (contrib-engineering §5.1).
+  // Node built-ins (contrib-engineering §5.1). The regexes match the alias
+  // and relative forms alike (`@/content/…`, `../../content/…`).
   {
     name: "project/client-leaf-imports",
     files: ["src/**/*.client.tsx"],
@@ -67,14 +72,18 @@ export default defineConfig([
       "no-restricted-imports": [
         "error",
         {
+          paths: NODE_BUILTINS.map((name) => ({
+            name,
+            message: "Node built-ins never ship to the browser.",
+          })),
           patterns: [
             {
-              group: ["@/content", "@/content/**"],
+              regex: "(^@/|/)content(/|$)",
               message:
                 "Client leaves receive content as props from a Server Component.",
             },
             {
-              group: ["@/lib/seo", "@/lib/seo/**"],
+              regex: "(^@/|/)lib/seo(/|$)",
               message: "SEO builders run on the server only.",
             },
             {
