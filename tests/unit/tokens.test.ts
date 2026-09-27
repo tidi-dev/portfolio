@@ -219,8 +219,13 @@ describe("theme.supplement.css equals DESIGN.md prose (Known Gaps 1)", () => {
     expect(supplement.get("--scroll-margin-anchor")).toBe(prose.scrollMargin);
   });
 
+  it("the structural zero is 0px: no gap, not a DESIGN.md spacing value (QA review of Phase 2, M5)", () => {
+    expect(supplement.get("--spacing-0")).toBe("0px");
+  });
+
   it("declares nothing beyond the values checked here", () => {
     const checked = [
+      "--spacing-0",
       ...rows
         .filter((row) => row.clamp !== undefined)
         .map((row) => `--text-${row.token}`),

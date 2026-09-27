@@ -27,6 +27,12 @@
   --spacing-section: clamp(4rem, 3.296rem + 3.005vw, 6rem);
   --spacing-sheet: clamp(3rem, 2.648rem + 1.502vw, 4rem);
 
+  /* The structural zero: no space, not a DESIGN.md step. The reset removes
+     Tailwind's --spacing, so zero classes need a key: `min-w-0` (the long
+     string guard for flex children), `m-0`, `p-0`, `gap-0`, `inset-0`,
+     `w-0` (QA review of Phase 2, M5). */
+  --spacing-0: 0px;
+
   /* Motion → Tokens. Tailwind reads `duration-<name>` from
      --transition-duration-<name>. */
   --transition-duration-feedback: 120ms;

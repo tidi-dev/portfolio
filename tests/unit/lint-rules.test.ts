@@ -192,6 +192,7 @@ describe(
       ["capitalize", RESTRICTED],
       ["leading-none", RESTRICTED],
       ["leading-6", RESTRICTED],
+      ["leading-0", RESTRICTED],
       ["h-screen", RESTRICTED],
       ["min-h-screen", RESTRICTED],
       ["w-screen", RESTRICTED],
@@ -221,6 +222,8 @@ describe(
         "opacity-0 opacity-100 decoration-1 hover:decoration-2 min-h-dvh",
         "transition-colors transition-opacity transition-transform",
         "stroke-proof dash-construction",
+        // The structural zero (QA review of Phase 2, M5).
+        "min-w-0 min-h-0 m-0 p-0 gap-0 inset-0 top-0 w-0 basis-0 translate-x-0",
       ].join(" ");
       const code = withClasses(classes);
 

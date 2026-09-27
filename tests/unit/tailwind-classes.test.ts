@@ -118,6 +118,17 @@ describe(
       expect(css).toContain(`--dash-construction: ${strokes.dash};`);
     });
 
+    it("the zero classes exist and resolve to the 0px token (QA review of Phase 2, M5)", async () => {
+      const css = normaliseValue(
+        await buildClasses(["min-w-0", "m-0", "gap-0"]),
+      );
+
+      expect(css).toContain(".min-w-0 { min-width: var(--spacing-0); }");
+      expect(css).toContain(".m-0 { margin: var(--spacing-0); }");
+      expect(css).toContain(".gap-0 { gap: var(--spacing-0); }");
+      expect(css).toContain("--spacing-0: 0px;");
+    });
+
     it("no class applies the dash as a stroke colour any more", async () => {
       expect(await buildClasses(["stroke-dash"])).not.toContain(".stroke-dash");
     });
