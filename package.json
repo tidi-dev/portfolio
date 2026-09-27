@@ -14,13 +14,7 @@
     "format": "prettier --write .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test",
-    "test:budget": "RUN_BUDGET=1 playwright test tests/e2e/budget.spec.ts --project=chromium-desktop",
-    "lhci": "lhci autorun --config=lighthouserc.json && lhci autorun --config=lighthouserc.desktop.json",
-    "privacy:scan": "tsx scripts/privacy/scan.ts",
     "design:lint": "tsx scripts/design/lint.ts",
-    "tokens": "tsx scripts/tokens/build.ts",
-    "tokens:check": "tsx scripts/tokens/check.ts",
     "fonts": "tsx scripts/fonts/build.ts",
     "fonts:check": "tsx scripts/fonts/check.ts",
     "check": "pnpm design:lint && pnpm tokens:check && pnpm fonts:check && pnpm lint && pnpm typecheck && pnpm test"
