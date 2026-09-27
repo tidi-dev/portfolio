@@ -64,57 +64,69 @@
   "instances": [
     {
       "file": "src/assets/og/archivo-wght800-wdth125.ttf",
+      "fullName": "Archivo Expanded ExtraBold",
+      "postscriptName": "Archivo-ExpandedExtraBold",
       "wght": 800,
       "wdth": 125,
       "roles": [
         "display",
         "wordmark"
       ],
-      "bytes": 56184,
-      "sha256": "15941f1e8383462ef9523dba2cb6f94a28167589fecb9dcfc19caf9f3493806d"
+      "bytes": 56364,
+      "sha256": "fdc83a06c8a68cd6a22aac8b0fb32b643da588bb8708362b9329082c061e03d8"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth125.ttf",
+      "fullName": "Archivo Expanded Bold",
+      "postscriptName": "Archivo-ExpandedBold",
       "wght": 700,
       "wdth": 125,
       "roles": [
         "heading-section"
       ],
-      "bytes": 56276,
-      "sha256": "d5a3f15b3cf6938d23437d6f9691a1c636ff7c28dc9167029defb8efde36a280"
+      "bytes": 56408,
+      "sha256": "efdc220645c97351b877d124d6ac4401f7949eed7f7f8fd5dc41191c5e0cdcc0"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth112.ttf",
+      "fullName": "Archivo SemiExpanded Bold",
+      "postscriptName": "Archivo-SemiExpandedBold",
       "wght": 700,
       "wdth": 112,
       "roles": [
         "heading-sheet"
       ],
-      "bytes": 56260,
-      "sha256": "473d1622a065918f6b5c02b8b047fda8050b557208ce2cf1294e9edf26d46b94"
+      "bytes": 56432,
+      "sha256": "9b46d9271353b0d828d7363f3e6c906aba372a7e68211f32f6e5ede6b2cbacec"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth100.ttf",
+      "fullName": "Archivo Bold",
+      "postscriptName": "Archivo-Bold",
       "wght": 700,
       "wdth": 100,
       "roles": [
         "ui-strong"
       ],
-      "bytes": 56208,
-      "sha256": "6984836531b2c93a42a3210f56299a208d97c839ac66d82d6559b7f2e49615fd"
+      "bytes": 56256,
+      "sha256": "332d3352ac7e80e32ba49ed29268714aa5ede185b832b5a7cd9deb4e3fcf8bce"
     },
     {
       "file": "src/assets/og/archivo-wght500-wdth100.ttf",
+      "fullName": "Archivo Medium",
+      "postscriptName": "Archivo-Medium",
       "wght": 500,
       "wdth": 100,
       "roles": [
         "name"
       ],
-      "bytes": 56328,
-      "sha256": "575a9a2b49e358e5470014117cb60c3d5d873fa501187980ebe7f73cc20ef8cd"
+      "bytes": 56396,
+      "sha256": "293aba7e7d3a778b24331bf1111d7edfb40e339f5e829c07e525e59116620600"
     },
     {
       "file": "src/assets/og/archivo-wght400-wdth100.ttf",
+      "fullName": "Archivo Regular",
+      "postscriptName": "Archivo-Regular",
       "wght": 400,
       "wdth": 100,
       "roles": [
@@ -122,28 +134,32 @@
         "body",
         "body-sm"
       ],
-      "bytes": 55920,
-      "sha256": "e3ca4f5cb8d681d29b57ac67928b82a7bf5b40f076fdac99646127fc8abd654c"
+      "bytes": 55996,
+      "sha256": "46e442727f94b6ce0c91a1fa4a8ff43906d968cb8b20897ea1fb651295870beb"
     },
     {
       "file": "src/assets/og/archivo-wght700-wdth87.5.ttf",
+      "fullName": "Archivo SemiCondensed Bold",
+      "postscriptName": "Archivo-SemiCondensedBold",
       "wght": 700,
       "wdth": 87.5,
       "roles": [
         "label-strong"
       ],
-      "bytes": 56120,
-      "sha256": "1d2ae322f566c6815f07b98e1b8927597867f576f6236382a39cea8b54ec451c"
+      "bytes": 56300,
+      "sha256": "47793ea1d5042e4da350c15657d120f29447cb089cf67f6afadcdde71ff6f76e"
     },
     {
       "file": "src/assets/og/archivo-wght600-wdth87.5.ttf",
+      "fullName": "Archivo SemiCondensed SemiBold",
+      "postscriptName": "Archivo-SemiCondensedSemiBold",
       "wght": 600,
       "wdth": 87.5,
       "roles": [
         "label"
       ],
-      "bytes": 56120,
-      "sha256": "6232a4ec9ad84a0ab765b26fc5fc6f02fe707be91dee11cdd780188d17ad6602"
+      "bytes": 56340,
+      "sha256": "85b03a8d47b21c82d561f703280aca3b89e9090997daf923616307a379507b6c"
     }
   ],
   "codePoints": {

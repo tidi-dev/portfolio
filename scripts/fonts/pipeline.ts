@@ -6,6 +6,7 @@ import { lint } from "@google/design.md/linter";
 import subsetFont from "subset-font";
 import type { GeneratedFiles } from "../lib/freshness";
 import { REPO_ROOT } from "../lib/repo";
+import { instanceNames, renameInstance } from "./names";
 import {
   DEFAULT_FEATURES,
   instanceFile,
@@ -242,13 +243,25 @@ export async function generateFontFiles(
 
   const instances = [];
   for (const style of styles) {
-    const ttf = await subsetFont(source, text, {
-      targetFormat: "sfnt",
-      variationAxes: { wght: style.wght, wdth: style.wdth },
-      keepFeatures,
-      preserveNameIds: LICENCE_NAME_IDS,
-    });
+    const names = instanceNames(style.wght, style.wdth, sourceTables);
+    const ttf = renameInstance(
+      await subsetFont(source, text, {
+        targetFormat: "sfnt",
+        variationAxes: { wght: style.wght, wdth: style.wdth },
+        keepFeatures,
+        preserveNameIds: LICENCE_NAME_IDS,
+      }),
+      names,
+    );
     const tables = readTables(ttf);
+    if (
+      nameString(tables, 4) !== names.fullName ||
+      nameString(tables, 6) !== names.postscriptName
+    ) {
+      throw new Error(
+        `instance ${String(style.wght)}/${String(style.wdth)}: its names did not read back as ${names.fullName}`,
+      );
+    }
     assertLicenceNames(
       `instance ${String(style.wght)}/${String(style.wdth)}`,
       tables,
@@ -267,6 +280,8 @@ export async function generateFontFiles(
     files.set(file, ttf);
     instances.push({
       file,
+      fullName: names.fullName,
+      postscriptName: names.postscriptName,
       wght: style.wght,
       wdth: style.wdth,
       roles: style.roles,

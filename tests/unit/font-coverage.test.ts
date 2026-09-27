@@ -188,6 +188,136 @@ describe("every font file carries the OFL in its naming table (OFL condition 2; 
   });
 });
 
+/** An SFNT's table checksums, and the whole-file sum that head.checkSumAdjustment balances. */
+function checksumProblems(font: Buffer): string[] {
+  const sum = (bytes: Buffer) => {
+    const padded = Buffer.concat([
+      bytes,
+      Buffer.alloc((4 - (bytes.length % 4)) % 4),
+    ]);
+    let total = 0;
+    for (let offset = 0; offset < padded.length; offset += 4) {
+      total = (total + padded.readUInt32BE(offset)) >>> 0;
+    }
+    return total;
+  };
+  const problems: string[] = [];
+  const count = font.readUInt16BE(4);
+  for (let index = 0; index < count; index++) {
+    const record = 12 + index * 16;
+    const tag = font.toString("latin1", record, record + 4);
+    const offset = font.readUInt32BE(record + 8);
+    const data = Buffer.from(
+      font.subarray(offset, offset + font.readUInt32BE(record + 12)),
+    );
+    if (tag === "head") data.writeUInt32BE(0, 8);
+    if (sum(data) !== font.readUInt32BE(record + 4))
+      problems.push(`${tag} checksum`);
+  }
+  if (sum(font) !== 0xb1b0afba) problems.push("whole-file checksum");
+  return problems;
+}
+
+describe("each static instance is named for its weight and width (QA review of Phase 2, M2)", () => {
+  // [file, family (ID 1), full name (ID 4), PostScript name (ID 6), typographic subfamily (ID 17)]
+  const EXPECTED = [
+    [
+      "archivo-wght800-wdth125.ttf",
+      "Archivo Expanded ExtraBold",
+      "Archivo Expanded ExtraBold",
+      "Archivo-ExpandedExtraBold",
+      "Expanded ExtraBold",
+    ],
+    [
+      "archivo-wght700-wdth125.ttf",
+      "Archivo Expanded Bold",
+      "Archivo Expanded Bold",
+      "Archivo-ExpandedBold",
+      "Expanded Bold",
+    ],
+    [
+      "archivo-wght700-wdth112.ttf",
+      "Archivo SemiExpanded Bold",
+      "Archivo SemiExpanded Bold",
+      "Archivo-SemiExpandedBold",
+      "SemiExpanded Bold",
+    ],
+    [
+      "archivo-wght700-wdth100.ttf",
+      "Archivo Bold",
+      "Archivo Bold",
+      "Archivo-Bold",
+      "Bold",
+    ],
+    [
+      "archivo-wght500-wdth100.ttf",
+      "Archivo Medium",
+      "Archivo Medium",
+      "Archivo-Medium",
+      "Medium",
+    ],
+    [
+      "archivo-wght400-wdth100.ttf",
+      "Archivo",
+      "Archivo Regular",
+      "Archivo-Regular",
+      "Regular",
+    ],
+    [
+      "archivo-wght700-wdth87.5.ttf",
+      "Archivo SemiCondensed Bold",
+      "Archivo SemiCondensed Bold",
+      "Archivo-SemiCondensedBold",
+      "SemiCondensed Bold",
+    ],
+    [
+      "archivo-wght600-wdth87.5.ttf",
+      "Archivo SemiCondensed SemiBold",
+      "Archivo SemiCondensed SemiBold",
+      "Archivo-SemiCondensedSemiBold",
+      "SemiCondensed SemiBold",
+    ],
+  ] as const;
+
+  it("the expectations cover every instance in the manifest", () => {
+    expect(
+      EXPECTED.map(([file]) => `${OUTPUT.instanceDirectory}/${file}`),
+    ).toEqual(manifest.instances.map((instance) => instance.file));
+  });
+
+  it.each(EXPECTED)(
+    "%s is %s (full name %s, PostScript %s)",
+    (file, family, fullName, postscriptName, style) => {
+      const font = read(`${OUTPUT.instanceDirectory}/${file}`);
+      const tables = readTables(font);
+      expect(nameString(tables, 1)).toBe(family);
+      expect(nameString(tables, 2)).toBe("Regular");
+      expect(nameString(tables, 3)).toBe(`2.001;OMNI;${postscriptName}`);
+      expect(nameString(tables, 4)).toBe(fullName);
+      expect(nameString(tables, 6)).toBe(postscriptName);
+      expect(nameString(tables, 16)).toBe("Archivo");
+      expect(nameString(tables, 17)).toBe(style);
+      expect(checksumProblems(font)).toEqual([]);
+    },
+  );
+
+  it("records each instance's names in the manifest", () => {
+    const named = manifest.instances as readonly {
+      readonly file: string;
+      readonly fullName?: string;
+      readonly postscriptName?: string;
+    }[];
+    expect(
+      named.map(({ fullName, postscriptName }) => [fullName, postscriptName]),
+    ).toEqual(
+      EXPECTED.map(([, , fullName, postscriptName]) => [
+        fullName,
+        postscriptName,
+      ]),
+    );
+  });
+});
+
 describe("next/font/local loads the subset (src/app/layout.tsx)", () => {
   // next/font only accepts literals, so the options repeat the manifest.
   const layout = read("src/app/layout.tsx").toString("utf8");
