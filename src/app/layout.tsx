@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import { site } from "@/content/site";
 import "./globals.css";
 
 // Every route is prerendered: any request-time API fails the build
@@ -26,7 +27,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={archivo.variable}>
+    <html lang={site.lang} className={archivo.variable}>
       <body className="bg-surface type-body text-primary">{children}</body>
     </html>
   );

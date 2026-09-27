@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "text": "https://daiho.dev",
+    "source": "info.md → Site preferences → Domain: daiho.dev, as the canonical origin (ruling: Phase 3 trace rules)",
+    "added": "2026-09-28"
+  },
+  {
+    "text": "en",
+    "source": "info.md → Site preferences → Language: English only, as the lang attribute (ruling: Phase 3 trace rules)",
+    "added": "2026-09-28"
+  },
+  {
+    "text": "vi",
+    "source": "info.md → Identity → Name display: the Vietnamese spelling Hồ Trọng Đại, as its lang attribute (plan → Global Constraints: lang=\"vi\")",
+    "added": "2026-09-28"
+  }
+]
