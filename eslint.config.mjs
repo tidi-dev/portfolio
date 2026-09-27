@@ -81,6 +81,63 @@ const TOKEN_CLASS_RESTRICTIONS = [
     pattern: `${VARIANTS}(?:bg-(?:linear|radial|conic)|from|via|to)-`,
     message: "DESIGN.md → Colors: no gradients.",
   },
+  // The reset removes only theme-driven classes. The utilities below take
+  // bare values or none, so they exist whatever the theme holds; each breaks
+  // a DESIGN.md lock or ban (QA review of Phase 2, I1).
+  {
+    pattern: `${VARIANTS}rounded(?:-(?:t|r|b|l|s|e|tl|tr|br|bl|ss|se|es|ee))?-full${END}`,
+    message:
+      "DESIGN.md → Consistency locks 3: radius 6 on every rectangle (rounded-base); the only circle is the SVG packet.",
+  },
+  {
+    pattern: `${VARIANTS}(?:border|divide)(?:-[xytrblse])?-(?:[3-9]|\\d{2,})${END}`,
+    message:
+      "DESIGN.md borders are 1 px (border) or 2 px (border-2, the pressed toggle).",
+  },
+  {
+    pattern: `${VARIANTS}outline(?:-(?:none|hidden|\\d+)|-offset-\\d+)?${END}`,
+    message:
+      "The focus ring is the generated :focus-visible outline (DESIGN.md → focus-ring): never restyle or remove it.",
+  },
+  {
+    pattern: `${VARIANTS}(?:inset-)?ring(?:-\\d+)?${END}`,
+    message:
+      "Rings are box shadows, and DESIGN.md has none; focus uses the generated :focus-visible outline.",
+  },
+  {
+    pattern: `${VARIANTS}opacity-(?!(?:0|100)${END})\\d+${END}`,
+    message:
+      "Opacity is 0 or 100 only (the fades): DESIGN.md → Colors bans tints.",
+  },
+  {
+    pattern: `${VARIANTS}-?(?:scale|rotate|skew)(?:-[xyz])?-`,
+    message:
+      "DESIGN.md → Elevation: nothing lifts, scales or rotates. The bench's motion lives in its keyframes.",
+  },
+  {
+    pattern: `${VARIANTS}(?:backdrop-)?(?:grayscale|sepia|invert|brightness|contrast|saturate|hue-rotate)(?:-|${END})`,
+    message:
+      "DESIGN.md: no filters (About avatar: no filter, tint or duotone; no blurs or glows).",
+  },
+  {
+    pattern: `${VARIANTS}(?:italic|uppercase|capitalize|leading-(?:none|\\d+))${END}`,
+    message:
+      "DESIGN.md → Typography: sentence case, no italics or all caps; line height comes only from type-*.",
+  },
+  {
+    pattern: `${VARIANTS}(?:underline-offset-\\d+|decoration-(?:[03-9]|\\d{2,}))${END}`,
+    message:
+      "DESIGN.md → Links: underlines are 1 px, 2 px on hover (decoration-1, decoration-2); the 0.2em offset needs a supplement token.",
+  },
+  {
+    pattern: `${VARIANTS}(?:min-|max-)?[hw]-screen${END}`,
+    message: "Global Constraints: min-h-dvh, never h-screen or w-screen.",
+  },
+  {
+    pattern: `${VARIANTS}transition${END}`,
+    message:
+      "List what transitions (transition-colors, transition-opacity, transition-transform): bare transition moves more than DESIGN.md → Motion allows.",
+  },
 ];
 
 export default defineConfig([
@@ -182,8 +239,12 @@ export default defineConfig([
   },
 
   // Token-only Tailwind classes (contrib-engineering §4.3). theme-reset.css
-  // removes Tailwind's default theme, so any class that isn't a DESIGN.md
-  // token is unknown; the restrictions close the remaining escape hatches.
+  // removes Tailwind's default theme, so every theme-driven class that isn't
+  // a DESIGN.md token is unknown (`bg-red-500`, `p-4`). Utilities that take
+  // bare values or none (`border-4`, `opacity-50`, `italic`, `h-screen`)
+  // don't depend on the theme and stay known: the restrictions ban those
+  // that break DESIGN.md, and close the escape hatches (arbitrary values,
+  // `dark:`, raw numbers).
   {
     name: "project/better-tailwindcss",
     files: ["src/**/*.{ts,tsx}"],

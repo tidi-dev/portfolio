@@ -160,6 +160,42 @@ describe(
       ["bg-accent/10", RESTRICTED],
       ["bg-linear-to-r", RESTRICTED],
       ["from-accent", RESTRICTED],
+      // Bare-value and static utilities exist without a theme, so the reset
+      // can't remove them (QA review of Phase 2, I1).
+      ["rounded-full", RESTRICTED],
+      ["rounded-t-full", RESTRICTED],
+      ["border-4", RESTRICTED],
+      ["border-8", RESTRICTED],
+      ["divide-x-4", RESTRICTED],
+      ["outline", RESTRICTED],
+      ["outline-2", RESTRICTED],
+      ["outline-4", RESTRICTED],
+      ["outline-offset-8", RESTRICTED],
+      ["outline-none", RESTRICTED],
+      ["focus-visible:outline-hidden", RESTRICTED],
+      ["ring", RESTRICTED],
+      ["ring-2", RESTRICTED],
+      ["inset-ring-2", RESTRICTED],
+      ["opacity-50", RESTRICTED],
+      ["scale-105", RESTRICTED],
+      ["hover:scale-105", RESTRICTED],
+      ["rotate-3", RESTRICTED],
+      ["-rotate-3", RESTRICTED],
+      ["skew-x-6", RESTRICTED],
+      ["grayscale", RESTRICTED],
+      ["sepia", RESTRICTED],
+      ["brightness-110", RESTRICTED],
+      ["underline-offset-4", RESTRICTED],
+      ["decoration-4", RESTRICTED],
+      ["italic", RESTRICTED],
+      ["uppercase", RESTRICTED],
+      ["capitalize", RESTRICTED],
+      ["leading-none", RESTRICTED],
+      ["leading-6", RESTRICTED],
+      ["h-screen", RESTRICTED],
+      ["min-h-screen", RESTRICTED],
+      ["w-screen", RESTRICTED],
+      ["transition", RESTRICTED],
     ])("rejects %s (%s)", async (className, ruleId) => {
       const messages = await probeRule(
         ruleId,
@@ -175,6 +211,10 @@ describe(
         "z-skip-link duration-feedback ease-out transition-colors",
         "md:p-lg lg:gap-gutter @container @bench:flex max-w-bench",
         "stroke-ink scroll-mt-anchor hover:text-accent-hover aspect-16/9",
+        // DESIGN.md values among the bare-value utilities stay usable.
+        "border border-2 border-0 border-rule rounded-none underline",
+        "opacity-0 opacity-100 decoration-1 hover:decoration-2 min-h-dvh",
+        "transition-colors transition-opacity transition-transform",
       ].join(" ");
       const code = withClasses(classes);
 

@@ -1,10 +1,13 @@
 /*
  * Removes Tailwind's whole default theme (colours, fonts, sizes, leading,
  * tracking, weights, radii, shadows, blurs, easings, animations,
- * breakpoints, containers and the numeric spacing scale), so only
- * DESIGN.md tokens exist as classes (contrib-engineering §4.2). Imported
- * after tailwindcss and before the generated tokens. `bg-red-500` and
- * `p-4` are then unknown classes, which lint rejects.
+ * breakpoints, containers and the numeric spacing scale), so every
+ * theme-driven class comes from DESIGN.md tokens (contrib-engineering
+ * §4.2). Imported after tailwindcss and before the generated tokens.
+ * `bg-red-500` and `p-4` are then unknown classes, which lint rejects.
+ * Utilities that take bare values or none (`border-4`, `opacity-50`,
+ * `italic`, `h-screen`) don't read the theme, so they still exist: lint's
+ * restriction list in eslint.config.mjs bans those that break DESIGN.md.
  */
 @theme {
   --*: initial;
