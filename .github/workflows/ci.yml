@@ -30,9 +30,12 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Phase 2 replaces this with `pnpm design:lint` (warning policy).
-      - name: DESIGN.md lint
-        run: pnpm exec design.md lint DESIGN.md
+      # DESIGN.md lint with the warning policy (errors and unlisted warnings
+      # fail), then the freshness checks of the generated tokens and fonts
+      # (contrib-engineering §9.2).
+      - run: pnpm design:lint
+      - run: pnpm tokens:check
+      - run: pnpm fonts:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
