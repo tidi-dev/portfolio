@@ -134,6 +134,14 @@ const TOKEN_CLASS_RESTRICTIONS = [
     message: "Global Constraints: min-h-dvh, never h-screen or w-screen.",
   },
   {
+    // Tailwind reads every --stroke-* key as a stroke colour too, so the
+    // width tokens also yield `stroke-width-ink { stroke: 1.5px }`, an
+    // invalid paint (QA review of Phase 2, I2).
+    pattern: `${VARIANTS}stroke-(?:width-|dash)`,
+    message:
+      "Drawing strokes are stroke-ink and stroke-proof (widths) and dash-construction (the 6 4 dash); stroke-width-* and stroke-dash* compile to an invalid stroke colour.",
+  },
+  {
     pattern: `${VARIANTS}transition${END}`,
     message:
       "List what transitions (transition-colors, transition-opacity, transition-transform): bare transition moves more than DESIGN.md → Motion allows.",

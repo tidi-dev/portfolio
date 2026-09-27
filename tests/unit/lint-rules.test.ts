@@ -196,6 +196,11 @@ describe(
       ["min-h-screen", RESTRICTED],
       ["w-screen", RESTRICTED],
       ["transition", RESTRICTED],
+      // Width tokens also sit in Tailwind's stroke-colour namespace, so
+      // these compile to an invalid stroke paint (QA review of Phase 2, I2).
+      ["stroke-width-ink", RESTRICTED],
+      ["stroke-width-proof", RESTRICTED],
+      ["stroke-dash", RESTRICTED],
     ])("rejects %s (%s)", async (className, ruleId) => {
       const messages = await probeRule(
         ruleId,
@@ -215,6 +220,7 @@ describe(
         "border border-2 border-0 border-rule rounded-none underline",
         "opacity-0 opacity-100 decoration-1 hover:decoration-2 min-h-dvh",
         "transition-colors transition-opacity transition-transform",
+        "stroke-proof dash-construction",
       ].join(" ");
       const code = withClasses(classes);
 

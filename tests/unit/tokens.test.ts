@@ -20,7 +20,8 @@ import { findTokenLiterals, handWrittenFiles } from "../support/token-literals";
 const read = (path: string) => readFileSync(join(REPO_ROOT, path), "utf8");
 
 const system = designSystem();
-const supplement = themeDeclarations(read("src/styles/theme.supplement.css"));
+const supplementCss = read("src/styles/theme.supplement.css");
+const supplement = themeDeclarations(supplementCss);
 const generatedTheme = read("src/styles/theme.generated.css");
 
 function isColour(value: ResolvedValue | undefined): value is ResolvedColor {
@@ -214,7 +215,7 @@ describe("theme.supplement.css equals DESIGN.md prose (Known Gaps 1)", () => {
     expect(supplement.get("--stroke-width-ink")).toBe(prose.strokes.ink);
     expect(prose.strokes.construction).toBe(prose.strokes.ink);
     expect(supplement.get("--stroke-width-proof")).toBe(prose.strokes.proof);
-    expect(supplement.get("--stroke-dash")).toBe(prose.strokes.dash);
+    expect(supplement.get("--dash-construction")).toBe(prose.strokes.dash);
     expect(supplement.get("--scroll-margin-anchor")).toBe(prose.scrollMargin);
   });
 
@@ -236,10 +237,21 @@ describe("theme.supplement.css equals DESIGN.md prose (Known Gaps 1)", () => {
       "--z-index-skip-link",
       "--stroke-width-ink",
       "--stroke-width-proof",
-      "--stroke-dash",
+      "--dash-construction",
       "--scroll-margin-anchor",
     ];
     expect([...supplement.keys()].sort()).toEqual(checked.sort());
+  });
+
+  it("its only utility applies the construction dash, from its token (Drawing grammar: dashed 6 4)", () => {
+    expect(utilities(supplementCss)).toEqual(
+      new Map([
+        [
+          "dash-construction",
+          new Map([["stroke-dasharray", "var(--dash-construction)"]]),
+        ],
+      ]),
+    );
   });
 });
 

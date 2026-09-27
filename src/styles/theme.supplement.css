@@ -4,7 +4,11 @@
  * compared with DESIGN.md by tests/unit/tokens.test.ts, and nothing else may
  * be declared. Names follow Tailwind's theme namespaces, so each value is
  * also a class: `duration-feedback`, `ease-out`, `md:`, `@bench:`,
- * `z-skip-link`, `stroke-ink`, `scroll-mt-anchor`, `gap-section`.
+ * `z-skip-link`, `stroke-ink`, `scroll-mt-anchor`, `gap-section`. The one
+ * value no namespace carries, the construction dash, gets its own utility,
+ * `dash-construction`. tests/unit/tailwind-classes.test.ts compiles every
+ * class these tokens produce and checks that each declares a property that
+ * accepts the value.
  */
 @theme {
   /* Typography table: the clamp() of each fluid role, replacing the
@@ -46,14 +50,23 @@
   /* Layout → Layers: the skip link is the only raised layer. */
   --z-index-skip-link: 100;
 
-  /* Drawing grammar: ink and construction strokes 1.5 px, proof 2 px,
-     construction and replaced nodes dashed 6 4. */
+  /* Drawing grammar: ink and construction strokes 1.5 px, proof 2 px, as
+     `stroke-ink` and `stroke-proof` (stroke-width). Tailwind also reads
+     every --stroke-* key as a stroke colour, so `stroke-width-ink` and
+     `stroke-width-proof` would compile to an invalid `stroke`: lint bans
+     them. Construction lines and replaced nodes are dashed 6 4; no utility
+     reads --dash-*, so `dash-construction` below applies it. */
   --stroke-width-ink: 1.5px;
   --stroke-width-proof: 2px;
-  --stroke-dash: 6 4;
+  --dash-construction: 6 4;
 
   /* Layout → Layers: anchor targets. */
   --scroll-margin-anchor: 24px;
+}
+
+/* Drawing grammar: the construction dash. */
+@utility dash-construction {
+  stroke-dasharray: var(--dash-construction);
 }
 
 @layer base {
