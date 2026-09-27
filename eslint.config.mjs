@@ -7,6 +7,7 @@ import betterTailwindcss from "eslint-plugin-better-tailwindcss";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
+import designTokens from "./src/styles/tokens.generated.json" with { type: "json" };
 
 const TS_FILES = ["**/*.{ts,tsx,mts,cts}"];
 
@@ -16,6 +17,71 @@ const NODE_BUILTINS = builtinModules.filter((name) => !name.startsWith("_"));
 // JSX attributes whose value is shown or announced (an esquery regex).
 const TEXT_ATTRIBUTES =
   "/^(alt|title|placeholder|aria-label|aria-description|aria-roledescription|aria-valuetext|aria-placeholder)$/";
+
+// Token names come from the DTCG export of DESIGN.md (`pnpm tokens`), so the
+// class restrictions follow DESIGN.md without a hand-kept list.
+const tokenNames = (group) =>
+  Object.keys(group).filter((name) => !name.startsWith("$"));
+const alternatives = (names) =>
+  names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+const COLOURS = tokenNames(designTokens.color);
+const DARK_COLOURS = COLOURS.filter((name) => name.endsWith("-dark"));
+const TYPOGRAPHY = tokenNames(designTokens.typography);
+// Any variant chain and an optional important marker, before the utility.
+const VARIANTS = "^(?:[^:]+:)*!?";
+const END = "!?$";
+
+/** Regexes over each full class, variants included, with the reason. */
+const TOKEN_CLASS_RESTRICTIONS = [
+  {
+    pattern: "[\\[\\]()]",
+    message:
+      "Arbitrary values, properties and variants bypass DESIGN.md tokens: use a token class.",
+  },
+  {
+    pattern: "(?:^|:)dark:",
+    message:
+      "Themes swap tokens (DESIGN.md → Consistency locks 1): never use the dark: variant.",
+  },
+  {
+    pattern: `-(?:${alternatives(DARK_COLOURS)})(?:/\\S+)?${END}`,
+    message:
+      "Dark values come from the token swap in theme.generated.css: never use a *-dark class.",
+  },
+  {
+    pattern: `${VARIANTS}(?:font|text|leading|tracking)-(?:${alternatives(TYPOGRAPHY)})${END}`,
+    message:
+      "Typography comes only through the type-* utilities (DESIGN.md → Typography).",
+  },
+  {
+    pattern: `${VARIANTS}font-stretch-`,
+    message:
+      "Width comes only through the type-* utilities (DESIGN.md → Typography).",
+  },
+  {
+    pattern: `${VARIANTS}-?(?:z|duration|delay|stroke)-\\d`,
+    message:
+      "Use the named token (z-skip-link, duration-<token>, stroke-ink, stroke-proof), never a raw number.",
+  },
+  {
+    pattern: `${VARIANTS}ease-(?:linear|initial)${END}`,
+    message: "Easings come from the Motion tokens: ease-out or ease-in-out.",
+  },
+  {
+    pattern: `${VARIANTS}transition-all${END}`,
+    message:
+      "Never transition all (CLAUDE.md → Motion): list the properties, e.g. transition-colors.",
+  },
+  {
+    pattern: `-(?:${alternatives(COLOURS)})/`,
+    message:
+      "Opacity modifiers make tints, which DESIGN.md → Colors bans: use the colour token itself.",
+  },
+  {
+    pattern: `${VARIANTS}(?:bg-(?:linear|radial|conic)|from|via|to)-`,
+    message: "DESIGN.md → Colors: no gradients.",
+  },
+];
 
 export default defineConfig([
   globalIgnores([
@@ -115,7 +181,9 @@ export default defineConfig([
     },
   },
 
-  // Tailwind class correctness. Phase 2 tightens this to token-only classes.
+  // Token-only Tailwind classes (contrib-engineering §4.3). theme-reset.css
+  // removes Tailwind's default theme, so any class that isn't a DESIGN.md
+  // token is unknown; the restrictions close the remaining escape hatches.
   {
     name: "project/better-tailwindcss",
     files: ["src/**/*.{ts,tsx}"],
@@ -123,7 +191,13 @@ export default defineConfig([
     settings: {
       "better-tailwindcss": { entryPoint: "src/app/globals.css" },
     },
-    rules: betterTailwindcss.configs["correctness-error"].rules,
+    rules: {
+      ...betterTailwindcss.configs["correctness-error"].rules,
+      "better-tailwindcss/no-restricted-classes": [
+        "error",
+        { restrict: TOKEN_CLASS_RESTRICTIONS },
+      ],
+    },
   },
 
   prettier,

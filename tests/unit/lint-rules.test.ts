@@ -114,3 +114,82 @@ describe(
     });
   },
 );
+
+describe(
+  "Tailwind classes are DESIGN.md tokens only (contrib-engineering §4.3)",
+  { timeout: TIMEOUT },
+  () => {
+    const UNKNOWN = "better-tailwindcss/no-unknown-classes";
+    const RESTRICTED = "better-tailwindcss/no-restricted-classes";
+
+    function withClasses(classes: string): string {
+      return `export const Probe = () => <div className="${classes}" />;\n`;
+    }
+
+    it.each([
+      // Tailwind's default theme is gone, so its classes are unknown.
+      ["bg-red-500", UNKNOWN],
+      ["p-4", UNKNOWN],
+      ["text-sm", UNKNOWN],
+      ["rounded-lg", UNKNOWN],
+      ["shadow-md", UNKNOWN],
+      ["sm:p-md", UNKNOWN],
+      // Escape hatches.
+      ["p-[13px]", RESTRICTED],
+      ["bg-[#5b3fd0]", RESTRICTED],
+      ["[mask-type:alpha]", RESTRICTED],
+      ["p-(--spacing-md)", RESTRICTED],
+      // Themes swap tokens.
+      ["dark:bg-surface", RESTRICTED],
+      ["bg-surface-dark", RESTRICTED],
+      ["hover:text-accent-hover-dark", RESTRICTED],
+      // Typography only through type-*.
+      ["text-display", RESTRICTED],
+      ["font-body", RESTRICTED],
+      ["leading-label-strong", RESTRICTED],
+      ["tracking-display", RESTRICTED],
+      ["font-stretch-125%", RESTRICTED],
+      // Raw numbers where a token exists.
+      ["z-100", RESTRICTED],
+      ["duration-150", RESTRICTED],
+      ["delay-100", RESTRICTED],
+      ["stroke-2", RESTRICTED],
+      ["ease-linear", RESTRICTED],
+      // DESIGN.md and CLAUDE.md bans.
+      ["transition-all", RESTRICTED],
+      ["bg-accent/10", RESTRICTED],
+      ["bg-linear-to-r", RESTRICTED],
+      ["from-accent", RESTRICTED],
+    ])("rejects %s (%s)", async (className, ruleId) => {
+      const messages = await probeRule(
+        ruleId,
+        SERVER_COMPONENT,
+        withClasses(className),
+      );
+      expect(messages).toHaveLength(1);
+    });
+
+    it("accepts token classes", async () => {
+      const classes = [
+        "bg-surface text-primary type-body p-md gap-section rounded-base",
+        "z-skip-link duration-feedback ease-out transition-colors",
+        "md:p-lg lg:gap-gutter @container @bench:flex max-w-bench",
+        "stroke-ink scroll-mt-anchor hover:text-accent-hover aspect-16/9",
+      ].join(" ");
+      const code = withClasses(classes);
+
+      expect(await probeRule(UNKNOWN, SERVER_COMPONENT, code)).toEqual([]);
+      expect(await probeRule(RESTRICTED, SERVER_COMPONENT, code)).toEqual([]);
+    });
+
+    it("reports conflicting classes", async () => {
+      expect(
+        await probeRule(
+          "better-tailwindcss/no-conflicting-classes",
+          SERVER_COMPONENT,
+          withClasses("p-md p-lg"),
+        ),
+      ).not.toEqual([]);
+    });
+  },
+);
