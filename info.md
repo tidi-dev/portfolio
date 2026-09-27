@@ -52,6 +52,7 @@
   4. "Best advice with what I know today. If I'm wrong, I'd rather find out early — that's where the XP comes from."
 - Sign-off (profile): "Got a pain point? Bring the constraints — I'll bring the trade-offs."
 - Leveling up (profile): distributed-systems trade-offs · reliability & SRE · infrastructure as code · AI in the dev loop
+- House-rule emphasis (profile.md renders these first phrases in bold): "There's no perfect system" · "Understand the pain before prescribing the fix." · "Options on the table, not one answer." · "Best advice with what I know today."
 
 ## Experience
 
@@ -175,6 +176,7 @@ Profile "Quest journal": 2 active · 1 cleared.
   - "Front Door — Google SSO built in, fewer third-party dependencies"
   - "No More ClickOps — Terraform for infrastructure, New Relic for monitoring"
 - Video (owner-approved, answer.md): https://www.youtube.com/watch?v=yLJZXvO_ARU. Public YouTube video titled "Quest by NFQ", checked 2026-09-27.
+- Stack (compiled from the résumé's Quest technologies above; no new facts): Node.js · Serverless framework · AWS Lambda · DynamoDB · S3 · API Gateway · EventBridge · NestJS · Prisma · MySQL · ReactJS · VueJS · Google OAuth 2.0 · Terraform · New Relic
 
 ## Skills & tools
 - Main (profile): TypeScript, Node.js, NestJS, React, Next.js, Vue 3
@@ -217,6 +219,7 @@ Profile "Quest journal": 2 active · 1 cleared.
 - Stack: **Next.js confirmed** (owner, answer.md)
 - Hosting: **decide later** (owner, 2026-09-28)
 - Code repository: **do not push for now**; local git only (owner, 2026-09-28)
+- Section labels (the owner's own, from profile.md): Quest journal · House rules · Inventory · Leveling up · AFK · statuses Active, Side, Cleared · Party lead · Achievements
 - RPG/quest theme: **subtle, one signature moment.** A professional, fast-to-scan layout, with quest vocabulary in a few labels plus one memorable game-like interaction. (Owner's choice, 2026-09-27.)
 - Project diagrams (owner's choice, 2026-09-27): **yes, high-level only.** Drawn solely from the owner's own descriptions, with no client internals, internal service names or real data. Covers CyberRock chip auth and lifecycle, the Quest v1 → v2 migration, and the botmivivi ledger.
 - Résumé download (owner, answer.md): **yes**. "dont reuse … DaiHo Resume.pdf, help me to gen a new one". A new PDF will be generated from `info.md`, without the phone number and the reference.

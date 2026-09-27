@@ -137,6 +137,16 @@ Run by the main session with the owner, through `portfolio-content` B. Options a
   - material design or scope changes (the owner)
   - anything destructive or irreversible
 - **Phase 13 is on hold** until the owner decides hosting (O1) and the first push (O2). After Phase 12 the site is release-ready locally.
+- **Owner override (2026-09-28):** "no need to run every check after each phase. finish all phases and run all checks".
+  - **Between phases:** no main-session gate re-runs, per-phase QA reviews or mid-build design checkpoint.
+  - **Build agents:** they run only fast checks (`pnpm check`, plus the e2e specs they add or change, in chromium) and commit.
+  - **Chunks, one fresh agent each:** 4 + 5, then 6, then 7 + 8, then 9, then 10.
+  - **At the end (Phase 12), once:**
+    - the full local gate across all browsers
+    - a complete `qa-reviewer` code review and UI audit covering Phases 2–10, including re-verifying the Phase 2 fix round
+    - `portfolio-content` D verification
+    - `design-lead`'s design check (Checkpoints 1 and 2 combined)
+    - then fix rounds
 - **QA criteria IDs** (contrib-verification §2) map to these phases:
 
   | QA ID | Phase(s) |

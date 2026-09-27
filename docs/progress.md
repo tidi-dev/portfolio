@@ -44,9 +44,9 @@ Source of truth for workflow state. It survives context resets: trust this file 
 | Phase | Status | Evidence |
 |---|---|---|
 | 1 Foundation | **complete** (2026-09-28) | `docs/reports/phase-01-engineering.md`; main-session gate re-run green; QA PASS WITH MINOR (`docs/reviews/phase-01-code-review.md`). Minors routed: M1 and M2 to Phase 2, M5 to Phase 3, M3 and M4 to Phase 4 |
-| 2 Tokens and fonts | in progress (2026-09-28) | |
-| 3 Content layer | pending | |
-| 4 Shell and hero | pending | |
+| 2 Tokens and fonts | QA **FAIL** (I1 token lint gaps, I2 stroke tokens in the wrong namespace); fix round 1 folded into the Phase 3 implementer's run (one implementer at a time); re-verified with the Phase 3 review | `docs/reports/phase-02-engineering.md`; main-session gate re-run green (`phase2-gate.log`) |
+| 3 Content layer | built (2026-09-28); final verification in Phase 12 | `docs/reports/phase-03-engineering.md` (includes the Phase 2 fix round) |
+| 4 Shell and hero | in progress (2026-09-28, with Phase 5) | |
 | 5 Sheet anatomy and CyberRock, then Checkpoint 1 | pending | |
 | 6 Handshake | pending | |
 | 7 Remaining sheets and video | pending | |
@@ -126,6 +126,20 @@ Format: `Ruling: what — why — cost if wrong`
   - **Git identity:** `tidi.dev1321@gmail.com`, repo-local (set 2026-09-28; the global setting is unchanged). The earlier commits get their author email rewritten once Phase 2's agent stops. Old hashes in reports are mapped after the rewrite.
   - **Privacy scan:** turned off. Removed from the local gate and CI; the script is kept. Phase 3 gets no separate privacy test; exclusion is structural.
 - Was pending: which git identity commits use (now answered above).
+
+### Build-mode change (2026-09-28)
+- **Owner instruction:** "no need to run every check after each phase. finish all phases and run all checks".
+  - Per-phase verification, QA reviews and the mid-build checkpoint are suspended.
+  - Phases 4–10 run back to back in fresh-agent chunks (4+5, 6, 7+8, 9, 10), with fast checks only.
+  - The full gate, the complete QA review (including re-verifying the Phase 2 fix round), content verification and the design check run once in Phase 12, then fixes.
+- Phase 3: done (`docs/reports/phase-03-engineering.md`), including the Phase 2 fix round (I1, I2 and three minors). Its verification is folded into the final checks.
+- Ruling: `info.md` gains three owner-sourced items that the build needs, with no new facts:
+  - the owner's section labels (from `profile.md`)
+  - the house-rule bold phrases (from `profile.md`)
+  - a Quest stack list compiled from the résumé's Quest technologies
+  - Why: flagged by Phase 3 as missing, and all are from owner-provided files. Cost if wrong: remove a line.
+- Ruling: the About bio stays verbatim, even though it repeats the hero sentence. It is the owner's text and needs no approval; this is flagged for the final design check and the owner's review — cost if wrong: trim with the owner's approval.
+- Ruling: Phase 3's concerns (the allowlist matches by value; the file-size formatter moved to Phase 10) and QA minors M3, M4, the focus-ring test and G5 are carried into the Phase 4+5 brief.
 
 ### Phase 2 rulings (2026-09-28)
 - **Accepted:** `frontend-engineer`'s Phase 2 deviations 1–9 (`docs/reports/phase-02-engineering.md`):
