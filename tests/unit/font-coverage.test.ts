@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { instanceFile, OUTPUT } from "../../scripts/fonts/config";
 import { typographyStyles } from "../../scripts/fonts/pipeline";
@@ -154,4 +154,28 @@ describe("static instances for Satori and the résumé", () => {
       expect(codePoints(tables)).toEqual([...covered].sort((a, b) => a - b));
     },
   );
+});
+
+describe("next/font/local loads the subset (src/app/layout.tsx)", () => {
+  // next/font only accepts literals, so the options repeat the manifest.
+  const layout = read("src/app/layout.tsx").toString("utf8");
+  const { wght, wdth } = manifest.variable.axes;
+
+  it("points at the woff2, with swap and preload", () => {
+    expect(layout).toContain(`src: "${relative("src/app", OUTPUT.variable)}"`);
+    expect(layout).toContain('display: "swap"');
+    expect(layout).toContain("preload: true");
+    expect(layout).toContain('variable: "--font-archivo"');
+  });
+
+  it("declares the woff2's weight and width ranges", () => {
+    expect(wght).toBeDefined();
+    expect(wdth).toBeDefined();
+    expect(layout).toContain(
+      `weight: "${String(wght?.[0])} ${String(wght?.[1])}"`,
+    );
+    expect(layout).toContain(
+      `{ prop: "font-stretch", value: "${String(wdth?.[0])}% ${String(wdth?.[1])}%" }`,
+    );
+  });
 });
