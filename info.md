@@ -237,6 +237,34 @@ New wording and depictions approved by the owner for the site. The build renders
 | format.period | {YYYY-MM} to {YYYY-MM} · {YYYY-MM} to present | 2026-09-28 (C1, row 11: e.g. "2024-03 to present", "2020-12 to 2024-03", "2026-08 to present") |
 | depiction.bench | A host sends a challenge, the chip answers, the response returns, verdict "genuine"; a counterfeit chip fails after the challenge. | 2026-09-28 (C1, row 6: accurate) |
 | depiction.cyberrock-drawing | Manufacturing → the field, with supplier exports as an output and a full audit trail underneath; the proof runs the field → challenge-response auth (token, host, mutual, daisy-chain and secure-boot attestation) → genuine. | 2026-09-28 (C1, row 7: accurate) |
+| bench.run | Run the handshake | 2026-09-28 (C2, row 5) |
+| bench.toggle | Counterfeit chip | 2026-09-28 (C2, row 5: constant label; `aria-pressed` carries the state) |
+| bench.verdict-rejected | rejected | 2026-09-28 (C2, row 5: pairs with the owner's "genuine") |
+| botmivivi.facts | Users: 10 · Customers: 646 · Orders: 2,951 · in the first 2 months · Impact: 90% less time, 80% fewer errors | 2026-09-28 (C2, row 10: compact set; labels "Users", "Customers", "Orders", "Impact"; "in the first 2 months" qualifies customers and orders. Not shown on the site: purchase receipts and import/export figures) |
+| quest.users | ~300 users in Ha Noi, Da Nang, Sai Gon, Can Tho | 2026-09-28 (C2, row 12: as the owner wrote it; facts label "Users") |
+| lemonswan.one-liner | A dating platform in Germany for singles with serious intentions. | 2026-09-28 (C2, row 12) |
+| scania.one-liner | An e-commerce platform selling trucks, built for a German company. | 2026-09-28 (C2, row 12) |
+| quest.drawing.carried | users, quest collection, award, status | 2026-09-28 (C2, row 8: the owner's note, with "uers" corrected to "users") |
+| botmivivi.drawing.replaced-label | Replaced manual steps | 2026-09-28 (C2, row 9) |
+| video.name | Watch Quest by NFQ | 2026-09-28 (C2, row 16: the facade's accessible name) |
+| video.caption | Opens the YouTube player. | 2026-09-28 (C2, row 16) |
+| avatar.caption | Illustrated avatar of TiDi coding, gaming, playing football and drinking coffee | 2026-09-28 (C3, row 13: shown as the visible caption; the `img` takes `alt=""`) |
+| resume.summary | = hero.sentence | 2026-09-28 (C3, row 15: the résumé summary uses the approved hero line, not the old résumé summary) |
+| meta.title | Dai Ho Trong (TiDi), Full-stack Developer | 2026-09-28 (C3, row 17: 41 characters) |
+| meta.description | I spend most of my time on the backend: designing APIs, modeling data, connecting services, and making sure the infrastructure underneath them stays reliable. | 2026-09-28 (C3, row 17: 158 characters) |
+| lists.scope | Site: the five profile skill groups and the profile AFK list. PDF only: Serverless framework, CI/CD, Git, Slack, Jira, Spryker framework, Reading. | 2026-09-28 (C3, row 14) |
+| label.languages | Languages | 2026-09-28 (C3, row 14) |
+| contact.location-label | Location | 2026-09-28 (C3, row 18) |
+| not-found.heading | Nothing here | 2026-09-28 (C3, row 17) |
+| not-found.link | Back to TiDi | 2026-09-28 (C3, row 17) |
+| og.alt | Dai Ho Trong (TiDi), Full-stack Developer, with a drawing of a chip handshake | 2026-09-28 (C3, extra) |
+| resume.file | tidi-resume.pdf | 2026-09-28 (C3, extra) |
+| resume.title | TiDi, Résumé | 2026-09-28 (C3, extra: the PDF document title) |
+| a11y.drawing-steps | Pattern: short numbered steps built from the approved depictions and the owner's phrases, e.g. "1. The host sends a challenge. 2. The chip sends back a response. 3. Verdict: genuine." | 2026-09-28 (C3, pattern approval. The main session records each exact step string here when it is drafted in Phases 4–8, under this approval) |
+| a11y.steps.bench | 1. The host sends a challenge. 2. The chip sends back a response. 3. Verdict: genuine. | 2026-09-28 (under a11y.drawing-steps; source: depiction.bench) |
+| a11y.steps.cyberrock | 1. The chip lifecycle runs from manufacturing to the field. 2. Supplier exports leave the lifecycle as an output. 3. A full audit trail runs underneath the whole lifecycle. 4. In the field, challenge-response auth (token, host, mutual, daisy-chain and secure-boot attestation) proves the device is genuine before anything trusts it. | 2026-09-28 (under a11y.drawing-steps; source: depiction.cyberrock-drawing and Projects → CyberRock) |
+| a11y.steps.quest | 1. v1 ran on Lambda, EventBridge and DynamoDB. 2. The data moved from DynamoDB to MySQL with ~5 min of downtime, carrying users, quest collection, award and status. 3. v2 was built on NestJS, Prisma and MySQL. | 2026-09-28 (under a11y.drawing-steps; source: Quest technologies, Five-Minute Window, quest.drawing.carried) |
+| a11y.steps.botmivivi | 1. Every order, return and payment moves the balance in the same transaction. 2. Replaced manual steps: creating order, write report, customer debt, inventory. | 2026-09-28 (under a11y.drawing-steps; source: botmivivi debt ledger and the owner's "replace manual step from …" line, kept verbatim to match the drawing labels) |
 
 ## Open questions
 (None. New questions will surface during copy drafting.)

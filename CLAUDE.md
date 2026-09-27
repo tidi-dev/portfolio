@@ -191,14 +191,20 @@ The checkpoint (row 8) runs after the first visual phase and again before releas
 **Git** is initialised in the plan's first phase. Small commits with conventional messages. No push to shared branches or production deploy without the owner's approval.
 
 # Testing & Verification
-Commands (created in the plan's first phase; keep this list current):
-- `pnpm lint`
-- `pnpm typecheck`
-- `pnpm test` (Vitest)
-- `pnpm build`
-- `pnpm test:e2e` (Playwright + axe)
-- `pnpm lhci` (Lighthouse CI)
-- `npx @google/design.md lint DESIGN.md`
+Run `nvm use` first. `.nvmrc` is 24, and Corepack supplies pnpm 10.34.5.
+
+Local gate, in order:
+1. `pnpm install --frozen-lockfile`
+2. `pnpm check`: design lint, lint (ESLint + Prettier), typecheck, unit tests (Vitest)
+3. `pnpm build`
+4. `pnpm privacy:scan`: `src/`, `public/`, `.next/`
+5. `pnpm test:e2e`: Playwright + axe; chromium desktop and mobile, webkit mobile, Firefox for layout and keyboard
+
+**Deferred by the owner** (2026-09-28, "skip performance budget, scan, seo for now"), re-enabled before release:
+- `pnpm test:budget` (byte budgets)
+- `pnpm lhci` (Lighthouse, mobile then desktop)
+
+Other commands: `pnpm format` (Prettier write), `npx @google/design.md lint DESIGN.md`.
 
 Test layers:
 - **Unit** (test-first): content schema, utilities, metadata and JSON-LD builders, state logic.

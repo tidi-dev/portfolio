@@ -46,12 +46,12 @@ Source of truth for workflow state. It survives context resets: trust this file 
 | 1 Foundation | in progress (2026-09-28) | |
 | 2 Tokens and fonts | pending | |
 | 3 Content layer | pending | |
-| 4 Shell and hero | pending (needs C1) | |
+| 4 Shell and hero | pending | |
 | 5 Sheet anatomy and CyberRock, then Checkpoint 1 | pending | |
-| 6 Handshake | pending (needs C2) | |
+| 6 Handshake | pending | |
 | 7 Remaining sheets and video | pending | |
 | 8 Remaining drawings | pending | |
-| 9 Remaining sections | pending (needs C3) | |
+| 9 Remaining sections | pending | |
 | 10 Résumé PDF | pending | |
 | 11 SEO, metadata, 404 | pending | |
 | 12 Pre-release hardening, then the release audit and Checkpoint 2 | pending | |
@@ -59,8 +59,9 @@ Source of truth for workflow state. It survives context resets: trust this file 
 
 **Copy batches**
 - C1: **approved 2026-09-28** (rows 1–4, 6, 7, 11 are in `info.md` → Approved copy)
-- C2: pending
-- C3: pending
+- C2: **approved 2026-09-28**, early (rows 5, 8, 9, 10, 12, 16)
+- C3: **approved 2026-09-28**, early (rows 13–15, 17, 18 and extras; drawing step lists approved as a pattern, exact strings recorded as drafted)
+- Phases 1–12 no longer wait on copy.
 
 ## Rulings
 Format: `Ruling: what — why — cost if wrong`
@@ -107,3 +108,16 @@ Format: `Ruling: what — why — cost if wrong`
 - Ruling: with hosting deferred (O1), the build keeps engineering's prerendered-Next shape, verified with `next start`; host-specific work stays isolated in Phases 9, 11 and 13 — avoids re-planning, and Vercel needs zero change — cost if wrong: about 1 day of static-export conversion if Cloudflare is chosen.
 - Ruling: with no push (O2), the local gate (`pnpm check`, `test:e2e`, `lhci`) is authoritative, and the CI workflow first runs on the first push — the owner's choice — cost if wrong: a CI-only failure surfaces at first push, mitigated by running the same commands locally.
 - Ruling: the D3 `DESIGN.md` amendment (plate padding 16 px at base, 240/880-unit authoring, 880 px threshold) needs no owner approval — not a material visual change (md and lg unchanged) — cost if wrong: revert to the previous values.
+
+### Phase 1 rulings (2026-09-28)
+- **Owner instruction** (sent to `frontend-engineer` directly and relayed in its report; the owner had resumed that agent from its transcript view): "skip performance budget, scan, seo for now, focus on building porfolio".
+  - Logged as a plan change: see implementation-plan → Owner deferral.
+  - The privacy scan stays in the gate. It was already built and passing; "scan" is read as "no further scan work". To be confirmed with the owner.
+- Ruling: the document `<title>` and meta description move to Phase 4 — WCAG 2.4.2, and the copy is already approved — cost if wrong: none (Phase 11 would wire them anyway).
+- Ruling: the framework-floor ruling (133,646 B gzip; brotli 113,872 B) waits until budgets resume. The options on record: recalibrate to floor + 15 KB, or measure brotli — the owner deferred budgets — cost if wrong: none now.
+- Ruling: Phase 3 trace rules:
+  - site-configuration values (canonical `https://daiho.dev` from Site preferences → Domain; `lang` "en" from Language) go in the allowlist with their `info.md` source
+  - structural ids (section ids) are exempt, as non-visible keys marked in the schema
+  - Why: they are configuration, not claims about the owner. Cost if wrong: add them to `info.md`.
+- Ruling: before the first push, CI must be green. Either Lighthouse is re-enabled and passing, or its CI step is disabled with a logged ruling. Added to the Phase 13 prerequisites — CI doesn't run until a push — cost if wrong: a red first CI run.
+- Pending the owner: which git identity commits use. The global identity is a work address; the choice is `tidi.dev1321@gmail.com` or unchanged. 12 local commits are cheap to rewrite before any push.

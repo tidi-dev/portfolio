@@ -92,6 +92,27 @@ Answered 2026-09-28.
 
 The DNS changes are made by the owner, from exact steps, once hosting is chosen. `DaiHo Resume.pdf` is never tracked by git.
 
+## Owner deferral (2026-09-28)
+During Phase 1 the owner wrote to `frontend-engineer`: *"skip performance budget, scan, seo for now, focus on building porfolio"*. The agent relayed it in its report; the owner had resumed that agent from its transcript view.
+
+**Suspended until the owner re-enables them:**
+- byte budgets (`pnpm test:budget`, and every acceptance line that reads "the budget passes")
+- `pnpm lhci`, Lighthouse scores and lab vitals
+- every `perf-seo-audit` run (the milestone audits M1–M3 and the scoped checks)
+- the framework-floor ruling (the floor is 133.6 KB gzip)
+- Phase 11, except the items moved to Phase 4
+- Phase 12's performance criteria
+
+**Kept, because they protect the owner or are the build itself:**
+- accessibility gates: axe, keyboard, focus
+- the layout matrix and width sweep
+- design checkpoints, code review, content traceability
+- the privacy scan (finished in Phase 1; no further work)
+
+**Moved:** the document `<title>` and meta description, both approved in `info.md`, move to Phase 4. They are WCAG 2.4.2, not only SEO, and Phase 4 requires axe 0.
+
+**Order:** Phases 2–10 run as planned, then Phase 12 as a UI, accessibility and content release check with Checkpoint 2. Phase 11 and the performance parts of 12 wait for the owner. Phase 13 stays on hold.
+
 ## Copy approval batches
 Run by the main session with the owner, through `portfolio-content` B. Options are drafted from `info.md` facts only. Approved text goes to `info.md` → Approved copy, then to `src/content/copy.ts`. Rows refer to contrib-design §7.
 
@@ -289,6 +310,7 @@ The first viewport in both themes, accessible, with the bench in its static rest
 - [ ] **Checks first:** the `smoke`, `a11y`, `layout` (6 widths × 2 themes), `keyboard`, `theme` and `no-js` specs; `theme.test.ts`.
 - [ ] **Shell:** skip link, header and nav, menu disclosure (client), theme toggle (client) with the head script, the `<noscript>` style, footer, section wrapper.
 - [ ] **Hero:** the lockup (h1: TiDi / Hồ Trọng Đại `lang="vi"` / Dai Ho Trong), the role and sentence, the CTA pair.
+- [ ] **Title and description** (moved from Phase 11 by the owner deferral): wire the approved `meta.title` and `meta.description` through the Metadata API, so axe's `document-title` passes.
 - [ ] **Bench, static rest state:** `plate`, compact and wide drawings, the readout "genuine" with `check`, the caption. The controls arrive in Phase 6, so no button is ever dead.
 
 ### Expected Outputs
