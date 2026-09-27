@@ -68,6 +68,39 @@
 
   /* Layout → Layers: anchor targets. */
   --scroll-margin-anchor: 24px;
+
+  /* Components → button-primary: 20 px padding (the export carries no
+     components). */
+  --spacing-button: 20px;
+
+  /* Components → Header: 56 px tall, 64 px from lg. */
+  --height-header: 56px;
+  --height-header-lg: 64px;
+
+  /* Shapes → Icons: 20 px, stroke 1.5 (Tabler's 24-unit grid), as
+     `size-icon` and `stroke-icon`. The trap `stroke-width-icon` is banned
+     with the other stroke widths. */
+  --size-icon: 20px;
+  --stroke-width-icon: 1.5px;
+
+  /* Sheets → Lists → Bullets: the dash is 1.5 px thick (8 px wide, the xs
+     step, with the md step as its indent). */
+  --height-bullet-dash: 1.5px;
+
+  /* Typography table, `label` row: drawing labels at 14 units. */
+  --text-drawing-label: 14px;
+
+  /* Typography → Measure: body at most 68ch, `lead` at most 60ch. */
+  --max-width-measure-body: 68ch;
+  --max-width-measure-lead: 60ch;
+
+  /* Handshake bench and Drawing grammar: the render caps. Compact bench
+     1.5× (360 px), wide bench 1.35× (648 px); tall drawings 1.5× (360 px),
+     wide drawings 1.3× (1144 px). */
+  --max-width-bench-compact: 360px;
+  --max-width-bench-wide: 648px;
+  --max-width-drawing-tall: 360px;
+  --max-width-drawing-wide: 1144px;
 }
 
 /* Drawing grammar: the construction dash. */

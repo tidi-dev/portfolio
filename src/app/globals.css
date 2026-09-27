@@ -10,3 +10,139 @@
 @import "../styles/tokens.generated.css";
 @import "../styles/theme.generated.css";
 @import "../styles/theme.supplement.css";
+
+/* Base rules and compositions. Every value below is a token (var(--…)) or a
+   keyword: nothing here adds a design value (contrib-verification G5). */
+
+/* Page edges (DESIGN.md → Layout): edge, edge-md from md, edge-lg from lg,
+   and never inside the safe-area insets (Responsive Behavior → Reflow). */
+@utility page-x {
+  --page-edge: var(--spacing-edge);
+  padding-inline-start: max(var(--page-edge), env(safe-area-inset-left));
+  padding-inline-end: max(var(--page-edge), env(safe-area-inset-right));
+  @variant md {
+    --page-edge: var(--spacing-edge-md);
+  }
+  @variant lg {
+    --page-edge: var(--spacing-edge-lg);
+  }
+}
+
+/* Control feedback (DESIGN.md → Motion, Controls row; ruling D1): only
+   color, background-color and border-color, at duration-feedback, ease-out.
+   Tailwind's transition-colors also moves outline, decoration, fill and
+   stroke colours, which D1 doesn't allow. */
+@utility transition-feedback {
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--transition-duration-feedback);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Hero alignment (DESIGN.md → Layout → Alignment): the lockup's first line
+   is trimmed to the cap height, so the bench's top edge meets the cap height
+   of "TiDi". Where text-box is unsupported, the leading stays. */
+@utility trim-cap-start {
+  text-box: trim-start cap alphabetic;
+}
+
+/* Icons (DESIGN.md → Shapes → Icons): square caps and miter joins over
+   Tabler's round default. */
+@utility icon-joins {
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+/* Inline list (DESIGN.md → Sheets → Lists): items run inline, separated by
+   a comma generated in CSS, and wrap. No middots, no pills. */
+@utility inline-list {
+  & > li {
+    display: inline;
+  }
+  & > li:not(:last-child)::after {
+    content: ", ";
+  }
+}
+
+/* Bullets (DESIGN.md → Sheets → Lists): an 8 × 1.5 px primary dash and a
+   16 px indent. vertical-align: middle centres the dash on the x-height of
+   the first line. */
+@utility bullet-list {
+  & > li {
+    padding-inline-start: var(--spacing-md);
+  }
+  & > li::before {
+    content: "";
+    display: inline-block;
+    inline-size: var(--spacing-xs);
+    block-size: var(--height-bullet-dash);
+    margin-inline-start: calc(var(--spacing-md) * -1);
+    margin-inline-end: calc(var(--spacing-md) - var(--spacing-xs));
+    vertical-align: middle;
+    background-color: var(--color-primary);
+  }
+}
+
+/* Drawing labels (DESIGN.md → Typography, `label` row; Drawing grammar):
+   the label roles at a fixed 14 units, so they scale only with their SVG. */
+@utility type-drawing-label {
+  @apply type-label;
+  font-size: var(--text-drawing-label);
+}
+
+@utility type-drawing-label-strong {
+  @apply type-label-strong;
+  font-size: var(--text-drawing-label);
+}
+
+@layer base {
+  /* DESIGN.md → Typography → Rules. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  /* DESIGN.md → Links and buttons: "switches instantly". The theme toggle
+     sets this attribute for the one style change that swaps the tokens, so
+     no control's colour transition runs. */
+  :root[data-theme-switching] *,
+  :root[data-theme-switching] *::before,
+  :root[data-theme-switching] *::after {
+    transition-property: none !important;
+  }
+}
+
+@layer components {
+  /* The theme toggle shows `sun` in light and `moon` in dark (DESIGN.md →
+     Links and buttons), before hydration too, so the icon follows the same
+     selectors as the colour swap in theme.generated.css. */
+  [data-theme-icon="dark"] {
+    display: none;
+  }
+
+  :root[data-theme="dark"] [data-theme-icon="light"] {
+    display: none;
+  }
+
+  :root[data-theme="dark"] [data-theme-icon="dark"] {
+    display: block;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) [data-theme-icon="light"] {
+      display: none;
+    }
+
+    :root:not([data-theme="light"]) [data-theme-icon="dark"] {
+      display: block;
+    }
+  }
+}
