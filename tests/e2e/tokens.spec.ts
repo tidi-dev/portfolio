@@ -1,18 +1,25 @@
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { expect, forEachTheme, test } from "./fixtures";
 import { axeViolations } from "./support/axe";
 
 // Phase 2: the empty shell paints DESIGN.md's `page` component (surface,
 // primary, body type) in both themes, from the generated tokens only.
 
+const repoFile = (path: string) =>
+  fileURLToPath(new URL(`../../${path}`, import.meta.url));
+
 interface Dtcg {
   readonly color: Record<string, { readonly $value: { readonly hex: string } }>;
 }
 
 const tokens = JSON.parse(
-  readFileSync("src/styles/tokens.generated.json", "utf8"),
+  readFileSync(repoFile("src/styles/tokens.generated.json"), "utf8"),
 ) as Dtcg;
-const supplement = readFileSync("src/styles/theme.supplement.css", "utf8");
+const supplement = readFileSync(
+  repoFile("src/styles/theme.supplement.css"),
+  "utf8",
+);
 
 /** A colour token as the browser reports it, e.g. "rgb(244, 244, 248)". */
 function colour(name: string): string {
