@@ -64,3 +64,53 @@ describe(
     });
   },
 );
+
+describe(
+  "visible and accessible attribute text comes from content (contrib-engineering §5.1)",
+  { timeout: TIMEOUT },
+  () => {
+    function element(attribute: string): string {
+      return `export const Probe = () => <img src="/a.png" ${attribute} />;\n`;
+    }
+
+    it.each([
+      `alt="A developer at a desk"`,
+      `aria-label="Open the menu"`,
+      `aria-description="Opens in place"`,
+      `title="Menu"`,
+      `placeholder="Search"`,
+      `aria-roledescription="bench"`,
+      `aria-valuetext="half"`,
+      `aria-placeholder="Search"`,
+      `aria-label={"Open the menu"}`,
+      "aria-label={`Open the menu`}",
+    ])("flags %s", async (attribute) => {
+      const messages = await probeRule(
+        "no-restricted-syntax",
+        SERVER_COMPONENT,
+        element(attribute),
+      );
+      expect(messages).toHaveLength(1);
+    });
+
+    it.each([
+      `alt=""`,
+      `alt={copy.avatar}`,
+      `aria-label={copy.menu}`,
+      `className="block"`,
+      `id="main"`,
+    ])("allows %s", async (attribute) => {
+      const code = `const copy = { avatar: "", menu: "" };\n${element(attribute)}`;
+      expect(
+        await probeRule("no-restricted-syntax", SERVER_COMPONENT, code),
+      ).toEqual([]);
+    });
+
+    it("still flags JSX text", async () => {
+      const code = `export const Probe = () => <p>Menu</p>;\n`;
+      expect(
+        await probeRule("react/jsx-no-literals", SERVER_COMPONENT, code),
+      ).toHaveLength(1);
+    });
+  },
+);

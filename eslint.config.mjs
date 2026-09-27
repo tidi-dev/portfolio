@@ -13,6 +13,10 @@ const TS_FILES = ["**/*.{ts,tsx,mts,cts}"];
 // Bare built-in specifiers (`fs`, `fs/promises`, `path`); `node:*` is a pattern.
 const NODE_BUILTINS = builtinModules.filter((name) => !name.startsWith("_"));
 
+// JSX attributes whose value is shown or announced (an esquery regex).
+const TEXT_ATTRIBUTES =
+  "/^(alt|title|placeholder|aria-label|aria-description|aria-roledescription|aria-valuetext|aria-placeholder)$/";
+
 export default defineConfig([
   globalIgnores([
     ".next/**",
@@ -51,6 +55,9 @@ export default defineConfig([
   },
 
   // Every visible string comes from src/content (contrib-engineering §5.1).
+  // `ignoreProps` keeps className and other non-text props usable, so the
+  // attributes that carry visible or announced text are banned separately.
+  // An empty `alt=""` (a decorative image) is not text and stays allowed.
   {
     name: "project/no-jsx-literals",
     files: ["src/app/**/*.tsx", "src/components/**/*.tsx"],
@@ -58,6 +65,18 @@ export default defineConfig([
       "react/jsx-no-literals": [
         "error",
         { noStrings: true, ignoreProps: true },
+      ],
+      "no-restricted-syntax": [
+        "error",
+        ...[
+          `JSXAttribute[name.name=${TEXT_ATTRIBUTES}] > Literal[value=/./]`,
+          `JSXAttribute[name.name=${TEXT_ATTRIBUTES}] > JSXExpressionContainer > Literal[value=/./]`,
+          `JSXAttribute[name.name=${TEXT_ATTRIBUTES}] > JSXExpressionContainer > TemplateLiteral`,
+        ].map((selector) => ({
+          selector,
+          message:
+            "Visible and accessible text comes from src/content (copy.ts), never a literal.",
+        })),
       ],
     },
   },
