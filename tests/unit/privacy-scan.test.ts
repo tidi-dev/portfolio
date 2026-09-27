@@ -63,7 +63,19 @@ describe("privacy scan rules (P1-6)", () => {
     expect(rulesHit("someone&#64;example.com")).toEqual(["email"]);
     expect(rulesHit("someone\\u0040example.com")).toEqual(["email"]);
     expect(rulesHit("mailto:tidi.dev1321@gmail.com")).toEqual([]);
+    expect(rulesHit("mailto:tidi.dev1321%40gmail.com")).toEqual([]);
     expect(rulesHit("TIDI.DEV1321@GMAIL.COM")).toEqual([]);
+  });
+
+  it("reports an encoded email at its position in the original text, decoded and masked", () => {
+    const text = "a%40b %40 %40 %40\nmailto:someone%40example.com";
+    const [finding] = findPrivacyViolations(text);
+
+    expect(finding?.index).toBe(text.indexOf("someone"));
+    expect(finding?.match).toBe("someone@example.com");
+    expect(maskMatch("email", finding?.match ?? "")).toBe(
+      "s••••••@example.com",
+    );
   });
 
   it.each([

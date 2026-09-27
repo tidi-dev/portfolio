@@ -16,10 +16,11 @@ export interface Finding {
 /** The only address the owner opted to show (info.md → Contact & links). */
 export const OPTED_IN_EMAIL = "tidi.dev1321@gmail.com";
 
-// "@" written in an encoded form that would hide an address from a plain search.
+// "@", plain or in an encoded form that would hide an address from a plain
+// search. Matched in place, so a finding keeps its position in the file.
 const ENCODED_AT = /%40|&#0*64;|&#x0*40;|&commat;|\\u0040|\\x40/gi;
 const EMAIL =
-  /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9-])/g;
+  /[A-Za-z0-9._%+-]+(?:@|%40|&#0*64;|&#x0*40;|&commat;|\\u0040|\\x40)[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}(?![A-Za-z0-9-])/gi;
 
 // A run of digits joined by single spaces, dots, hyphens or brackets, with an
 // optional leading "+" or "(", not touching letters or digits on either side.
@@ -95,14 +96,10 @@ function matchesOf(pattern: RegExp, text: string): RegExpMatchArray[] {
 export function findPrivacyViolations(text: string): Finding[] {
   const findings: Finding[] = [];
 
-  const decoded = text.replace(ENCODED_AT, "@");
-  for (const match of matchesOf(EMAIL, decoded)) {
-    if (match[0].toLowerCase() !== OPTED_IN_EMAIL) {
-      findings.push({
-        rule: "email",
-        index: match.index ?? 0,
-        match: match[0],
-      });
+  for (const match of matchesOf(EMAIL, text)) {
+    const address = match[0].replace(ENCODED_AT, "@");
+    if (address.toLowerCase() !== OPTED_IN_EMAIL) {
+      findings.push({ rule: "email", index: match.index ?? 0, match: address });
     }
   }
 
