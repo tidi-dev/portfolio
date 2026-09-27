@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directions preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..800;1,400..800&family=Alegreya+Sans:wght@400;500;700&family=Archivo:wdth,wght@62..125,100..900&family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap">
+<style>
+/* =========================================================================
+   Preview chrome (meta, not part of any direction)
+   ========================================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #dcdce1; color: #1b1b1f; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.pv-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px 16px; background: #1b1b1f; color: #f3f3f5; z-index: 20; }
+@media (min-width: 720px) { .pv-bar { position: sticky; top: 0; } }
+.pv-bar strong { font-size: 15px; margin-right: auto; }
+.pv-bar nav { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.pv-bar a { color: #f3f3f5; text-underline-offset: 3px; }
+.pv-seg { display: inline-flex; border: 1px solid #8d8d96; border-radius: 6px; overflow: hidden; }
+.pv-seg button { background: transparent; color: inherit; border: 0; padding: 6px 12px; min-height: 36px; cursor: pointer; }
+.pv-seg button + button { border-left: 1px solid #8d8d96; }
+.pv-seg button[aria-pressed="true"] { background: #f3f3f5; color: #1b1b1f; }
+.pv-seg button:focus-visible { outline: 2px solid #7aa7ff; outline-offset: -2px; }
+.pv-legend { margin: 0; padding: 12px 16px; background: #f4f4f6; border-bottom: 1px solid #c9c9d0; color: #333338; font-size: 14px; }
+.pv-legend code { background: #e4e4ea; padding: 0 4px; border-radius: 3px; }
+
+.dir { border-top: 10px solid #1b1b1f; }
+.pv-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px; padding: 16px; background: #f4f4f6; color: #1b1b1f; border-bottom: 1px solid #c9c9d0; }
+.pv-head .pv-seg { border-color: #9a9aa3; }
+.pv-head .pv-seg button + button { border-left-color: #9a9aa3; }
+.pv-head .pv-seg button[aria-pressed="true"] { background: #1b1b1f; color: #f3f3f5; }
+.pv-head h2 { margin: 0 0 4px; font-size: 20px; }
+.pv-head p { margin: 0; max-width: 90ch; }
+.pv-spec { color: #4a4a52; font-size: 13.5px; margin-top: 4px !important; }
+.pv-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 99px; background: #1b1b1f; color: #fff; font-size: 12px; font-weight: 600; vertical-align: 3px; }
+.pv-sub { display: block; margin: 0; padding: 6px 16px; background: #ebebef; color: #55555d; font-size: 12px; letter-spacing: .02em; border-top: 1px solid #d3d3da; border-bottom: 1px solid #d3d3da; }
+.pv-foot { padding: 20px 16px 40px; background: #f4f4f6; color: #333338; font-size: 14px; border-top: 10px solid #1b1b1f; }
+.pv-foot p { margin: 0 0 6px; max-width: 100ch; }
+.copy-slot { font-style: normal; letter-spacing: 0; opacity: .85; }
+
+/* shared mock behaviour */
+.mock { transition: none; }
+:where(.mock) a { color: inherit; }
+.mock :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:where(.mock) :where(ul, ol, dl, dd, figure, p, h3, h4) { margin: 0; padding: 0; }
+:where(.mock) :where(ul, ol) { list-style: none; }
+.mock-theme { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: inherit; background: transparent; border: 0; color: inherit; cursor: pointer; }
+.mock-theme svg { width: 22px; height: 22px; }
+.v-wide { display: none; }
+.v-tall { display: block; }
+
+/* =========================================================================
+   A · Quest Journal
+   ========================================================================= */
+.mock-a {
+  --bg: #F4E7D3; --surface: #FBF4E9; --ink: #241D15; --muted: #65563F; --accent: #2C5A69; --route: #8A6F4D;
+  --on-accent: #FBF4E9; --rule: rgba(36, 29, 21, .16); --terr1: rgba(138, 111, 77, .10); --terr2: rgba(44, 90, 105, .09);
+  background: var(--bg); color: var(--ink); font-family: "Alegreya", Georgia, serif;
+}
+.dir[data-theme="dark"] .mock-a {
+  --bg: #261E17; --surface: #31271E; --ink: #F1E4CF; --muted: #C4B195; --accent: #8FC3D1; --route: #A88D69;
+  --on-accent: #261E17; --rule: rgba(241, 228, 207, .16); --terr1: rgba(168, 141, 105, .12); --terr2: rgba(143, 195, 209, .08);
+}
+.mock-a .sans { font-family: "Alegreya Sans", system-ui, sans-serif; }
+.a-wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 56px; }
+.a-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; font-family: "Alegreya Sans", system-ui, sans-serif; }
+.a-brand { font-family: "Alegreya", Georgia, serif; font-weight: 700; font-size: 22px; }
+.a-nav { display: none; gap: 28px; margin-left: auto; font-weight: 500; font-size: 16px; }
+.a-nav span:first-child { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+.a-hero { display: grid; gap: 28px; padding: 20px 0 40px; }
+.a-name { display: flex; flex-direction: column; gap: 4px; }
+.a-brandname { font-size: clamp(3.5rem, 2.24rem + 5.4vw, 6rem); font-weight: 800; line-height: .95; letter-spacing: -.01em; }
+.a-vn { font-size: clamp(1.75rem, 1.53rem + .94vw, 2.5rem); font-weight: 500; line-height: 1.2; }
+.a-en { font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 1.125rem; font-weight: 500; color: var(--muted); }
+.a-role { margin-top: 22px; font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; font-size: 1rem; color: var(--accent); }
+.a-pos { margin-top: 8px; font-size: clamp(1.125rem, 1.06rem + .28vw, 1.3125rem); line-height: 1.5; max-width: 34em; }
+.a-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 26px; font-family: "Alegreya Sans", system-ui, sans-serif; }
+.a-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; background: var(--accent); color: var(--on-accent); border-radius: 2px; font-weight: 700; font-size: 1.0625rem; text-decoration: none; }
+.a-link { color: var(--accent); font-weight: 700; text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; }
+.a-front { justify-self: center; width: min(100%, 360px); padding: 8px; background: var(--surface); border: 1px solid var(--rule); }
+.a-front img { width: 100%; height: auto; aspect-ratio: 3 / 4; }
+
+.a-journal, .a-entry { display: grid; gap: 14px; padding: 28px 0; border-top: 1px solid var(--rule); }
+.a-h2 { font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; font-size: clamp(1.0625rem, 1.03rem + .14vw, 1.1875rem); }
+.a-map { position: relative; aspect-ratio: 340 / 640; margin-top: 4px; }
+.a-map > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.a-terr1 { fill: var(--terr1); }
+.a-terr2 { fill: var(--terr2); }
+.a-bracket { fill: none; stroke: var(--muted); stroke-width: 1; }
+.a-route-main { fill: none; stroke: var(--route); stroke-width: 2.5; stroke-dasharray: 7 7; stroke-linecap: round; }
+.a-route-spur { fill: none; stroke: var(--route); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; }
+.a-lab { position: absolute; left: var(--mx); top: var(--my); transform: translateY(-100%); font-family: "Alegreya", Georgia, serif; font-style: italic; font-size: 14px; line-height: 1.2; color: var(--muted); white-space: nowrap; }
+.a-lab.end { transform: translate(-100%, -100%); text-align: right; }
+.a-lab.terr { transform: translate(-100%, -100%); text-align: right; font-family: "Alegreya Sans", system-ui, sans-serif; font-style: normal; font-weight: 700; color: var(--ink); }
+.a-lab.terr small { display: block; font-weight: 500; font-size: 12.5px; color: var(--muted); font-variant-numeric: lining-nums tabular-nums; }
+.a-wp { position: absolute; left: var(--mx); top: var(--my); z-index: 3; display: flex; align-items: center; gap: 8px; transform: translate(-22px, -50%); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.a-dot { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; }
+.a-dot::before { content: ""; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2.5px solid var(--accent); }
+.a-wpt { display: flex; flex-direction: column; font-family: "Alegreya Sans", system-ui, sans-serif; line-height: 1.2; white-space: nowrap; }
+.a-wpn { font-weight: 700; font-size: 15px; }
+.a-wpd { font-size: 13px; color: var(--muted); font-variant-numeric: lining-nums tabular-nums; }
+.a-wp[aria-current="true"] .a-wpn { color: var(--accent); }
+.a-wp:focus-visible { outline: none; }
+.a-wp:focus-visible .a-dot { outline: 2px solid var(--accent); outline-offset: 3px; }
+.a-token { position: absolute; left: 0; top: 0; z-index: 2; width: 44px; height: 44px; border-radius: 50%; pointer-events: none;
+  background: url("../../ava.PNG") no-repeat; background-size: 207.8px auto; background-position: -71.7px -69.8px;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4.5px var(--accent); will-change: transform; }
+.a-caption { display: grid; gap: 2px; margin-top: 10px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 2px; }
+.a-capn { font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; font-size: 17px; }
+.a-capn a { color: var(--accent); text-underline-offset: 3px; }
+.a-capd { font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 14px; color: var(--muted); font-variant-numeric: lining-nums tabular-nums; }
+.a-capl { font-size: 17.5px; }
+.a-hint { font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 13px; color: var(--muted); }
+
+.a-margin { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; }
+.a-date { font-variant-numeric: lining-nums tabular-nums; }
+.a-meta { color: var(--muted); }
+.a-stamp { display: inline-block; padding: 2px 10px; border: 1.5px solid var(--accent); border-radius: 2px; color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .02em; }
+.a-body { display: grid; gap: 16px; }
+.a-h3 { font-size: clamp(1.5rem, 1.37rem + .56vw, 1.875rem); font-weight: 700; line-height: 1.15; }
+.a-lede { font-size: clamp(1.0625rem, 1.03rem + .14vw, 1.1875rem); line-height: 1.55; max-width: 65ch; }
+.a-terms { display: grid; gap: 10px; }
+.a-terms div { display: grid; gap: 2px; }
+.a-terms dt { font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; font-size: 16px; }
+.a-terms dd { font-size: 17.5px; line-height: 1.5; max-width: 65ch; }
+.a-team { font-family: "Alegreya Sans", system-ui, sans-serif; color: var(--muted); font-size: 15px; }
+.a-sub { font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; font-size: 15px; color: var(--muted); margin-top: 4px; }
+.a-ach { display: grid; gap: 12px; }
+.a-fig { padding: 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 2px; }
+.a-fig figcaption { margin-top: 8px; font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 14px; color: var(--muted); }
+.a-fig text { font-family: "Alegreya Sans", system-ui, sans-serif; fill: var(--ink); font-size: 17px; }
+.a-fig .a-mt { font-weight: 700; font-size: 19px; }
+.a-fig .a-mi { font-family: "Alegreya", Georgia, serif; font-style: italic; fill: var(--muted); font-size: 16px; }
+.a-fig .a-mc { fill: var(--muted); font-size: 15px; }
+.a-fig .a-mw { fill: var(--accent); font-weight: 700; }
+.a-lm { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.a-mroute { fill: none; stroke: var(--route); stroke-width: 2.5; stroke-dasharray: 7 7; stroke-linecap: round; }
+.a-wall { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.a-cargo { fill: none; stroke: var(--muted); stroke-width: 1; }
+.a-haz { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; }
+.a-video { display: inline-flex; align-items: center; gap: 12px; justify-self: start; min-height: 48px; padding: 8px 16px 8px 10px; border: 1px solid var(--rule); border-radius: 2px; background: var(--surface); font-family: "Alegreya Sans", system-ui, sans-serif; font-weight: 700; text-decoration: none; }
+.a-video svg { width: 28px; height: 28px; color: var(--accent); }
+.a-video small { display: block; font-weight: 500; color: var(--muted); font-size: 13px; }
+.a-stack { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: "Alegreya Sans", system-ui, sans-serif; font-size: 15px; color: var(--muted); }
+
+@media (min-width: 640px) {
+  .mock-a .v-wide { display: block; }
+  .mock-a .v-tall { display: none; }
+  .a-map { aspect-ratio: 1000 / 360; }
+  .a-lab { left: var(--x); top: var(--y); }
+  .a-lab.terr { transform: none; text-align: left; }
+  .a-wp { left: var(--x); top: var(--y); flex-direction: column; gap: 8px; transform: translate(-50%, -22px); text-align: center; }
+  .a-wp .a-wpt { align-items: center; }
+  .a-wp.t { flex-direction: column-reverse; transform: translate(-50%, calc(-100% + 22px)); }
+  .a-wp.r { flex-direction: row; transform: translate(-22px, -50%); text-align: left; }
+  .a-wp.r .a-wpt { align-items: flex-start; }
+  .a-wp.l { flex-direction: row-reverse; transform: translate(calc(-100% + 22px), -50%); text-align: right; }
+  .a-wp.l .a-wpt { align-items: flex-end; }
+  .a-token { width: 48px; height: 48px; background-size: 226.6px auto; background-position: -78.3px -76.2px; }
+}
+@media (min-width: 900px) {
+  .a-wrap { padding: 0 48px 80px; }
+  .a-nav { display: flex; }
+  .a-hero { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: center; padding: 36px 0 52px; }
+  .a-id { grid-column: 1 / span 8; }
+  .a-front { grid-column: 9 / span 4; width: 100%; }
+  .a-journal, .a-entry { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; }
+  .a-jhead, .a-margin { grid-column: 1 / span 3; }
+  .a-mapwrap, .a-body { grid-column: 4 / span 9; }
+  .a-margin { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+/* =========================================================================
+   B · Proof
+   ========================================================================= */
+.mock-b {
+  --bg: #F4F4F8; --surface: #FFFFFF; --ink: #14161B; --muted: #525866; --accent: #5B3FD0; --trace: #737A87;
+  --on-accent: #FFFFFF; --rule: rgba(20, 22, 27, .12);
+  background: var(--bg); color: var(--ink); font-family: "Archivo", system-ui, sans-serif; font-stretch: 100%;
+}
+.dir[data-theme="dark"] .mock-b {
+  --bg: #15131C; --surface: #201D2A; --ink: #ECEAF4; --muted: #A9A5BA; --accent: #B7A6FF; --trace: #827D96;
+  --on-accent: #15131C; --rule: rgba(236, 234, 244, .13);
+}
+.b-wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px 56px; }
+.b-top { display: flex; align-items: center; gap: 16px; min-height: 60px; }
+.b-brand { font-weight: 800; font-stretch: 125%; font-size: 20px; margin-right: auto; }
+.b-nav { display: none; gap: 26px; font-stretch: 87.5%; font-weight: 600; font-size: 15px; }
+.b-hero { display: grid; gap: 28px; padding: 20px 0 44px; }
+.b-brandname { display: block; font-stretch: 125%; font-weight: 800; font-size: clamp(3.75rem, 2.62rem + 4.8vw, 7rem); line-height: .9; letter-spacing: -.01em; }
+.b-names { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 14px; font-size: clamp(1.5rem, 1.39rem + .47vw, 2rem); font-weight: 500; line-height: 1.2; }
+.b-names span + span { color: var(--muted); }
+.b-role { margin-top: 22px; font-stretch: 87.5%; font-weight: 700; font-size: 15px; color: var(--accent); }
+.b-pos { margin-top: 6px; font-size: 17px; line-height: 1.6; max-width: 36em; }
+.b-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 24px; }
+.b-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; background: var(--accent); color: var(--on-accent); border-radius: 6px; font-weight: 700; text-decoration: none; }
+.b-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; color: var(--accent); text-underline-offset: 4px; }
+.b-bench { padding: 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+.b-bench text, .b-band text { font-family: "Archivo", system-ui, sans-serif; font-stretch: 87.5%; font-weight: 600; fill: var(--ink); }
+.b-hs text { font-size: 17px; }
+.b-hs .b-mute, .b-band .b-mute { fill: var(--muted); }
+.b-node { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+.b-pin { stroke: var(--ink); stroke-width: 1.5; }
+.b-ch, .b-rs { fill: none; stroke: var(--trace); stroke-width: 2; stroke-dasharray: 6 5; }
+.b-chh, .b-rsh { fill: var(--trace); }
+.b-bench:not([data-state="idle"]) .b-ch { stroke: var(--accent); stroke-dasharray: none; }
+.b-bench:not([data-state="idle"]) .b-chh { fill: var(--accent); }
+.b-bench[data-state="response"] .b-rs, .b-bench[data-state="genuine"] .b-rs { stroke: var(--accent); stroke-dasharray: none; }
+.b-bench[data-state="response"] .b-rsh, .b-bench[data-state="genuine"] .b-rsh { fill: var(--accent); }
+.b-packet { fill: var(--accent); opacity: 0; }
+.b-chip { transform-box: fill-box; transform-origin: center; }
+.b-bench[data-fake="on"] .b-chip .b-node { stroke: var(--trace); stroke-dasharray: 5 4; }
+.b-ok, .b-no { opacity: 0; transition: opacity 200ms ease-out; }
+.b-ok path { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.b-ok text { fill: var(--accent); font-weight: 700; }
+.b-no path { fill: none; stroke: var(--trace); stroke-width: 2.5; stroke-linecap: round; }
+.b-no text { fill: var(--muted); font-weight: 700; }
+.b-bench[data-state="genuine"] .b-ok, .b-bench[data-state="rejected"] .b-no { opacity: 1; }
+.b-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.b-run, .b-fake { min-height: 44px; padding: 0 16px; border-radius: 6px; font-family: inherit; font-weight: 700; cursor: pointer; }
+.b-run { background: var(--accent); color: var(--on-accent); border: 0; }
+.b-fake { background: transparent; color: var(--ink); border: 1.5px solid var(--trace); }
+.b-fake[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.b-status { min-height: 1.4em; margin-top: 8px; font-stretch: 87.5%; font-weight: 600; font-size: 14px; color: var(--muted); }
+.b-bench figcaption { margin-top: 6px; font-size: 16px; }
+.b-sheet { display: grid; gap: 16px; padding: 28px 0 8px; border-top: 1px solid var(--rule); }
+.b-h2 { font-stretch: 125%; font-weight: 700; font-size: clamp(2rem, 1.77rem + .94vw, 2.75rem); line-height: 1; }
+.b-shead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.b-h3 { font-stretch: 112%; font-weight: 700; font-size: clamp(1.5rem, 1.39rem + .47vw, 2rem); margin-right: auto; }
+.b-chip-status { display: inline-block; padding: 2px 10px; border: 1.5px solid var(--accent); border-radius: 6px; color: var(--accent); font-stretch: 87.5%; font-weight: 700; font-size: 14px; }
+.b-date { font-stretch: 87.5%; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.b-lede { font-size: 17px; }
+.b-band { padding: 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+.b-band text { font-size: 16px; }
+.b-band .b-small { font-size: 13px; font-weight: 500; fill: var(--muted); }
+.b-verified { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.b-vhead { fill: var(--accent); }
+.b-node-v { stroke: var(--accent); stroke-width: 2; }
+.b-trace { fill: none; stroke: var(--trace); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.b-node-t { fill: var(--surface); stroke: var(--trace); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.b-inkline { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.b-inkhead { fill: var(--ink); }
+.b-cols { display: grid; gap: 20px; }
+.b-sub { font-stretch: 87.5%; font-weight: 700; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.b-built li { position: relative; padding-left: 18px; margin-bottom: 8px; line-height: 1.55; max-width: 68ch; }
+.b-built li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 2px; background: var(--accent); }
+.b-facts { display: grid; gap: 10px; align-content: start; }
+.b-facts div { display: grid; grid-template-columns: 88px 1fr; gap: 12px; }
+.b-facts dt { font-stretch: 87.5%; font-weight: 700; font-size: 14px; color: var(--muted); padding-top: 1px; }
+.b-facts dd { font-size: 15.5px; line-height: 1.45; }
+.b-inline { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+@media (min-width: 760px) {
+  .mock-b .v-wide { display: block; }
+  .mock-b .v-tall { display: none; }
+}
+@media (min-width: 960px) {
+  .b-wrap { padding: 0 40px 80px; }
+  .b-nav { display: flex; }
+  .b-hero { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: 24px; align-items: start; padding: 44px 0 60px; }
+  .b-bench { padding: 20px; }
+  .b-cols { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; }
+  .b-built { grid-column: 1 / span 7; }
+  .b-facts { grid-column: 9 / span 4; }
+}
+
+/* =========================================================================
+   C · Player Card
+   ========================================================================= */
+.mock-c {
+  --bg: #FAF9F6; --surface: #FFFFFF; --ink: #131A2A; --muted: #525A6B; --accent: #855A00; --gold: #E3B341;
+  --on-gold: #131A2A; --rule: rgba(19, 26, 42, .12); --bar-h: 0px;
+  background: var(--bg); color: var(--ink); font-family: "Be Vietnam Pro", system-ui, sans-serif;
+}
+.dir[data-theme="dark"] .mock-c {
+  --bg: #10151F; --surface: #182030; --ink: #E8ECF3; --muted: #A3ACBC; --accent: #E3B341; --gold: #E3B341;
+  --on-gold: #10151F; --rule: rgba(232, 236, 243, .13);
+}
+.c-wrap { max-width: 1240px; margin: 0 auto; padding: 12px 20px 56px; }
+.c-layout { display: grid; gap: 24px; }
+.c-card { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px 16px; padding: 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+.c-portrait img { width: 112px; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 6px; }
+.c-idblock { align-self: center; }
+.c-name { display: flex; flex-direction: column; gap: 2px; }
+.c-brandname { font-weight: 800; font-size: clamp(2.25rem, 2.03rem + .94vw, 3rem); line-height: 1; letter-spacing: -.01em; }
+.c-vn { font-weight: 600; font-size: 1.25rem; line-height: 1.3; }
+.c-en { font-weight: 500; font-size: 15px; color: var(--muted); }
+.c-role { margin-top: 8px; font-weight: 600; font-size: 15px; color: var(--accent); }
+.c-stats { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.c-stats div { display: grid; gap: 1px; align-content: start; }
+.c-stats dt { font-weight: 600; font-size: 13px; color: var(--muted); }
+.c-stats dd { font-weight: 500; font-size: 15px; line-height: 1.4; }
+.c-equipped { grid-column: 1 / -1; display: none; gap: 4px; padding: 12px 12px 12px 14px; border-left: 3px solid var(--accent); background: var(--bg); border-radius: 0 10px 10px 0; }
+.c-equipped.on { display: none; }
+.c-eqlabel { font-weight: 600; font-size: 13px; color: var(--muted); }
+.c-eqitem { font-weight: 800; font-size: 17px; }
+.c-eqused { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 14.5px; }
+.c-cta { grid-column: 1 / -1; }
+.c-btn { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; background: var(--gold); color: var(--on-gold); border: 2px solid var(--accent); border-radius: 10px; font-weight: 700; text-decoration: none; }
+.c-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px 18px; font-weight: 600; font-size: 14.5px; }
+.c-links li { min-height: 32px; display: flex; align-items: center; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+.c-top { display: none; align-items: center; justify-content: flex-end; gap: 22px; min-height: 52px; font-weight: 600; font-size: 14.5px; }
+.c-mtop { display: flex; align-items: center; justify-content: space-between; min-height: 48px; margin-bottom: 8px; }
+.c-mtop b { font-weight: 800; font-size: 20px; }
+.c-h2 { font-weight: 800; font-size: clamp(1.375rem, 1.35rem + .1vw, 1.5rem); }
+.c-ihead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; margin-bottom: 10px; }
+.c-count { display: flex; gap: 14px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.c-rows { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.c-row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 12px 16px 12px 18px; transition: opacity 200ms ease-out; }
+.c-row + .c-row { border-top: 1px solid var(--rule); }
+.c-row::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--gold); box-shadow: inset -1px 0 0 var(--accent); transform: scaleY(0); transform-origin: top; transition: transform 200ms ease-out; }
+.c-rn { font-weight: 700; font-size: 16px; }
+.c-badge { justify-self: end; align-self: center; padding: 1px 9px; border: 1.5px solid var(--accent); border-radius: 10px; color: var(--accent); font-weight: 600; font-size: 12.5px; }
+.c-rd, .c-re { font-size: 14px; color: var(--muted); }
+.c-rl { grid-column: 1 / -1; font-size: 14.5px; }
+.mock-c.equipping .c-row.dim, .mock-c.equipping .c-entry.dim { opacity: .55; }
+.mock-c .c-row.hit::before { transform: scaleY(1); }
+.c-inv { display: grid; gap: 12px; margin-top: 28px; }
+.c-group { display: grid; gap: 6px; }
+.c-glabel { font-weight: 600; font-size: 13px; color: var(--muted); }
+.c-slots { display: flex; flex-wrap: wrap; gap: 8px; }
+.c-slot { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--muted); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; transition: background-color 160ms ease-out, border-color 160ms ease-out; }
+.c-slot:hover { border-color: var(--accent); }
+.c-slot[aria-pressed="true"] { background: var(--gold); color: var(--on-gold); border: 2px solid var(--accent); }
+.c-plain { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; font-weight: 500; font-size: 14px; color: var(--muted); }
+.c-result { min-height: 1.5em; font-size: 14.5px; }
+.c-result b { font-weight: 800; }
+.c-entry { display: grid; gap: 14px; margin-top: 28px; padding: 20px 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; transition: opacity 200ms ease-out; }
+.c-entry.hit { box-shadow: inset 4px 0 0 var(--gold), inset 5px 0 0 var(--accent); }
+.c-ehead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.c-h3 { font-weight: 700; font-size: clamp(1.125rem, 1.07rem + .24vw, 1.25rem); margin-right: auto; }
+.c-lede { font-weight: 600; font-size: 16px; }
+.c-own { font-size: 15.5px; color: var(--muted); }
+.c-terms { display: grid; gap: 10px; }
+.c-terms dt { font-weight: 700; font-size: 15px; }
+.c-terms dd { font-size: 15px; line-height: 1.6; max-width: 70ch; }
+.c-fig { padding: 12px; background: var(--bg); border: 1px solid var(--rule); border-radius: 10px; }
+.c-fig text { font-family: "Be Vietnam Pro", system-ui, sans-serif; font-weight: 600; font-size: 15px; fill: var(--ink); }
+.c-fig .c-fmute { fill: var(--muted); font-size: 13.5px; }
+.c-fnode { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.c-fbal { fill: var(--gold); stroke: var(--accent); stroke-width: 2; }
+.c-fig .c-fbal-t { fill: var(--on-gold); font-weight: 800; }
+.c-fbox { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.c-fline { fill: none; stroke: var(--ink); stroke-width: 2; }
+.c-fhead { fill: var(--ink); }
+.c-fig figcaption { margin-top: 8px; font-size: 13.5px; color: var(--muted); }
+.c-nums { display: flex; flex-wrap: wrap; gap: 6px 22px; font-weight: 700; font-size: 15px; }
+.c-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--muted); }
+.c-meta b { color: var(--ink); font-weight: 600; }
+@media (min-width: 640px) {
+  .mock-c .v-wide { display: block; }
+  .mock-c .v-tall { display: none; }
+  .c-row { grid-template-columns: minmax(0, 1.3fr) 90px minmax(0, 1fr) minmax(0, .8fr); align-items: baseline; }
+  .c-badge { justify-self: start; }
+  .c-rl { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .c-wrap { padding: 20px 40px 80px; }
+  .c-layout { grid-template-columns: 340px minmax(0, 1fr); column-gap: 40px; align-items: start; }
+  .c-card { position: sticky; top: calc(var(--bar-h) + 16px); display: flex; flex-direction: column; gap: 14px; padding: 0 0 18px; overflow: hidden; }
+  .c-card > *:not(.c-portrait) { margin-left: 16px; margin-right: 16px; }
+  .c-portrait img { width: 100%; aspect-ratio: 16 / 10; object-position: 50% 45%; border-radius: 0; }
+  .c-idblock { align-self: stretch; }
+  .c-stats { grid-template-columns: 1fr; gap: 8px; }
+  .c-stats div { grid-template-columns: 112px 1fr; gap: 10px; }
+  .c-equipped.on { display: grid; }
+  .c-mtop { display: none; }
+  .c-top { display: flex; }
+  .c-result { display: none; }
+}
+
+/* Reduced motion: every transition becomes instant */
+@media (prefers-reduced-motion: reduce) {
+  .mock *, .mock *::before { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="pv-bar" id="top">
+  <strong>Directions preview</strong>
+  <nav aria-label="Directions">
+    <a href="#dir-a">A. Quest Journal</a>
+    <a href="#dir-b">B. Proof</a>
+    <a href="#dir-c">C. Player Card</a>
+  </nav>
+  <div class="pv-seg" role="group" aria-label="Theme for all directions">
+    <button type="button" data-all="system" aria-pressed="true">System</button>
+    <button type="button" data-all="light" aria-pressed="false">Light</button>
+    <button type="button" data-all="dark" aria-pressed="false">Dark</button>
+  </div>
+</header>
+<p class="pv-legend">A rough mock for choosing a direction, not application code. Grey bars are annotations. Inside the mocks, every string is verbatim from <code>info.md</code>; <em class="copy-slot">[copy]</em> marks a slot that needs new wording (to draft &amp; approve). Diagrams are rough sketches drawn only from <code>info.md</code>. The portrait is the owner’s <code>ava.PNG</code>. Details, wireframes and contrast ratios: <code>docs/design/directions.md</code>.</p>
+
+<!-- =====================================================================
+     A · QUEST JOURNAL
+     ===================================================================== -->
+<section class="dir" id="dir-a" data-theme="light" aria-labelledby="pv-a">
+  <div class="pv-head">
+    <div>
+      <h2 id="pv-a">A. Quest Journal <span class="pv-tag">Recommended</span></h2>
+      <p>A ruled logbook on the avatar’s own paper: each project is a dated entry with a status stamp, and the career is an inked route you can walk as Player 1.</p>
+      <p class="pv-spec">Alegreya + Alegreya Sans. Accent: Map sea teal. Dials V5 M3 D5. Signature: walk the route (click a waypoint, or focus one and use the arrow keys).</p>
+    </div>
+    <div class="pv-seg" role="group" aria-label="Theme for direction A">
+      <button type="button" data-set="light" aria-pressed="true">Light</button>
+      <button type="button" data-set="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="mock mock-a">
+    <span class="pv-sub">Hero</span>
+    <div class="a-wrap">
+      <div class="a-top">
+        <span class="a-brand">TiDi</span>
+        <div class="a-nav"><span>Quest journal</span><span>House rules</span><span>Contact</span><span>Résumé</span></div>
+        <button class="mock-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
+      </div>
+      <div class="a-hero">
+        <div class="a-id">
+          <p class="a-name"><span class="a-brandname">TiDi</span> <span class="a-vn" lang="vi">Hồ Trọng Đại</span> <span class="a-en">Dai Ho Trong</span></p>
+          <p class="a-role">Full-stack Developer</p>
+          <p class="a-pos">Officially a full-stack developer, though I spend most of my time on the backend: designing APIs, modeling data, connecting services, and making sure the infrastructure underneath them stays reliable.</p>
+          <p class="a-cta"><a class="a-btn" href="#dir-a">bring me a pain point.</a> <a class="a-link" href="#dir-a">Résumé</a></p>
+        </div>
+        <figure class="a-front"><img src="../../ava.PNG" width="1086" height="1448" alt="Illustrated avatar of TiDi coding, gaming, playing football and drinking coffee"></figure>
+      </div>
+    </div>
+
+    <span class="pv-sub">Signature: walk the route</span>
+    <div class="a-wrap">
+      <div class="a-journal" id="a-journal">
+        <div class="a-jhead"><h3 class="a-h2">Quest journal</h3></div>
+        <div class="a-mapwrap">
+          <div class="a-map">
+            <svg class="v-wide" viewBox="0 0 1000 360" aria-hidden="true" data-kind="wide" data-points='{"lemonswan":[110,175],"quest":[560,170],"cyberrock":[800,178],"j1":[335.2,141.1]}'>
+              <rect class="a-terr1" x="12" y="64" width="628" height="198" rx="2"/>
+              <rect class="a-terr2" x="652" y="64" width="336" height="198" rx="2"/>
+              <path class="a-bracket" d="M24 52 V46 H292 V52 M308 52 V46 H592 V52 M608 52 V46 H976 V52"/>
+              <path class="a-route-main" data-path="main" d="M110 175 C230 125 380 135 560 170 C680 190 720 170 800 178"/>
+              <path class="a-route-spur" data-path="spurS" d="M335.2 141.1 C330 175 318 205 300 236"/>
+              <path class="a-route-spur" data-path="spurB" d="M800 178 C870 178 930 240 930 312"/>
+            </svg>
+            <svg class="v-tall" viewBox="0 0 340 640" aria-hidden="true" data-kind="tall" data-points='{"lemonswan":[40,80],"quest":[40,300],"cyberrock":[40,480],"j1":[37.8,201.3]}'>
+              <rect class="a-terr1" x="6" y="52" width="328" height="344" rx="2"/>
+              <rect class="a-terr2" x="6" y="406" width="328" height="116" rx="2"/>
+              <path class="a-route-main" data-path="main" d="M40 80 C70 150 10 230 40 300 S70 420 40 480"/>
+              <path class="a-route-spur" data-path="spurS" d="M37.8 201.3 C80 205 110 214 140 222"/>
+              <path class="a-route-spur" data-path="spurB" d="M40 480 C70 520 100 545 130 565"/>
+            </svg>
+            <span class="a-lab" style="--x:2.4%;--y:10.56%;--mx:20.59%;--my:6.56%">Laravel applications</span>
+            <span class="a-lab" style="--x:30.8%;--y:10.56%;--mx:20.59%;--my:41.88%">AWS serverless systems</span>
+            <span class="a-lab" style="--x:60.8%;--y:10.56%;--mx:20.59%;--my:70%">event-driven microservices with NestJS</span>
+            <span class="a-lab terr a-terr-nfq" style="--x:2.4%;--y:20.56%;--mx:95.88%;--my:60.94%">NFQ Asia<small>2020-03 to 2024-03</small></span>
+            <span class="a-lab terr a-terr-sun" style="--x:66.4%;--y:20.56%;--mx:95.88%;--my:80.94%">Sunbytes<small>2024-03 to present</small></span>
+            <div class="a-token" aria-hidden="true"></div>
+            <div class="a-wps" role="group" aria-labelledby="a-qj-label">
+              <span class="sr" id="a-qj-label">Quest journal</span>
+              <button type="button" class="a-wp" data-wp="lemonswan" tabindex="-1" style="--x:11%;--y:48.61%;--mx:11.76%;--my:12.5%"><span class="a-dot"></span><span class="a-wpt"><span class="a-wpn">Lemonswan</span><span class="a-wpd">2020-03 to 2020-12</span></span></button>
+              <button type="button" class="a-wp r" data-wp="scania" tabindex="-1" style="--x:30%;--y:65.56%;--mx:41.18%;--my:34.69%"><span class="a-dot"></span><span class="a-wpt"><span class="a-wpn">Scania</span><span class="a-wpd">Spryker framework</span></span></button>
+              <button type="button" class="a-wp" data-wp="quest" tabindex="-1" style="--x:56%;--y:47.22%;--mx:11.76%;--my:46.88%"><span class="a-dot"></span><span class="a-wpt"><span class="a-wpn">Quest</span><span class="a-wpd">2020-12 to 2024-03</span></span></button>
+              <button type="button" class="a-wp" data-wp="cyberrock" tabindex="0" aria-current="true" style="--x:80%;--y:49.44%;--mx:11.76%;--my:75%"><span class="a-dot"></span><span class="a-wpt"><span class="a-wpn">CyberRock</span><span class="a-wpd">2024 → now</span></span></button>
+              <button type="button" class="a-wp l" data-wp="botmivivi" tabindex="-1" style="--x:93%;--y:86.67%;--mx:38.24%;--my:88.28%"><span class="a-dot"></span><span class="a-wpt"><span class="a-wpn">botmivivi</span><span class="a-wpd">August 2026</span></span></button>
+            </div>
+          </div>
+          <div class="a-caption" aria-live="polite">
+            <p class="a-capn">CyberRock</p>
+            <p class="a-capd">2024 → now</p>
+            <p class="a-capl">prove IoT devices are genuine</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="pv-sub">Project entry, with the migration drawn as a route map</span>
+    <div class="a-wrap">
+      <article class="a-entry" id="a-quest">
+        <div class="a-margin">
+          <p class="a-date">2020-12 to 2024-03</p>
+          <p class="a-stamp">Cleared</p>
+          <p class="a-meta">NFQ Asia</p>
+          <p class="a-meta">Tech lead</p>
+        </div>
+        <div class="a-body">
+          <h4 class="a-h3">Quest @ NFQ Asia</h4>
+          <p class="a-lede">Quest is a career-path system modeled on RPG quests: professional growth laid out as quests to take on and complete.</p>
+          <dl class="a-terms"><div><dt>Party lead</dt><dd>architecture calls, code reviews, cross-team work, agile timelines, and mentoring freshers and juniors.</dd></div></dl>
+          <p class="a-team">8 juniors, ~300 users in Ha Noi, Da Nang, Sai Gon, Can Tho</p>
+          <p class="a-sub">Achievements</p>
+          <dl class="a-terms a-ach">
+            <div><dt>Clean Slate</dt><dd>v2 codebase and architecture from scratch with NestJS + Prisma</dd></div>
+            <div><dt>Five-Minute Window</dt><dd>DynamoDB → MySQL migration with ~5 min of downtime</dd></div>
+            <div><dt>Front Door</dt><dd>Google SSO built in, fewer third-party dependencies</dd></div>
+            <div><dt>No More ClickOps</dt><dd>Terraform for infrastructure, New Relic for monitoring</dd></div>
+          </dl>
+          <figure class="a-fig">
+            <svg class="v-wide" viewBox="0 0 820 300" aria-hidden="true">
+              <path class="a-terr1" d="M28 44 Q26 24 52 24 L304 28 Q330 30 330 56 L334 248 Q334 276 306 276 L56 274 Q28 272 28 246 Z"/>
+              <path class="a-terr2" d="M490 30 Q490 22 514 24 L770 26 Q796 28 796 54 L792 250 Q790 276 764 276 L516 272 Q490 270 490 244 Z"/>
+              <text class="a-mt" x="48" y="60">v1</text>
+              <circle class="a-lm" cx="62" cy="96" r="6"/><text x="76" y="101">Lambda</text>
+              <circle class="a-lm" cx="62" cy="128" r="6"/><text x="76" y="133">EventBridge</text>
+              <circle class="a-lm" cx="250" cy="150" r="6"/><text x="250" y="132" text-anchor="middle">DynamoDB</text>
+              <path class="a-cargo" d="M226 184 V252 M226 184 H232 M226 252 H232"/>
+              <text class="a-mc" x="238" y="198">users</text>
+              <text class="a-mc" x="238" y="215">quest collection</text>
+              <text class="a-mc" x="238" y="232">award</text>
+              <text class="a-mc" x="238" y="249">status</text>
+              <path class="a-haz" d="M48 250 L58 260 M58 250 L48 260"/><text class="a-mi" x="66" y="261">too many dependencies</text>
+              <text class="a-mt" x="512" y="60">v2</text>
+              <circle class="a-lm" cx="526" cy="96" r="6"/><text x="540" y="101">NestJS</text>
+              <circle class="a-lm" cx="526" cy="128" r="6"/><text x="540" y="133">Prisma</text>
+              <circle class="a-lm" cx="600" cy="190" r="6"/><text x="614" y="195">MySQL</text>
+              <path class="a-mroute" d="M256 150 C320 150 360 186 410 186 S520 190 594 190"/>
+              <path class="a-wall" d="M410 40 V172 M410 200 V262"/>
+              <text class="a-mw" x="410" y="290" text-anchor="middle">~5 min of downtime</text>
+            </svg>
+            <svg class="v-tall" viewBox="0 0 340 520" aria-hidden="true">
+              <rect class="a-terr1" x="12" y="12" width="316" height="196" rx="2"/>
+              <rect class="a-terr2" x="12" y="316" width="316" height="192" rx="2"/>
+              <text class="a-mt" x="28" y="40">v1</text>
+              <circle class="a-lm" cx="36" cy="72" r="6"/><text x="50" y="77">Lambda</text>
+              <circle class="a-lm" cx="36" cy="104" r="6"/><text x="50" y="109">EventBridge</text>
+              <circle class="a-lm" cx="230" cy="150" r="6"/><text x="222" y="136" text-anchor="end">DynamoDB</text>
+              <text class="a-mc" x="200" y="46">users</text>
+              <text class="a-mc" x="200" y="63">quest collection</text>
+              <text class="a-mc" x="200" y="80">award</text>
+              <text class="a-mc" x="200" y="97">status</text>
+              <path class="a-haz" d="M28 182 L38 192 M38 182 L28 192"/><text class="a-mi" x="46" y="193">too many dependencies</text>
+              <path class="a-mroute" d="M230 156 C230 200 230 230 230 262 S230 420 230 464"/>
+              <path class="a-wall" d="M20 262 H216 M244 262 H320"/>
+              <text class="a-mw" x="216" y="292" text-anchor="end">~5 min of downtime</text>
+              <text class="a-mt" x="28" y="344">v2</text>
+              <circle class="a-lm" cx="36" cy="376" r="6"/><text x="50" y="381">NestJS</text>
+              <circle class="a-lm" cx="36" cy="408" r="6"/><text x="50" y="413">Prisma</text>
+              <circle class="a-lm" cx="230" cy="470" r="6"/><text x="222" y="475" text-anchor="end">MySQL</text>
+            </svg>
+            <figcaption>DynamoDB → MySQL migration with ~5 min of downtime</figcaption>
+          </figure>
+          <a class="a-video" href="https://www.youtube.com/watch?v=yLJZXvO_ARU"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 9 L20 14 L11 19 Z" fill="currentColor"/></svg><span>Quest by NFQ<small>YouTube</small></span></a>
+          <ul class="a-stack"><li>NestJS</li><li>Prisma</li><li>MySQL</li><li>ReactJS and VueJS</li><li>Google OAuth 2.0</li><li>Terraform</li><li>New Relic</li></ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     B · PROOF
+     ===================================================================== -->
+<section class="dir" id="dir-b" data-theme="light" aria-labelledby="pv-b">
+  <div class="pv-head">
+    <div>
+      <h2 id="pv-b">B. Proof</h2>
+      <p>Show the mechanism: a cool, precise system sheet where each quest is explained by a drawing of the system that makes it trustworthy, opened by a handshake the visitor can run.</p>
+      <p class="pv-spec">Archivo (width axis, one family). Accent: Attest violet. Dials V6 M5 D4. Signature: run the handshake, then toggle the counterfeit and run again. The avatar lives in About, not in the hero.</p>
+    </div>
+    <div class="pv-seg" role="group" aria-label="Theme for direction B">
+      <button type="button" data-set="light" aria-pressed="true">Light</button>
+      <button type="button" data-set="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="mock mock-b">
+    <span class="pv-sub">Hero, with the signature</span>
+    <div class="b-wrap">
+      <div class="b-top">
+        <span class="b-brand">TiDi</span>
+        <div class="b-nav"><span>Quest journal</span><span>Experience</span><span>House rules</span><span>Contact</span></div>
+        <button class="mock-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
+      </div>
+      <div class="b-hero">
+        <div class="b-id">
+          <p class="b-name"><span class="b-brandname">TiDi</span><span class="b-names"><span lang="vi">Hồ Trọng Đại</span><span>Dai Ho Trong</span></span></p>
+          <p class="b-role">Full-stack Developer</p>
+          <p class="b-pos">Officially a full-stack developer, though I spend most of my time on the backend: designing APIs, modeling data, connecting services, and making sure the infrastructure underneath them stays reliable.</p>
+          <p class="b-cta"><a class="b-btn" href="#dir-b">bring me a pain point.</a> <a class="b-link" href="#dir-b">Résumé</a></p>
+        </div>
+        <figure class="b-bench" data-state="idle" data-fake="off">
+          <svg class="b-hs v-wide" viewBox="0 0 560 250" aria-hidden="true" data-dx="248" data-dy="40">
+            <rect class="b-node" x="20" y="86" width="130" height="78" rx="6"/>
+            <text x="85" y="131" text-anchor="middle">host</text>
+            <path class="b-ch" d="M152 106 H390"/><path class="b-chh" d="M390 100 L402 106 L390 112 Z"/>
+            <text class="b-mute" x="276" y="92" text-anchor="middle">challenge</text>
+            <path class="b-rs" d="M402 146 H164"/><path class="b-rsh" d="M164 140 L152 146 L164 152 Z"/>
+            <text class="b-mute" x="276" y="176" text-anchor="middle">response</text>
+            <g class="b-chip">
+              <rect class="b-node" x="410" y="70" width="110" height="110" rx="6"/>
+              <path class="b-pin" d="M430 60 V70 M455 60 V70 M480 60 V70 M505 60 V70 M430 180 V190 M455 180 V190 M480 180 V190 M505 180 V190 M400 92 H410 M400 116 H410 M400 140 H410 M400 164 H410 M520 92 H530 M520 116 H530 M520 140 H530 M520 164 H530"/>
+              <text x="465" y="131" text-anchor="middle">chip</text>
+            </g>
+            <circle class="b-packet" cx="152" cy="106" r="7"/>
+            <g class="b-ok"><path d="M24 218 L32 226 L46 210"/><text x="56" y="225">genuine</text></g>
+            <g class="b-no"><path d="M26 212 L42 228 M42 212 L26 228"/><text x="56" y="225">[copy]</text></g>
+          </svg>
+          <svg class="b-hs v-tall" viewBox="0 0 340 240" aria-hidden="true" data-dx="110" data-dy="36">
+            <rect class="b-node" x="8" y="66" width="100" height="70" rx="6"/>
+            <text x="58" y="106" text-anchor="middle">host</text>
+            <path class="b-ch" d="M110 84 H214"/><path class="b-chh" d="M214 78 L226 84 L214 90 Z"/>
+            <text class="b-mute" x="168" y="72" text-anchor="middle">challenge</text>
+            <path class="b-rs" d="M226 120 H122"/><path class="b-rsh" d="M122 114 L110 120 L122 126 Z"/>
+            <text class="b-mute" x="168" y="144" text-anchor="middle">response</text>
+            <g class="b-chip">
+              <rect class="b-node" x="236" y="56" width="90" height="90" rx="6"/>
+              <path class="b-pin" d="M254 48 V56 M281 48 V56 M308 48 V56 M254 146 V154 M281 146 V154 M308 146 V154 M228 76 H236 M228 101 H236 M228 126 H236 M326 76 H334 M326 101 H334 M326 126 H334"/>
+              <text x="281" y="106" text-anchor="middle">chip</text>
+            </g>
+            <circle class="b-packet" cx="110" cy="84" r="7"/>
+            <g class="b-ok"><path d="M10 196 L18 204 L32 188"/><text x="42" y="203">genuine</text></g>
+            <g class="b-no"><path d="M12 190 L28 206 M28 190 L12 206"/><text x="42" y="203">[copy]</text></g>
+          </svg>
+          <div class="b-controls">
+            <button type="button" class="b-run">▶ [copy]</button>
+            <button type="button" class="b-fake" aria-pressed="false">[copy]</button>
+          </div>
+          <p class="b-status" aria-live="polite"></p>
+          <figcaption>prove a device is genuine before anything trusts it</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <span class="pv-sub">Project entry, with the chip auth and lifecycle drawing</span>
+    <div class="b-wrap">
+      <article class="b-sheet">
+        <h3 class="b-h2">Quest journal</h3>
+        <div class="b-shead"><h4 class="b-h3">CyberRock</h4><span class="b-chip-status">Active</span><span class="b-date">2024 → now</span></div>
+        <p class="b-lede">prove IoT devices are genuine</p>
+        <figure class="b-band">
+          <svg class="v-wide" viewBox="0 0 1000 300" aria-hidden="true">
+            <path class="b-trace" d="M20 204 H930 M105 92 V204 M340 92 V204 M810 142 V204"/>
+            <text class="b-mute" x="20" y="228">full audit trail</text>
+            <rect class="b-node" x="20" y="40" width="170" height="52" rx="6"/><text x="105" y="71" text-anchor="middle">manufacturing</text>
+            <rect class="b-node" x="250" y="40" width="180" height="52" rx="6"/><text x="340" y="71" text-anchor="middle">supplier exports</text>
+            <rect class="b-node" x="490" y="40" width="140" height="52" rx="6"/><text x="560" y="71" text-anchor="middle">the field</text>
+            <rect class="b-node b-node-v" x="700" y="40" width="220" height="52" rx="6"/><text x="810" y="71" text-anchor="middle">Challenge-response auth</text>
+            <text class="b-small" x="810" y="116" text-anchor="middle">token, host, mutual, daisy-chain</text>
+            <text class="b-small" x="810" y="134" text-anchor="middle">and secure-boot attestation</text>
+            <path class="b-verified" d="M190 66 H240 M430 66 H480 M630 66 H690"/>
+            <path class="b-vhead" d="M238 60 L250 66 L238 72 Z M478 60 L490 66 L478 72 Z M688 60 L700 66 L688 72 Z"/>
+            <path class="b-inkline" d="M560 92 V244"/>
+            <rect class="b-node-t" x="470" y="244" width="176" height="40" rx="6"/><text x="558" y="269" text-anchor="middle">geolocation jumps</text>
+            <rect class="b-node-t" x="656" y="244" width="152" height="40" rx="6"/><text x="732" y="269" text-anchor="middle">slow responses</text>
+            <path class="b-inkline" d="M808 264 H818"/><path class="b-inkhead" d="M816 258 L828 264 L816 270 Z"/>
+            <rect class="b-node" x="830" y="244" width="162" height="40" rx="6"/><text x="911" y="269" text-anchor="middle">Slack-alerted incidents</text>
+          </svg>
+          <svg class="v-tall" viewBox="0 0 340 700" aria-hidden="true">
+            <path class="b-trace" d="M300 45 V420 M260 45 H300 M260 135 H300 M260 225 H300 M260 315 H300"/>
+            <text class="b-mute" x="300" y="444" text-anchor="end">full audit trail</text>
+            <rect class="b-node" x="20" y="20" width="240" height="50" rx="6"/><text x="140" y="50" text-anchor="middle">manufacturing</text>
+            <rect class="b-node" x="20" y="110" width="240" height="50" rx="6"/><text x="140" y="140" text-anchor="middle">supplier exports</text>
+            <rect class="b-node" x="20" y="200" width="240" height="50" rx="6"/><text x="140" y="230" text-anchor="middle">the field</text>
+            <rect class="b-node b-node-v" x="20" y="290" width="240" height="50" rx="6"/><text x="140" y="320" text-anchor="middle">Challenge-response auth</text>
+            <text class="b-small" x="140" y="364" text-anchor="middle">token, host, mutual, daisy-chain</text>
+            <text class="b-small" x="140" y="382" text-anchor="middle">and secure-boot attestation</text>
+            <path class="b-verified" d="M140 70 V98 M140 160 V188 M140 250 V278"/>
+            <path class="b-vhead" d="M134 98 L140 110 L146 98 Z M134 188 L140 200 L146 188 Z M134 278 L140 290 L146 278 Z"/>
+            <path class="b-inkline" d="M20 225 H8 V490 H20"/>
+            <rect class="b-node-t" x="20" y="470" width="160" height="40" rx="6"/><text x="100" y="495" text-anchor="middle">geolocation jumps</text>
+            <rect class="b-node-t" x="188" y="470" width="140" height="40" rx="6"/><text x="258" y="495" text-anchor="middle">slow responses</text>
+            <path class="b-inkline" d="M174 510 V546"/><path class="b-inkhead" d="M168 544 L174 556 L180 544 Z"/>
+            <rect class="b-node" x="54" y="558" width="240" height="42" rx="6"/><text x="174" y="584" text-anchor="middle">Slack-alerted incidents</text>
+          </svg>
+        </figure>
+        <div class="b-cols">
+          <div class="b-built">
+            <p class="b-sub">What I built</p>
+            <ul>
+              <li>Challenge-response auth for security chips — token, host, mutual, daisy-chain and secure-boot attestation</li>
+              <li>Chip lifecycle from manufacturing to the field, with supplier exports and a full audit trail</li>
+              <li>Anomaly detection that turns geolocation jumps and slow responses into Slack-alerted incidents</li>
+            </ul>
+          </div>
+          <dl class="b-facts">
+            <div><dt>My role</dt><dd><ul class="b-inline"><li>Backend</li><li>auth</li><li>solution design</li></ul></dd></div>
+            <div><dt>Team</dt><dd>8 people</dd></div>
+            <div><dt>Scale</dt><dd>13 services across Azure and AWS</dd></div>
+            <div><dt>Stack</dt><dd><ul class="b-inline"><li>NestJS microservices over NATS</li><li>PostgreSQL</li><li>Redis/BullMQ</li><li>React</li><li>Azure and AWS</li><li>GitHub Actions</li><li>Argo CD</li></ul></dd></div>
+          </dl>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     C · PLAYER CARD
+     ===================================================================== -->
+<section class="dir" id="dir-c" data-theme="light" aria-labelledby="pv-c">
+  <div class="pv-head">
+    <div>
+      <h2 id="pv-c">C. Player Card</h2>
+      <p>A player card that stays beside the work: avatar and four owner-written stats pinned on the left, the quest index on the right, and an inventory that shows where each tool was used.</p>
+      <p class="pv-spec">Be Vietnam Pro (one family). Accent: banner gold. Dials V4 M2 D7. Signature: equip an item in Inventory (click it, or use the arrow keys and Enter; Escape unequips).</p>
+    </div>
+    <div class="pv-seg" role="group" aria-label="Theme for direction C">
+      <button type="button" data-set="light" aria-pressed="true">Light</button>
+      <button type="button" data-set="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="mock mock-c">
+    <span class="pv-sub">Hero (the card), the quest index and the signature, then a project entry with the ledger drawing</span>
+    <div class="c-wrap">
+      <div class="c-mtop"><b>TiDi</b><button class="mock-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div>
+      <div class="c-layout">
+        <aside class="c-card">
+          <div class="c-portrait"><img src="../../ava.PNG" width="1086" height="1448" alt="Illustrated avatar of TiDi coding, gaming, playing football and drinking coffee"></div>
+          <div class="c-idblock">
+            <p class="c-name"><span class="c-brandname">TiDi</span><span class="c-vn" lang="vi">Hồ Trọng Đại</span><span class="c-en">Dai Ho Trong</span></p>
+            <p class="c-role">Full-stack Developer</p>
+          </div>
+          <dl class="c-stats">
+            <div><dt>Guild</dt><dd>Cyber security for IoT (EU)</dd></div>
+            <div><dt>Passive</dt><dd>Can’t leave a pain point alone</dd></div>
+            <div><dt>In production since</dt><dd>2020</dd></div>
+            <div><dt>Location</dt><dd>Ho Chi Minh City, Vietnam</dd></div>
+          </dl>
+          <div class="c-equipped" aria-live="polite">
+            <p class="c-eqlabel">[copy]</p>
+            <p class="c-eqitem"></p>
+            <ul class="c-eqused"></ul>
+          </div>
+          <p class="c-cta"><a class="c-btn" href="#dir-c">bring me a pain point.</a></p>
+          <ul class="c-links"><li>Email</li><li>Telegram</li><li>GitHub</li><li>Résumé</li></ul>
+        </aside>
+        <div class="c-main">
+          <div class="c-top"><span>Quest journal</span><span>Experience</span><span>House rules</span><button class="mock-theme" type="button" aria-label="Theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div>
+          <section>
+            <div class="c-ihead"><h3 class="c-h2">Quest journal</h3><p class="c-count"><span>2 active</span><span>1 cleared</span></p></div>
+            <ul class="c-rows">
+              <li class="c-row" data-q="cyberrock"><span class="c-rn">CyberRock</span><span class="c-badge">Active</span><span class="c-rd">2024 → now</span><span class="c-re">Sunbytes</span><span class="c-rl">prove IoT devices are genuine</span></li>
+              <li class="c-row" data-q="botmivivi"><span class="c-rn">botmivivi</span><span class="c-badge">Side</span><span class="c-rd">live in production</span><span class="c-re"></span><span class="c-rl">back office for a flour distributor, live in production</span></li>
+              <li class="c-row" data-q="quest"><span class="c-rn">Quest @ NFQ Asia</span><span class="c-badge">Cleared</span><span class="c-rd">2020-12 to 2024-03</span><span class="c-re">NFQ Asia</span><span class="c-rl">a career-path platform on RPG quest mechanics</span></li>
+              <li class="c-row" data-q="lemonswan"><span class="c-rn">Lemonswan</span><span></span><span class="c-rd">2020-03 to 2020-12</span><span class="c-re">NFQ Asia</span><span class="c-rl">matching logic and UI design</span></li>
+              <li class="c-row" data-q="scania"><span class="c-rn">Scania</span><span></span><span class="c-rd"></span><span class="c-re">NFQ Asia</span><span class="c-rl">backend and frontend</span></li>
+            </ul>
+          </section>
+          <section class="c-inv">
+            <h3 class="c-h2">Inventory</h3>
+            <div class="c-group"><p class="c-glabel">Main</p><div class="c-slots"><span class="c-plain">TypeScript</span><button type="button" class="c-slot" aria-pressed="false">Node.js</button><button type="button" class="c-slot" aria-pressed="false">NestJS</button><button type="button" class="c-slot" aria-pressed="false">React</button><span class="c-plain">Next.js</span><button type="button" class="c-slot" aria-pressed="false">Vue 3</button></div></div>
+            <div class="c-group"><p class="c-glabel">Data</p><div class="c-slots"><button type="button" class="c-slot" aria-pressed="false">PostgreSQL</button><button type="button" class="c-slot" aria-pressed="false">MySQL</button><span class="c-plain">MongoDB</span><button type="button" class="c-slot" aria-pressed="false">DynamoDB</button><button type="button" class="c-slot" aria-pressed="false">Redis</button><button type="button" class="c-slot" aria-pressed="false">NATS</button><button type="button" class="c-slot" aria-pressed="false">BullMQ</button></div></div>
+            <div class="c-group"><p class="c-glabel">Ops</p><div class="c-slots"><button type="button" class="c-slot" aria-pressed="false">AWS</button><button type="button" class="c-slot" aria-pressed="false">Azure</button><span class="c-plain">Docker</span><span class="c-plain">Kubernetes</span><button type="button" class="c-slot" aria-pressed="false">Terraform</button><button type="button" class="c-slot" aria-pressed="false">GitHub Actions</button><button type="button" class="c-slot" aria-pressed="false">Argo CD</button><button type="button" class="c-slot" aria-pressed="false">New Relic</button></div></div>
+            <div class="c-group"><p class="c-glabel">AI companions</p><div class="c-slots"><span class="c-plain">Claude</span><span class="c-plain">ChatGPT</span></div></div>
+            <div class="c-group"><p class="c-glabel">Alt builds</p><div class="c-slots"><span class="c-plain">PHP</span><button type="button" class="c-slot" aria-pressed="false">Laravel</button><span class="c-plain">Symfony</span><span class="c-plain">Python</span><span class="c-plain">Flask</span></div></div>
+            <p class="c-result" aria-live="polite"></p>
+          </section>
+          <article class="c-entry" data-q="botmivivi">
+            <div class="c-ehead"><h4 class="c-h3">botmivivi</h4><span class="c-badge">Side</span><span class="c-rd"><span>Live since</span> <span>August 2026</span></span></div>
+            <p class="c-lede">numbers that keep themselves correct</p>
+            <p class="c-own">my own product for my family business</p>
+            <dl class="c-terms">
+              <div><dt>Debt ledger</dt><dd>every order, return and payment moves the balance in the same transaction</dd></div>
+              <div><dt>Price whitelist</dt><dd>off-list prices are flagged to Slack; customers can lock a price and prepay</dd></div>
+              <div><dt>Tonnage payroll</dt><dd>every kilo a loader moves prices itself, so payroll is a query</dd></div>
+            </dl>
+            <figure class="c-fig">
+              <svg class="v-wide" viewBox="0 0 760 240" aria-hidden="true">
+                <rect class="c-fbox" x="300" y="12" width="440" height="216" rx="10"/>
+                <text class="c-fmute" x="322" y="42">the same transaction</text>
+                <rect class="c-fnode" x="20" y="24" width="150" height="48" rx="10"/><text x="95" y="54" text-anchor="middle">order</text>
+                <rect class="c-fnode" x="20" y="96" width="150" height="48" rx="10"/><text x="95" y="126" text-anchor="middle">return</text>
+                <rect class="c-fnode" x="20" y="168" width="150" height="48" rx="10"/><text x="95" y="198" text-anchor="middle">payment</text>
+                <path class="c-fline" d="M170 48 C300 48 360 110 458 116 M170 120 H458 M170 192 C300 192 360 130 458 124"/>
+                <path class="c-fhead" d="M456 110 L470 120 L456 130 Z"/>
+                <rect class="c-fbal" x="470" y="96" width="170" height="48" rx="10"/><text class="c-fbal-t" x="555" y="126" text-anchor="middle">balance</text>
+              </svg>
+              <svg class="v-tall" viewBox="0 0 340 400" aria-hidden="true">
+                <rect class="c-fnode" x="8" y="16" width="100" height="44" rx="10"/><text x="58" y="44" text-anchor="middle">order</text>
+                <rect class="c-fnode" x="120" y="16" width="100" height="44" rx="10"/><text x="170" y="44" text-anchor="middle">return</text>
+                <rect class="c-fnode" x="232" y="16" width="100" height="44" rx="10"/><text x="282" y="44" text-anchor="middle">payment</text>
+                <rect class="c-fbox" x="8" y="110" width="324" height="270" rx="10"/>
+                <text class="c-fmute" x="26" y="362">the same transaction</text>
+                <path class="c-fline" d="M58 60 C58 160 150 190 164 238 M170 60 V238 M282 60 C282 160 190 190 176 238"/>
+                <path class="c-fhead" d="M160 236 L170 250 L180 236 Z"/>
+                <rect class="c-fbal" x="85" y="250" width="170" height="48" rx="10"/><text class="c-fbal-t" x="170" y="280" text-anchor="middle">balance</text>
+              </svg>
+              <figcaption>Debt ledger</figcaption>
+            </figure>
+            <ul class="c-nums"><li>10 users</li><li>646 customers</li><li>2951 orders</li></ul>
+            <p class="c-meta"><span><b>My role</b> Built end to end</span></p>
+            <ul class="c-meta"><li>NestJS</li><li>Prisma</li><li>PostgreSQL</li><li>Redis/BullMQ</li><li>Vue 3</li></ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="pv-foot">
+  <p><strong>How to read this preview.</strong> Each direction has its own Light and Dark switch; the bar at the top switches all three. Resize the window (or use a phone) to see the 375 px layouts: every drawing has its own mobile version.</p>
+  <p>Signatures are sketches: reduced motion is honoured (the token jumps, the handshake shows its end state, the equip state changes instantly). Final labels marked [copy] are listed in <code>docs/design/directions.md</code> §10.</p>
+</footer>
+
+<script>
+(() => {
+  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sys = window.matchMedia('(prefers-color-scheme: dark)');
+  const dirs = [...document.querySelectorAll('.dir')];
+
+  /* ---------- themes ---------- */
+  const setTheme = (dir, t) => {
+    dir.dataset.theme = t;
+    dir.querySelectorAll('[data-set]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === t)));
+  };
+  const setAllPressed = v => document.querySelectorAll('[data-all]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.all === v)));
+  const hash = location.hash.slice(1);
+  const initial = hash === 'dark' || hash === 'light' ? hash : (sys.matches ? 'dark' : 'light');
+  dirs.forEach(d => setTheme(d, initial));
+  setAllPressed(hash === 'dark' || hash === 'light' ? hash : 'system');
+  document.querySelectorAll('[data-set]').forEach(b => b.addEventListener('click', () => { setTheme(b.closest('.dir'), b.dataset.set); setAllPressed(''); }));
+  document.querySelectorAll('.mock-theme').forEach(b => b.addEventListener('click', () => { const d = b.closest('.dir'); setTheme(d, d.dataset.theme === 'dark' ? 'light' : 'dark'); setAllPressed(''); }));
+  document.querySelectorAll('[data-all]').forEach(b => b.addEventListener('click', () => {
+    const v = b.dataset.all === 'system' ? (sys.matches ? 'dark' : 'light') : b.dataset.all;
+    dirs.forEach(d => setTheme(d, v)); setAllPressed(b.dataset.all);
+  }));
+
+  /* ---------- sticky offset for the C card under the preview bar ---------- */
+  const bar = document.querySelector('.pv-bar');
+  const syncBar = () => {
+    const h = getComputedStyle(bar).position === 'sticky' ? bar.offsetHeight : 0;
+    document.querySelectorAll('.mock-c').forEach(m => m.style.setProperty('--bar-h', h + 'px'));
+  };
+  syncBar(); window.addEventListener('resize', syncBar);
+
+  /* ---------- A: walk the route ---------- */
+  const map = document.querySelector('.a-map');
+  if (map) {
+    const token = map.querySelector('.a-token');
+    const wps = [...map.querySelectorAll('.a-wp')];
+    const cap = document.querySelector('.a-caption');
+    const wideMQ = window.matchMedia('(min-width: 640px)');
+    const info = {
+      lemonswan: ['Lemonswan', '2020-03 to 2020-12', 'matching logic and UI design'],
+      scania: ['Scania', 'NFQ Asia', 'backend and frontend'],
+      quest: ['Quest @ NFQ Asia', '2020-12 to 2024-03', 'a career-path platform on RPG quest mechanics', '#a-quest'],
+      cyberrock: ['CyberRock', '2024 → now', 'prove IoT devices are genuine'],
+      botmivivi: ['botmivivi', 'August 2026', 'back office for a flour distributor, live in production'],
+    };
+    let lay = null, current = 'cyberrock', raf = 0;
+    const build = () => {
+      const svg = map.querySelector(wideMQ.matches ? 'svg.v-wide' : 'svg.v-tall');
+      const pts = JSON.parse(svg.dataset.points);
+      const paths = { main: svg.querySelector('[data-path="main"]'), spurS: svg.querySelector('[data-path="spurS"]'), spurB: svg.querySelector('[data-path="spurB"]') };
+      const near = (p, x, y) => { const L = p.getTotalLength(); let best = 0, bd = Infinity; for (let i = 0; i <= 800; i++) { const l = L * i / 800, q = p.getPointAtLength(l), d = (q.x - x) ** 2 + (q.y - y) ** 2; if (d < bd) { bd = d; best = l; } } return best; };
+      const loc = {
+        lemonswan: { p: 'main', l: near(paths.main, ...pts.lemonswan) },
+        quest: { p: 'main', l: near(paths.main, ...pts.quest) },
+        cyberrock: { p: 'main', l: near(paths.main, ...pts.cyberrock) },
+        scania: { p: 'spurS', l: paths.spurS.getTotalLength() },
+        botmivivi: { p: 'spurB', l: paths.spurB.getTotalLength() },
+      };
+      lay = { svg, paths, loc, j1: near(paths.main, ...pts.j1), vbw: svg.viewBox.baseVal.width };
+    };
+    const place = pt => {
+      const s = map.clientWidth / lay.vbw, half = token.offsetWidth / 2;
+      token.style.transform = `translate(${pt.x * s - half}px, ${pt.y * s - half}px)`;
+    };
+    const pointOf = id => { const o = lay.loc[id]; return lay.paths[o.p].getPointAtLength(o.l); };
+    const segments = (a, b) => {
+      const segs = []; let cur = { ...lay.loc[a] }; const dst = lay.loc[b];
+      if (cur.p === 'spurS' && dst.p !== 'spurS') { segs.push({ p: 'spurS', from: cur.l, to: 0 }); cur = { p: 'main', l: lay.j1 }; }
+      if (cur.p === 'spurB' && dst.p !== 'spurB') { segs.push({ p: 'spurB', from: cur.l, to: 0 }); cur = { p: 'main', l: lay.loc.cyberrock.l }; }
+      const entry = dst.p === 'main' ? dst.l : dst.p === 'spurS' ? lay.j1 : lay.loc.cyberrock.l;
+      if (cur.p === 'main' && Math.abs(cur.l - entry) > .5) segs.push({ p: 'main', from: cur.l, to: entry });
+      if (dst.p !== 'main' && cur.p !== dst.p) segs.push({ p: dst.p, from: 0, to: dst.l });
+      return segs;
+    };
+    const caption = id => {
+      const [name, when, line, href] = info[id];
+      cap.innerHTML = '';
+      const n = document.createElement('p'); n.className = 'a-capn';
+      if (href) { const a = document.createElement('a'); a.href = href; a.textContent = name; n.append(a); } else n.textContent = name;
+      const d = document.createElement('p'); d.className = 'a-capd'; d.textContent = when;
+      const l = document.createElement('p'); l.className = 'a-capl'; l.textContent = line;
+      cap.append(n, d, l);
+      if (!reduce()) cap.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: 'ease-out' });
+    };
+    const go = id => {
+      if (!lay) build();
+      const segs = segments(current, id); current = id;
+      wps.forEach(w => { const on = w.dataset.wp === id; w.setAttribute('aria-current', String(on)); w.tabIndex = on ? 0 : -1; });
+      caption(id);
+      cancelAnimationFrame(raf);
+      const total = segs.reduce((t, s) => t + Math.abs(s.to - s.from), 0);
+      if (reduce() || total === 0) { place(pointOf(id)); return; }
+      const dur = Math.min(650, Math.max(420, 380 + total * .3)), t0 = performance.now();
+      const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const step = now => {
+        const k = Math.min(1, (now - t0) / dur); let d = ease(k) * total;
+        for (let i = 0; i < segs.length; i++) {
+          const sg = segs[i], len = Math.abs(sg.to - sg.from);
+          if (d <= len || i === segs.length - 1) { place(lay.paths[sg.p].getPointAtLength(sg.from + Math.sign(sg.to - sg.from) * Math.min(d, len))); break; }
+          d -= len;
+        }
+        if (k < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+    wps.forEach((w, i) => {
+      w.addEventListener('click', () => go(w.dataset.wp));
+      w.addEventListener('keydown', e => {
+        const k = e.key; let j = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') j = Math.min(wps.length - 1, i + 1);
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') j = Math.max(0, i - 1);
+        else if (k === 'Home') j = 0; else if (k === 'End') j = wps.length - 1;
+        if (j === null) return;
+        e.preventDefault(); wps[j].focus(); go(wps[j].dataset.wp);
+      });
+    });
+    const reset = () => { build(); place(pointOf(current)); };
+    wideMQ.addEventListener('change', reset);
+    new ResizeObserver(() => { if (lay) place(pointOf(current)); }).observe(map);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reset); else reset();
+    reset();
+  }
+
+  /* ---------- B: run the handshake ---------- */
+  const bench = document.querySelector('.b-bench');
+  if (bench) {
+    const run = bench.querySelector('.b-run'), fake = bench.querySelector('.b-fake'), status = bench.querySelector('.b-status');
+    const svgs = [...bench.querySelectorAll('svg.b-hs')];
+    const fin = a => a.finished.catch(() => {});
+    let ticket = 0;
+    const stopAll = () => svgs.forEach(s => s.getAnimations({ subtree: true }).forEach(a => a.cancel()));
+    fake.addEventListener('click', () => {
+      const on = fake.getAttribute('aria-pressed') !== 'true';
+      fake.setAttribute('aria-pressed', String(on)); bench.dataset.fake = on ? 'on' : 'off';
+      ticket++; stopAll(); bench.dataset.state = 'idle'; status.textContent = '';
+    });
+    run.addEventListener('click', async () => {
+      const my = ++ticket, counterfeit = fake.getAttribute('aria-pressed') === 'true';
+      stopAll(); bench.dataset.state = 'challenge'; status.textContent = 'challenge';
+      if (reduce()) { bench.dataset.state = counterfeit ? 'rejected' : 'genuine'; status.textContent = counterfeit ? '[copy]' : 'genuine'; return; }
+      const ease = 'cubic-bezier(.2,.7,.2,1)';
+      await Promise.all(svgs.map(s => fin(s.querySelector('.b-packet').animate([{ opacity: 1, transform: 'translate(0,0)' }, { opacity: 1, transform: `translate(${s.dataset.dx}px,0)` }], { duration: 360, easing: ease, fill: 'forwards' }))));
+      if (my !== ticket) return;
+      if (counterfeit) {
+        svgs.forEach(s => s.querySelector('.b-packet').animate([{ opacity: 1, transform: `translate(${s.dataset.dx}px,0)` }, { opacity: 0, transform: `translate(${s.dataset.dx}px,0)` }], { duration: 160, fill: 'forwards' }));
+        bench.dataset.state = 'rejected'; status.textContent = '[copy]';
+        svgs.forEach(s => s.querySelector('.b-no').animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(0)' }], { duration: 240 }));
+        return;
+      }
+      await Promise.all(svgs.map(s => fin(s.querySelector('.b-chip').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.04)' }, { transform: 'scale(1)' }], { duration: 160 }))));
+      if (my !== ticket) return;
+      bench.dataset.state = 'response'; status.textContent = 'response';
+      await Promise.all(svgs.map(s => fin(s.querySelector('.b-packet').animate([{ opacity: 1, transform: `translate(${s.dataset.dx}px,${s.dataset.dy}px)` }, { opacity: 1, transform: `translate(0px,${s.dataset.dy}px)` }], { duration: 360, easing: ease, fill: 'forwards' }))));
+      if (my !== ticket) return;
+      svgs.forEach(s => s.querySelector('.b-packet').animate([{ opacity: 1, transform: `translate(0px,${s.dataset.dy}px)` }, { opacity: 0, transform: `translate(0px,${s.dataset.dy}px)` }], { duration: 120, fill: 'forwards' }));
+      bench.dataset.state = 'genuine'; status.textContent = 'genuine';
+    });
+  }
+
+  /* ---------- C: equip an item ---------- */
+  const mockC = document.querySelector('.mock-c');
+  if (mockC) {
+    const uses = {
+      'Node.js': ['CyberRock', 'Quest'], 'NestJS': ['CyberRock', 'botmivivi', 'Quest'], 'React': ['CyberRock', 'Quest'], 'Vue 3': ['botmivivi'],
+      'PostgreSQL': ['CyberRock', 'botmivivi'], 'MySQL': ['Quest', 'Lemonswan'], 'DynamoDB': ['Quest'], 'Redis': ['CyberRock', 'botmivivi', 'Lemonswan'],
+      'NATS': ['CyberRock'], 'BullMQ': ['CyberRock', 'botmivivi'], 'AWS': ['CyberRock', 'Quest'], 'Azure': ['CyberRock'], 'Terraform': ['Quest'],
+      'GitHub Actions': ['CyberRock', 'Quest'], 'Argo CD': ['CyberRock'], 'New Relic': ['Quest'], 'Laravel': ['Lemonswan'],
+    };
+    const qid = { CyberRock: 'cyberrock', botmivivi: 'botmivivi', Quest: 'quest', Lemonswan: 'lemonswan' };
+    const slots = [...mockC.querySelectorAll('.c-slot')];
+    const targets = [...mockC.querySelectorAll('.c-row, .c-entry')];
+    const eq = mockC.querySelector('.c-equipped'), eqItem = eq.querySelector('.c-eqitem'), eqUsed = eq.querySelector('.c-eqused');
+    const result = mockC.querySelector('.c-result');
+    const clear = () => {
+      slots.forEach(s => s.setAttribute('aria-pressed', 'false'));
+      mockC.classList.remove('equipping'); targets.forEach(t => t.classList.remove('hit', 'dim'));
+      eq.classList.remove('on'); eqItem.textContent = ''; eqUsed.innerHTML = ''; result.textContent = '';
+    };
+    const equip = btn => {
+      const was = btn.getAttribute('aria-pressed') === 'true'; clear(); if (was) return;
+      const name = btn.textContent.trim(), list = uses[name] || [], ids = list.map(q => qid[q]);
+      btn.setAttribute('aria-pressed', 'true'); mockC.classList.add('equipping');
+      targets.forEach(t => { const hit = ids.includes(t.dataset.q); t.classList.toggle('hit', hit); t.classList.toggle('dim', !hit); });
+      eq.classList.add('on'); eqItem.textContent = name;
+      list.forEach(q => { const li = document.createElement('li'); li.textContent = q; eqUsed.append(li); });
+      result.innerHTML = ''; const b = document.createElement('b'); b.textContent = name; result.append(b, document.createTextNode(': ' + list.join(', ')));
+    };
+    slots.forEach((s, i) => {
+      s.tabIndex = i === 0 ? 0 : -1;
+      s.addEventListener('click', () => { slots.forEach(o => o.tabIndex = -1); s.tabIndex = 0; equip(s); });
+      s.addEventListener('keydown', e => {
+        const k = e.key; let j = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') j = Math.min(slots.length - 1, i + 1);
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') j = Math.max(0, i - 1);
+        else if (k === 'Home') j = 0; else if (k === 'End') j = slots.length - 1;
+        else if (k === 'Escape') { e.preventDefault(); clear(); return; }
+        if (j === null) return;
+        e.preventDefault(); slots.forEach(o => o.tabIndex = -1); slots[j].tabIndex = 0; slots[j].focus();
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
