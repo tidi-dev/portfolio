@@ -48,14 +48,13 @@
 }
 
 /* The line at the left, the node bodies beside it. The block is the view
-   timeline the line draws along (reveal.css): its progress runs while the
-   log's top and then its bottom cross a line 70 % down the viewport. */
+   timeline (the log's view() over the whole viewport) the line draws
+   along (reveal.css). */
 @utility timeline {
   position: relative;
   padding-inline-start: var(--spacing-xl);
   view-timeline-name: --mission-log;
   view-timeline-axis: block;
-  view-timeline-inset: auto 30%;
 
   @variant lg {
     grid-column: 3 / span 8;

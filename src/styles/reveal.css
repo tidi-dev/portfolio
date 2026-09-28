@@ -160,14 +160,15 @@
   }
 
   /* Mission log line: scaleY(0 → 1) along the log's view timeline
-     (sections.css), so it draws as the log scrolls through. Where scroll
+     (sections.css) over entry 10 % → cover 45 %, so it is complete just
+     before the log's middle passes the viewport's middle. Where scroll
      timelines are missing, it draws over `line` once the log is reached.
      Fully drawn in the calm mode. */
   @supports (animation-timeline: view()) {
     :root[data-motion="on"] .timeline-line {
       animation: mission-line linear both;
       animation-timeline: --mission-log;
-      animation-range: entry-crossing 0% entry-crossing 100%;
+      animation-range: entry 10% cover 45%;
     }
   }
 
