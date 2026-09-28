@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 import type { NavLink } from "./site-nav";
+import { useCurrentSection } from "./use-current-section";
 
 interface MenuSheetProps {
   /** Approved copy a11y.menu-button. */
@@ -20,7 +21,8 @@ interface MenuSheetProps {
  * `heading-quest` size in 56 px rows. The sheet is a native popover, so it
  * opens, closes on Esc or an outside press, and returns focus to the button
  * without JavaScript. The script adds `aria-expanded`, the menu-2 / x swap,
- * moving focus in on open, and closing when a link is chosen.
+ * moving focus in on open, closing when a link is chosen, and the current
+ * section's `aria-current` (scroll-spy).
  */
 export function MenuSheet({
   label,
@@ -30,6 +32,7 @@ export function MenuSheet({
   closeIcon,
 }: MenuSheetProps) {
   const [open, setOpen] = useState(false);
+  const current = useCurrentSection();
   const sheet = useRef<HTMLDivElement>(null);
   const sheetId = useId();
 
@@ -71,10 +74,11 @@ export function MenuSheet({
               <li key={link.href}>
                 <a
                   href={link.href}
+                  aria-current={current === link.id ? "true" : undefined}
                   onClick={() => {
                     sheet.current?.hidePopover();
                   }}
-                  className="menu-row type-heading-quest text-primary transition-colors duration-feedback hover:text-accent-ink"
+                  className="nav-link menu-row type-heading-quest text-primary transition-colors duration-feedback hover:text-accent-ink"
                 >
                   {link.label}
                 </a>

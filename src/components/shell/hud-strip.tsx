@@ -13,10 +13,13 @@ import { SiteNav } from "./site-nav";
  * The HUD strip (DESIGN.md → HUD bar): a fixed 60 px glass strip that
  * slides down on load. Wordmark "TiDi" (to the top of the home page) · nav
  * (from xl) · readout · motion toggle · theme toggle · menu (below xl).
+ * Along its bottom edge runs the level-up bar, which sweeps across once
+ * when Leveling up is reached (DESIGN.md → Motion → Level up).
  */
 export function HudStrip() {
   return (
     <header className="fixed inset-x-0 top-0 z-hud hud-enter border-b border-rule glass">
+      <span aria-hidden="true" data-levelup-bar="" className="levelup-bar" />
       <div className="flex h-hud items-center gap-xs page-x md:gap-md">
         <Link
           href="/#top"
