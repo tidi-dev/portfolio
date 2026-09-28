@@ -81,7 +81,7 @@ export function QuestBody({ body }: { readonly body: Body }) {
       );
     case "terms":
       return (
-        <dl className="flex max-w-measure flex-col gap-md">
+        <dl className="flex flex-col gap-md">
           {body.items.map((item) => (
             <div key={item.term}>
               <dt className="type-body text-primary">
