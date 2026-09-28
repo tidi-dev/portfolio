@@ -146,6 +146,8 @@
     --backdrop-holo: 8%;
     --backdrop-accent: 4%;
     --canvas-feather: 0%;
+    /* The quest stage's vertical feather from lg, in its width (cqw). */
+    --canvas-feather-cq: 0cqw;
   }
 
   /* Consistency locks 1: the dark theme (Deck) swaps every colour that
@@ -175,6 +177,7 @@
     --backdrop-holo: 16%;
     --backdrop-accent: 8%;
     --canvas-feather: 8%;
+    --canvas-feather-cq: 8cqw;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -202,6 +205,7 @@
       --backdrop-holo: 16%;
       --backdrop-accent: 8%;
       --canvas-feather: 8%;
+      --canvas-feather-cq: 8cqw;
     }
   }
 

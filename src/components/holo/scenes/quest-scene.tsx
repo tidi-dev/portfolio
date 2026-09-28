@@ -9,24 +9,10 @@ import { readMotionTimings } from "@/lib/motion/tokens";
 import { DPR, GL } from "./canvas-config";
 import { DeckBloom } from "./deck-bloom";
 import { easeBack, easeOutCubic } from "./hero-timeline";
-import { buildQuestRig, type QuestRig } from "./quest-rig";
+import { QUEST_CAMERA, questFraming } from "./quest-framing";
+import { buildQuestRig, MODEL_FIT, type QuestRig } from "./quest-rig";
 import { scenePalette } from "./palette";
 import { useContextLoss } from "./use-context-loss";
-
-// DESIGN.md → 3D Scenes → Quest holograms: FOV 30, a fixed view.
-const CAMERA = {
-  fov: 30,
-  near: 0.1,
-  far: 100,
-  position: [0, 3.0, 7.0],
-} as const;
-const LOOK_AT = new Vector3(0, 1.2, 0);
-// The framing is authored at 4:3. On a taller stage (the full-height stage
-// from lg) the camera backs off along its line of sight by 4:3 ÷ aspect, so
-// the horizontal view stays the 4:3 one: the model keeps its width and
-// gains room above and below.
-const FRAME_ASPECT = 4 / 3;
-const OFFSET = new Vector3(...CAMERA.position).sub(LOOK_AT);
 
 // Quest select (DESIGN.md → Motion), over `swap`: the stage cuts to the new
 // model, which projects in (scale 0.6 → 1, ease-back) with one scan-disc
@@ -120,14 +106,12 @@ function QuestWorld({
   const size = useThree((state) => state.size);
 
   useEffect(() => {
-    const aspect = size.height > 0 ? size.width / size.height : FRAME_ASPECT;
-    const back = Math.max(1, FRAME_ASPECT / aspect);
-    camera.position.set(
-      LOOK_AT.x + OFFSET.x * back,
-      LOOK_AT.y + OFFSET.y * back,
-      LOOK_AT.z + OFFSET.z * back,
-    );
-    camera.lookAt(LOOK_AT);
+    // Framed by width and pinned near the top of a tall stage (DESIGN.md
+    // → Quest holograms → Framing), so the model keeps one size and place
+    // whatever the quest's panel height.
+    const { position, look } = questFraming(size.width, size.height);
+    camera.position.copy(position);
+    camera.lookAt(look);
     camera.updateProjectionMatrix();
     // Current before the next frame callback projects the tags (see the
     // hero scene): in the calm mode that frame is the only one.
@@ -177,7 +161,9 @@ function QuestWorld({
     for (const id of MODEL_IDS) {
       const target = rig.models[id];
       if (id === current.to) {
-        target.group.scale.setScalar(0.6 + 0.4 * easeBack(progress));
+        target.group.scale.setScalar(
+          MODEL_FIT[id] * (0.6 + 0.4 * easeBack(progress)),
+        );
         target.setFade(easeOutCubic(progress));
       } else {
         target.setFade(0);
@@ -238,7 +224,13 @@ function QuestWorld({
 export default function QuestScene(props: QuestSceneProps) {
   const bloom = scenePalette(props.theme).bloom;
   return (
-    <Canvas frameloop={props.frameloop} dpr={DPR} flat gl={GL} camera={CAMERA}>
+    <Canvas
+      frameloop={props.frameloop}
+      dpr={DPR}
+      flat
+      gl={GL}
+      camera={QUEST_CAMERA}
+    >
       <QuestWorld {...props} />
       {bloom ? <DeckBloom /> : null}
     </Canvas>

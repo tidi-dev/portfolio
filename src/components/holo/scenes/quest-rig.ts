@@ -4,6 +4,7 @@ import {
   CylinderGeometry,
   DoubleSide,
   EdgesGeometry,
+  FrontSide,
   Group,
   LineBasicMaterial,
   LineSegments,
@@ -19,16 +20,20 @@ import {
   Vector3,
 } from "three";
 import type { QuestModelId } from "@/components/holo/quest-scene-props";
+import { buildDistributionMap } from "./botmivivi-map";
 import { buildChip } from "./chip";
 import { type ConeUniforms, createConeMaterial } from "./cone-material";
 import type { ScenePalette } from "./palette";
 
 /**
  * The quest projector and its three models (DESIGN.md → 3D Scenes → Quest
- * holograms; depiction.holograms), built once in scene units, procedural
- * only. Numbers are 3D data, not design tokens; DESIGN.md → Known Gaps 5
- * calls the quest-hologram sizes starting points. Colours arrive through
- * `applyPalette`, so a theme change never swaps geometry.
+ * holograms; depiction.holograms): the CyberRock chip, botmivivi's
+ * distribution map (botmivivi-map.ts) and Quest's linked data slabs, built
+ * once in scene units, procedural only. Each fits one envelope, ±1.6 units
+ * across, at its MODEL_FIT scale. Numbers are 3D data, not design tokens;
+ * DESIGN.md → Known Gaps 5 calls the quest-hologram sizes starting points.
+ * Colours arrive through `applyPalette`, so a theme change never swaps
+ * geometry.
  */
 export interface QuestModel {
   readonly group: Group;
@@ -53,6 +58,16 @@ export interface QuestRig {
 
 /** A fixed three-quarter view of each model (DESIGN.md: "fixed three-quarter view"). */
 export const QUARTER_TURN = -0.6;
+
+/**
+ * Each model's scale inside the ±1.6 envelope, multiplied into the swap's
+ * 0.6 → 1 (Quest was 95 % wide in it).
+ */
+export const MODEL_FIT: Readonly<Record<QuestModelId, number>> = {
+  cyberrock: 1,
+  botmivivi: 1,
+  quest: 0.85,
+};
 
 /** Where the models float, above the base. */
 const MODEL_Y = 1.5;
@@ -93,6 +108,19 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
   };
   const holoLine = (opacity: number) => {
     const material = own(new LineBasicMaterial({ transparent: true, opacity }));
+    holoMaterials.push(material);
+    return material;
+  };
+  // Opaque-looking holo faces that still fade: front faces, depth write.
+  const holoSolid = (opacity: number) => {
+    const material = own(
+      new MeshBasicMaterial({
+        transparent: true,
+        opacity,
+        depthWrite: true,
+        side: FrontSide,
+      }),
+    );
     holoMaterials.push(material);
     return material;
   };
@@ -167,14 +195,22 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
   rig.add(sweep);
 
   // Collects a model's materials with their resting opacity, for setFade.
-  const fader = (group: Group, list: readonly Material[]) => {
+  // `gains` holds the multipliers the model's pose sets each frame (it runs
+  // first), so a pulse always rides on the swap fade: base × fade × gain.
+  const fader = (
+    group: Group,
+    list: readonly Material[],
+    gains?: ReadonlyMap<Material, number>,
+  ) => {
     const faded: Faded[] = list.map((material) => ({
       material,
       base: material.opacity,
     }));
     return (fade: number) => {
       group.visible = fade > 0.001;
-      for (const { material, base } of faded) material.opacity = base * fade;
+      for (const { material, base } of faded) {
+        material.opacity = base * fade * (gains?.get(material) ?? 1);
+      }
     };
   };
 
@@ -211,34 +247,24 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
     };
   })();
 
-  // botmivivi: a ledger stack of five slabs (1.6 × 0.08 × 1.1, gap 0.12,
-  // holo edges), turning at 0.2 rad/s.
+  // botmivivi: the distribution map, swaying about the quarter turn.
   const botmivivi = (() => {
     const group = new Group();
-    const stack = new Group();
-    const slab = track(new BoxGeometry(1.6, 0.08, 1.1));
-    const edges = track(new EdgesGeometry(slab));
-    const body = chipBody();
-    const edge = holoLine(1);
-    for (let index = 0; index < 5; index++) {
-      const y = (index - 2) * 0.2;
-      const mesh = new Mesh(slab, body);
-      mesh.position.y = y;
-      const outline = new LineSegments(edges, edge);
-      outline.position.y = y;
-      stack.add(mesh, outline);
-    }
-    stack.position.y = MODEL_Y;
-    group.add(stack);
+    const map = buildDistributionMap(
+      { track, own, holoLine, holoSurface, holoSolid, chipBody },
+      QUARTER_TURN,
+    );
+    group.add(map.group);
     rig.add(group);
     return {
-      group,
-      setFade: fader(group, [body, edge]),
-      pose: (t: number) => {
-        stack.rotation.set(0, QUARTER_TURN + t * 0.2, 0);
-      },
-      anchors: [],
-    } satisfies QuestModel;
+      map,
+      model: {
+        group,
+        setFade: fader(group, map.materials, map.gains),
+        pose: map.pose,
+        anchors: [],
+      } satisfies QuestModel,
+    };
   })();
 
   // Quest: two linked data slabs (1.2 × 0.5 × 1.2): v1 a holo wireframe at
@@ -311,6 +337,7 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
     baseMaterial.roughness = next.baseRoughness;
     for (const material of chipBodies) material.color.copy(next.chip);
     cyberrock.chipModel.applyPalette(next);
+    botmivivi.map.applyPalette(next);
   };
   applyPalette(palette);
 
@@ -319,12 +346,17 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
     rings,
     coneUniforms,
     sweep,
-    models: { cyberrock: cyberrock.model, botmivivi, quest },
+    models: {
+      cyberrock: cyberrock.model,
+      botmivivi: botmivivi.model,
+      quest,
+    },
     applyPalette,
     dispose: () => {
       for (const geometry of geometries) geometry.dispose();
       for (const material of materials) material.dispose();
       cyberrock.chipModel.dispose();
+      botmivivi.map.dispose();
     },
   };
 }

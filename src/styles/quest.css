@@ -237,8 +237,8 @@
 }
 
 /* Quest detail panel: one column below lg (the stage band above the
-   tabpanel); from lg, 5 / 7 on 12 columns, the stage sticky under the HUD
-   strip and aligned to the start. */
+   tabpanel); from lg, 6 / 6 on 12 columns (owner, 2026-09-28, "Wider stage
+   + bigger model"), the stage stretched to the tabpanel's height. */
 @utility quest-detail {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -256,7 +256,7 @@
   @variant lg {
     display: flex;
     flex-direction: column;
-    grid-column: span 5 / span 5;
+    grid-column: span 6 / span 6;
   }
 }
 
@@ -269,14 +269,16 @@
   min-width: 0;
 
   @variant lg {
-    grid-column: span 7 / span 7;
+    grid-column: span 6 / span 6;
   }
 }
 
 /* The hologram stage: a chamfered screen on the page surface inside the
    panel, a size container so the poster scales with it, and its own
    stacking context, so the toast never rises over the HUD strip. 16:10 at
-   most 320 px tall below lg; 4:3 from lg. */
+   most 320 px tall below lg; from lg it fills its slot, and the canvas's
+   top and bottom feather by 8 % of its width in Deck (0 in Lab), so the
+   feather stays the sides' size however tall the panel is. */
 @utility quest-stage {
   --chamfer-fill: var(--color-surface);
   position: relative;
@@ -292,6 +294,7 @@
     aspect-ratio: auto;
     min-height: 0;
     max-height: none;
+    --canvas-feather-y: var(--canvas-feather-cq);
   }
 }
 
@@ -333,13 +336,32 @@
 }
 
 /* The quest posters: the small projector (cone, base with two rings) and
-   the model, in stage units. */
+   the model. They draw in a frame pinned to the stage top, min(100%, 94cqw)
+   tall and a size container, so from lg the poster sits where the 3D
+   projector does on a tall stage. Sizes are in poster units (--qp-u,
+   1cqmin of the frame, × 1.35 from lg, where the 3D model is framed
+   larger); positions are in % of the frame. Below lg the frame is the
+   stage and u = 1cqmin. */
+@utility qp-frame {
+  --qp-k: 1;
+  --qp-u: calc(var(--qp-k) * 1cqmin);
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: min(100%, 94cqw);
+  container-type: size;
+
+  @variant lg {
+    --qp-k: 1.35;
+  }
+}
+
 @utility qp-cone {
   position: absolute;
   left: 50%;
   bottom: 20%;
-  width: 44cqmin;
-  height: 46cqh;
+  width: calc(44 * var(--qp-u));
+  height: calc(46 * var(--qp-u));
   transform: translateX(-50%);
   clip-path: polygon(0 0, 100% 0, 76% 100%, 24% 100%);
   background-image: linear-gradient(
@@ -357,8 +379,8 @@
   position: absolute;
   left: 50%;
   bottom: 12%;
-  width: 60cqmin;
-  height: 15cqmin;
+  width: calc(60 * var(--qp-u));
+  height: calc(15 * var(--qp-u));
   transform: translateX(-50%);
   background-image: radial-gradient(
     closest-side,
@@ -375,8 +397,8 @@
   position: absolute;
   left: 50%;
   top: 44%;
-  width: 24cqmin;
-  height: 24cqmin;
+  width: calc(24 * var(--qp-u));
+  height: calc(24 * var(--qp-u));
   transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
   border: 2px solid var(--color-holo);
   background-color: var(--color-scene-chip);
@@ -400,26 +422,13 @@
   }
 }
 
-/* The ledger stack: five slabs, the top one drawn over the rest. */
-@utility qp-slab {
-  position: absolute;
-  left: 50%;
-  top: calc(34% + var(--slab) * 4.5cqmin);
-  z-index: calc(5 - var(--slab));
-  width: 26cqmin;
-  height: 18cqmin;
-  transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
-  border: 2px solid var(--color-holo);
-  background-color: var(--color-scene-chip);
-}
-
 /* The two data slabs: v1 a holo wireframe at 40 %, v2 solid with holo
    edges; the link arcs between them. */
 @utility qp-data {
   position: absolute;
   top: 46%;
-  width: 20cqmin;
-  height: 20cqmin;
+  width: calc(20 * var(--qp-u));
+  height: calc(20 * var(--qp-u));
   transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
   border: 2px solid var(--color-holo);
 }
@@ -444,6 +453,170 @@
     farthest-side ellipse at 50% 100%,
     transparent 94%,
     color-mix(in srgb, var(--color-holo) 60%, transparent) 95% 99%,
+    transparent 100%
+  );
+}
+
+/* botmivivi's map as a flat side view: the origin sits 22 u above the
+   base's centre, where the 3D plate floats; each part is placed from it
+   in u (left, bottom). Solid scene-chip with holo edges = the business,
+   holo outlines = its partners, gold = the credit and its coin. */
+@utility qp-map {
+  position: absolute;
+  left: 50%;
+  bottom: calc(12% + 29.5 * var(--qp-u));
+  width: 0;
+  height: 0;
+}
+
+@utility qp-ground {
+  position: absolute;
+  left: calc(-29.5 * var(--qp-u));
+  bottom: 0;
+  width: calc(60 * var(--qp-u));
+  height: 2px;
+  background-color: color-mix(in srgb, var(--color-holo) 40%, transparent);
+}
+
+@utility qp-supplier {
+  position: absolute;
+  left: calc(-29 * var(--qp-u));
+  bottom: 0;
+  width: calc(6 * var(--qp-u));
+  height: calc(6 * var(--qp-u));
+  border: 2px solid color-mix(in srgb, var(--color-holo) 40%, transparent);
+}
+
+/* The warehouse: walls, and a gable 1 u past each wall, drawn as a holo
+   triangle with the same triangle inset by the 2 px stroke over it
+   (the 17 × 4.5 u slopes: 2 px ÷ sin 27.9° across, ÷ cos 27.9° down). */
+@utility qp-warehouse {
+  position: absolute;
+  left: calc(-20 * var(--qp-u));
+  bottom: 0;
+  width: calc(15 * var(--qp-u));
+  height: calc(8 * var(--qp-u));
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-scene-chip);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+
+  &::before {
+    left: calc(-1 * var(--qp-u) - 2px);
+    width: calc(17 * var(--qp-u));
+    height: calc(4.5 * var(--qp-u));
+    background-color: var(--color-holo);
+  }
+
+  &::after {
+    left: calc(-1 * var(--qp-u) - 2px + 2px / 0.468);
+    width: calc(17 * var(--qp-u) - 4px / 0.468);
+    height: calc(4.5 * var(--qp-u) - 2px / 0.884);
+    background-color: var(--color-scene-chip);
+  }
+}
+
+/* A pallet (--pallet 0, 1): a scene-chip deck under three bag layers. */
+@utility qp-pallet {
+  position: absolute;
+  left: calc((-3 + 6 * var(--pallet)) * var(--qp-u));
+  bottom: 0;
+  width: calc(5 * var(--qp-u));
+  height: calc(6 * var(--qp-u));
+  border-bottom: calc(0.8 * var(--qp-u)) solid var(--color-scene-chip);
+  background-image: repeating-linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-holo) 60%, transparent) 0
+      calc(1.6 * var(--qp-u)),
+    transparent calc(1.6 * var(--qp-u)) calc(1.8 * var(--qp-u))
+  );
+}
+
+/* The truck: the cargo box, and the cab 0.3 u ahead of it. */
+@utility qp-truck {
+  position: absolute;
+  left: calc(10 * var(--qp-u));
+  bottom: calc(0.8 * var(--qp-u));
+  width: calc(6 * var(--qp-u));
+  height: calc(4 * var(--qp-u));
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-scene-chip);
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: calc(100% + 2px + 0.3 * var(--qp-u));
+    bottom: -2px;
+    width: calc(2.5 * var(--qp-u));
+    height: calc(3 * var(--qp-u));
+    border: 2px solid var(--color-holo);
+    background-color: var(--color-scene-chip);
+  }
+}
+
+/* The bakery and the shop (--shop 1 behind, 0 in front), each with an
+   awning 0.5 u past its sides. */
+@utility qp-shop {
+  position: absolute;
+  left: calc((20.5 + 4 * var(--shop)) * var(--qp-u));
+  bottom: calc(2.5 * var(--shop) * var(--qp-u));
+  width: calc(5 * var(--qp-u));
+  height: calc((5.5 - 0.5 * var(--shop)) * var(--qp-u));
+  border: 2px solid
+    color-mix(
+      in srgb,
+      var(--color-holo) calc(60% - 20% * var(--shop)),
+      transparent
+    );
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: var(--qp-u);
+    left: calc(-0.5 * var(--qp-u) - 2px);
+    right: calc(-0.5 * var(--qp-u) - 2px);
+    height: calc(1.2 * var(--qp-u));
+    background-color: color-mix(in srgb, var(--color-holo) 60%, transparent);
+  }
+}
+
+/* The credit line: a dashed gold arc from above the front shop back to
+   the warehouse ridge, the coin at its apex. */
+@utility qp-credit {
+  position: absolute;
+  left: calc(-12.5 * var(--qp-u));
+  bottom: calc(12.5 * var(--qp-u));
+  width: calc(35.5 * var(--qp-u));
+  height: calc(9 * var(--qp-u));
+  background-image: radial-gradient(
+    farthest-side at 50% 100%,
+    transparent calc(100% - 3px),
+    var(--color-accent-ink) calc(100% - 3px) calc(100% - 1px),
+    transparent 100%
+  );
+  mask-image: repeating-linear-gradient(
+    90deg,
+    black 0 calc(1.2 * var(--qp-u)),
+    transparent calc(1.2 * var(--qp-u)) calc(2 * var(--qp-u))
+  );
+}
+
+@utility qp-coin {
+  position: absolute;
+  left: calc(3.95 * var(--qp-u));
+  bottom: calc(20.2 * var(--qp-u));
+  width: calc(2.6 * var(--qp-u));
+  height: calc(2.6 * var(--qp-u));
+  background-image: radial-gradient(
+    circle closest-side,
+    var(--color-accent) 0 75%,
+    var(--color-accent-ink) 76% 99%,
     transparent 100%
   );
 }

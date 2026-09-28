@@ -23,7 +23,9 @@
 @utility holo-canvas {
   opacity: 0;
   /* Deck's Bloom halo spreads over the transparent canvas; the edges
-     feather out (--canvas-feather, 0 in Lab) so no seam shows. */
+     feather out (--canvas-feather, 0 in Lab) so no seam shows. The top and
+     bottom take --canvas-feather-y where a stage sets it (the tall quest
+     stage from lg, in stage-width units). */
   mask-image:
     linear-gradient(
       to right,
@@ -35,8 +37,8 @@
     linear-gradient(
       to bottom,
       transparent,
-      black var(--canvas-feather),
-      black calc(100% - var(--canvas-feather)),
+      black var(--canvas-feather-y, var(--canvas-feather)),
+      black calc(100% - var(--canvas-feather-y, var(--canvas-feather))),
       transparent
     );
   mask-composite: intersect;
