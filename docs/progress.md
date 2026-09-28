@@ -217,3 +217,4 @@ Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their a
 - **Next:** `design-lead` proposes new directions with previews, and the owner selects. Then a new `DESIGN.md`, a new plan and the build.
 - **Directions v2:** delivered and verified by the main session (screenshots reviewed). **The owner selected B · Holo Deck (2026-09-28)**, with the decisions recorded in `directions-v2.md` §12 and in `info.md` → Approved copy.
 - **Next:** a new `DESIGN.md` (`design-lead`) plus the plan contributions (`design-lead`, `frontend-engineer`, `qa-reviewer`) in parallel. The plan is then assembled and needs the owner's approval.
+- **Plan v2 approved by the owner (2026-09-28).** Phase 1 started.

@@ -1,6 +1,6 @@
 # Portfolio implementation plan v2: Holo Deck
 
-> **Status: Draft.** Awaiting the owner's approval; no phase starts before it.
+> **Status: Approved by owner, 2026-09-28** ("approved"). Phases 1–6, then F, run back to back.
 > **Inputs:**
 > - `info.md`: facts and Approved copy, including the v2 rows
 > - `DESIGN.md`: B · Holo Deck; lint 0 errors, 0 warnings; 52 contrast pairs pass
