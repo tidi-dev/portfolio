@@ -263,6 +263,12 @@ New wording and depictions approved by the owner for the site. The build renders
 | og.alt | Dai Ho Trong (TiDi), Full-stack Developer, with a drawing of a chip handshake | 2026-09-28 (C3, extra) |
 | resume.file | tidi-resume.pdf | 2026-09-28 (C3, extra) |
 | resume.title | TiDi, Résumé | 2026-09-28 (C3, extra: the PDF document title) |
+| heading.experience | Mission log | 2026-09-28 (v2: Holo Deck) |
+| heading.contact | Join party | 2026-09-28 (v2: Holo Deck) |
+| toast.quest-unlocked | Quest unlocked | 2026-09-28 (v2: stamp or toast label) |
+| ui.profile-labels | Character stats · Class · Base · XP · Quests · Role · When · Press A to continue · progress saved · ▸ PLAYER 1 | 2026-09-28 (v2: the owner's own words from profile.md and banner.svg, approved as UI labels) |
+| depiction.holograms | botmivivi as a ledger stack; Quest as two linked data slabs | 2026-09-28 (v2: new visual depictions, approved) |
+| behaviour.handshake-autoplay | The hero handshake plays once on load, then waits for "Run the handshake"; skipped under reduced motion | 2026-09-28 (v2) |
 | a11y.drawing-steps | Pattern: short numbered steps built from the approved depictions and the owner's phrases, e.g. "1. The host sends a challenge. 2. The chip sends back a response. 3. Verdict: genuine." | 2026-09-28 (C3, pattern approval. The main session records each exact step string here when it is drafted in Phases 4–8, under this approval) |
 | a11y.steps.bench | 1. The host sends a challenge. 2. The chip sends back a response. 3. Verdict: genuine. | 2026-09-28 (under a11y.drawing-steps; source: depiction.bench) |
 | a11y.steps.cyberrock | 1. The chip lifecycle runs from manufacturing to the field. 2. Supplier exports leave the lifecycle as an output. 3. A full audit trail runs underneath the whole lifecycle. 4. In the field, challenge-response auth (token, host, mutual, daisy-chain and secure-boot attestation) proves the device is genuine before anything trusts it. | 2026-09-28 (under a11y.drawing-steps; source: depiction.cyberrock-drawing and Projects → CyberRock) |
