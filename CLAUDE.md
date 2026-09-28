@@ -8,9 +8,7 @@ Operating guide for Claude on this repository.
 
 # Project Overview
 A personal developer portfolio for the owner described in `info.md`: a clean, modern, eye-catching site in an RPG game style, alive with animation and 3D, showing who they are, what they have built, and how to reach them.
-- **Status (2026-09-28):** the owner rejected the first build ("too ugly and boring, not trendy, not eye-catching, no 3D animations"). All code was removed; its history remains in git.
-- **Next:** new design directions, the owner's choice, a new `DESIGN.md` and plan, then the build.
-- **No application code** until the new plan is approved.
+- **Status (2026-09-28):** v1 was rejected and removed (history in git). v2 follows direction B · Holo Deck (`DESIGN.md`) and the approved plan `docs/plan/v2/implementation-plan.md`. Phases 1–5 are built; Phase 6 (tests) was dropped by the owner. Next: Phase F (review and fixes).
 
 # Project Goals
 1. **Truthful:** every personal fact comes from `info.md`.
@@ -18,7 +16,7 @@ A personal developer portfolio for the owner described in `info.md`: a clean, mo
 3. **Accessible:** WCAG 2.2 AA in both themes, with a reduced-motion experience that still tells the whole story.
 4. **Maintainable:** content is updated in one place.
 
-**Out of scope** (owner, 2026-09-28): performance budgets, Lighthouse, SEO and the privacy scan. Don't add tooling, tests or audits for them.
+**Out of scope** (owner, 2026-09-28): performance budgets, Lighthouse, SEO, the privacy scan and automated tests. Don't add tooling, tests or audits for them.
 
 # Source of Truth
 Precedence, highest first:
@@ -177,11 +175,11 @@ The checkpoint (row 8) runs after the first visual phase and again before releas
 **Git** is initialised in the plan's first phase. Small commits with conventional messages. No push to shared branches or production deploy without the owner's approval.
 
 # Testing & Verification
-The new plan defines the tooling and commands; list them here once it's approved.
-- **Gate:** lint, typecheck, build, plus a lean test suite covering key flows and accessibility (axe in both themes, keyboard, reduced motion).
+- **Gate:** `pnpm check && pnpm build` (design lint, token, font and résumé sync, lint, typecheck, static build). No automated test suite (owner, 2026-09-28: "skip test", then "Discard all test code").
+- **Manual checks instead:** axe in both themes, a keyboard pass and reduced motion, run by `qa-reviewer` during audits.
 - **Visual QA:** screenshots at key widths in both themes, including the 3D and animated states (`ui-audit`).
 - **Content:** every visible fact verified against `info.md` before release (`portfolio-content` D).
-- **Out of scope:** performance budgets, Lighthouse, SEO checks, privacy scan.
+- **Out of scope:** performance budgets, Lighthouse, SEO checks, privacy scan, automated tests.
 
 Agents stop only the processes they started, by PID. Never kill by name or pattern (`pkill`, `killall`).
 

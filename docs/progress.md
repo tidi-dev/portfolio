@@ -218,3 +218,34 @@ Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their a
 - **Directions v2:** delivered and verified by the main session (screenshots reviewed). **The owner selected B · Holo Deck (2026-09-28)**, with the decisions recorded in `directions-v2.md` §12 and in `info.md` → Approved copy.
 - **Next:** a new `DESIGN.md` (`design-lead`) plus the plan contributions (`design-lead`, `frontend-engineer`, `qa-reviewer`) in parallel. The plan is then assembled and needs the owner's approval.
 - **Plan v2 approved by the owner (2026-09-28).** Phase 1 started.
+- **v2 Phase 1 (Foundation) done (2026-09-28):** gate green, 8 commits `f7e1597`–`387a317`, report `docs/reports/v2-phase-1.md`. Rulings (main session):
+  - Mona Sans subset renamed internally (OFL Reserved Font Name "Mona"); visuals unchanged. `OFL.txt` stays with the files.
+  - `stat-value` `tnum`: Chakra Petch has no `tnum`, so digits stay proportional. Logged for the Phase F design check.
+  - THREE.Clock deprecation warning: its source is noted in Phase 2. Phase 6 allowlists that exact warning only if no upgrade removes it.
+- **v2 Phase 2 (Shell and Holo hero) started.**
+- **v2 Phase 2 (Shell and Holo hero) done (2026-09-28):** gate green, commits `d6c2870`–`f7c85b5`, report `docs/reports/v2-phase-2.md`, screens `docs/reviews/v2/phase-2/screens/` (reviewed by the main session). Logged for F:
+  - the focus ring is rectangular and doesn't follow the chamfer
+  - Deck canvas edges are feathered to hide a Bloom seam
+  - the verdict `<output>` has no explicit `role="status"`
+  - `DESIGN.md` §voice says "used only where he used it": the owner's pronouns aren't stated, so `design-lead` changes it to neutral wording in F
+- **v2 Phase 3 (Quest journal) started.**
+- **v2 Phase 3 (Quest journal) done (2026-09-28):** gate green, commits `6ed3c47`–`d255783`, report `docs/reports/v2-phase-3.md`, screens `docs/reviews/v2/phase-3/screens/` (reviewed by the main session).
+  - Ruling: the "Quest unlocked" toast stays `aria-hidden` (per `DESIGN.md`). An announcement goes to the live region only on activation, never on scroll. Why: announcing on scroll interrupts screen-reader users with repeated, decorative noise. Cost if wrong: small; QA can flip it in F.
+  - Ruling: Motion isn't installed while CSS covers the effects (YAGNI). Phase 4 may add it if scroll motion needs it, and must say why in its report. Cost if wrong: one install later.
+- **v2 Phase 4 (Remaining sections and scroll motion) started.**
+- **v2 Phase 4 (Remaining sections and scroll motion) done (2026-09-28):** gate green, commits `5b374c3`–`d6cecec`, report `docs/reports/v2-phase-4.md`, 60 screens (git-ignored, as before; full-page capture reviewed by the main session).
+  - Ruling: the power-on wipe uses a cover layer instead of clip-path on the panel. Why: IntersectionObserver never fires for a panel clipped to nothing (1 of 19 revealed, against 19 of 19 now). `design-lead` updates the `DESIGN.md` Motion table in F. Cost if wrong: none visible.
+  - Ruling: no 3 s timeout reveal; panels hide only while the observer is running. Why: it fails open. Cost if wrong: none.
+  - Ruling (fix in F): the speaker tag must not uppercase "TiDi". The owner's name keeps its casing everywhere (`info.md`), so the tag uses a non-uppercase label style.
+  - Logged for F: the level-up sweep plays once per page load, not once per visit. Acceptable unless `design-lead` objects.
+- **v2 Phase 5 (Résumé PDF and links) started.**
+- **v2 Phase 5 (Résumé PDF and links) done (2026-09-28):** gate green, commits `972b79a`–`c9210e2`, report `docs/reports/v2-phase-5.md`. Main session checked: both PDF pages viewed (no phone, [private], reference, availability, travel or photography); the embedded fonts are ChakraPetch and PortfolioSans (0 "Mona"); `DaiHo Resume.pdf` is still ignored and untracked.
+  - Ruling: interests and the Daniel, Guild, XP and Passive rows stay out of the PDF. Why: no approved PDF label exists, and we don't invent copy. Cost if wrong: the owner can approve a label later.
+  - Logged for F: the PDF's "Term – description" separators are en dashes we wrote (the voice rule forbids them in our UI copy). Change to a colon, or rule.
+- **v2 Phase 6 (Lean test suite) started.**
+- **v2 Phase 6 (Lean test suite) dropped by the owner (2026-09-28):** the owner told the agent "skip test" mid-phase, then chose "Discard all test code". Uncommitted test files and dependencies were removed (Playwright stays; it was already a dependency, for screenshots). `CLAUDE.md` updated: automated tests are out of scope, and the gate is `pnpm check && pnpm build`. Owner: "Fix all 3" of the bugs the partial suite found, in F:
+  1. the hero is blank for about 2 s after WebGL context loss (the poster should show at once)
+  2. Space doesn't activate "Watch Quest by NFQ" (it's a link; it should be a button, or handle Space, per spec)
+  3. a missing `/favicon.ico` logs a 404
+- Gate re-run fresh by the main session after the removal: `pnpm check` and `pnpm build` both green (static).
+- **Phase F started.**
