@@ -164,6 +164,7 @@ Profile "Quest journal": 2 active · 1 cleared.
   - "Price whitelist — off-list prices are flagged to Slack; customers can lock a price and prepay"
   - "Tonnage payroll — every kilo a loader moves prices itself, so payroll is a query"
 - Stack (profile): NestJS · Prisma · PostgreSQL · Redis/BullMQ · Vue 3
+- Business domain (owner, chat, 2026-09-28): "for a wholesale flour & baking-ingredient distributor (Vietnam). Domain: B2B distribution. The business buys flour, yeast, additives and vitamin C from suppliers by the bag/ton, stores it in a warehouse, and sells it on credit to bakeries and shops — delivered by its own trucks, drivers and loaders." Used for the hologram depiction; not shown as site copy unless approved.
 - Links / media (owner, answer.md): "internal app, so can not show any link". No link and no screenshots.
 
 ### Quest @ NFQ Asia (Cleared, 2020-12 to 2024-03)
@@ -221,7 +222,7 @@ Profile "Quest journal": 2 active · 1 cleared.
 - Code repository: **do not push for now**; local git only (owner, 2026-09-28)
 - Section labels (the owner's own, from profile.md): Quest journal · House rules · Inventory · Leveling up · AFK · statuses Active, Side, Cleared · Party lead · Achievements
 - Visual style (owner, 2026-09-28, replaces the earlier "subtle" choice): "nên đảm bảo clean, modern, phù hợp phong cách Developer, cần thêm nhiều animations, 3d để làm website sinh động, thu hút, follow RPG game style". That is: clean, modern, developer style; many animations and 3D so the site feels lively and eye-catching; follow an RPG game style. Earlier feedback on Direction B: "page is too ugly and boring, not trendy. not eyecatching, no 3d animations".
-- Project diagrams (owner's choice, 2026-09-27): **yes, high-level only.** Drawn solely from the owner's own descriptions, with no client internals, internal service names or real data. Covers CyberRock chip auth and lifecycle, the Quest v1 → v2 migration, and the botmivivi ledger.
+- Project diagrams (owner's choice, 2026-09-27): **yes, high-level only.** Drawn solely from the owner's own descriptions, with no client internals, internal service names or real data. Covers CyberRock chip auth and lifecycle, the Quest v1 → v2 migration, and the botmivivi distribution flow (was: the ledger; owner, 2026-09-28).
 - Résumé download (owner, answer.md): **yes**. "dont reuse … DaiHo Resume.pdf, help me to gen a new one". A new PDF will be generated from `info.md`, without the phone number and the reference.
 
 ## Approved copy
@@ -267,7 +268,7 @@ New wording and depictions approved by the owner for the site. The build renders
 | heading.contact | Join party | 2026-09-28 (v2: Holo Deck) |
 | toast.quest-unlocked | Quest unlocked | 2026-09-28 (v2: stamp or toast label) |
 | ui.profile-labels | Character stats · Class · Base · XP · Quests · Role · When · Press A to continue · progress saved · ▸ PLAYER 1 | 2026-09-28 (v2: the owner's own words from profile.md and banner.svg, approved as UI labels) |
-| depiction.holograms | botmivivi as a ledger stack; Quest as two linked data slabs | 2026-09-28 (v2: new visual depictions, approved) |
+| depiction.holograms | botmivivi as its distribution flow (supplier → warehouse → trucks → bakeries and shops, on credit), replacing the ledger stack; Quest as two linked data slabs | 2026-09-28 (v2; botmivivi re-depicted at the owner's request, from the business-domain description) |
 | behaviour.handshake-autoplay | The hero handshake plays once on load, then waits for "Run the handshake"; skipped under reduced motion | 2026-09-28 (v2) |
 | a11y.motion-toggle | Motion | 2026-09-28 (v2: pause or resume all animation; `aria-pressed` carries the state) |
 | hud.banner | XP · SYSTEM DESIGN · LVL still leveling · MAX not a thing | 2026-09-28 (v2: the owner's banner lines as HUD text; no numbers ever) |
