@@ -1,0 +1,49 @@
+/*
+ * The résumé PDF's stylesheet (contrib-engineering §7), compiled by
+ * `pnpm resume:pdf` (scripts/resume/render.ts), never by Next. It shares
+ * the site's token chain (globals.css, same order) and scans only the
+ * résumé components. The script prepends one @font-face per subset in
+ * src/assets/fonts, as data URLs, under the family names set below. The
+ * page is the Lab (light) theme only: render.ts sets data-theme="light".
+ */
+@import "tailwindcss" source(none);
+@source "../components/resume";
+@import "./reset.css";
+@import "./tokens.generated.css" theme(static);
+@import "./theme.css";
+
+/* A4, with the 2xl step (48 px) above and below every page and the xl
+   step (32 px) at the sides. */
+@page {
+  size: A4;
+  margin: var(--spacing-2xl) var(--spacing-xl);
+}
+
+@layer base {
+  /* The type-* utilities read the variables next/font sets on the site.
+     Here they name the embedded subsets' families. */
+  :root {
+    --font-chakra-petch: "Chakra Petch";
+    --font-portfolio-sans: "Portfolio Sans";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  /* Keep a heading with what follows it across the page break. */
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+}
