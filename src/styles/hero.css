@@ -122,8 +122,9 @@
   }
 }
 
-/* The console: controls in a row, then the log, below lg; from lg it sits
-   over the stage's bottom edge, the log at most 360 px wide. */
+/* The console: the controls (stacked at full width below sm, in a row
+   from sm), then the log, below lg; from lg it sits over the stage's
+   bottom edge, the log at most 360 px wide. */
 @utility hero-console {
   grid-area: console;
   position: relative;

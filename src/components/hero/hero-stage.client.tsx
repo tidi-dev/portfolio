@@ -237,7 +237,7 @@ export function HeroStage({
       {children}
 
       <div className="hero-console">
-        <div className="flex flex-wrap items-center gap-sm lg:flex-col lg:items-stretch">
+        <div className="flex flex-col gap-sm sm:flex-row sm:flex-wrap sm:items-center lg:flex-col lg:items-stretch">
           <button
             type="button"
             data-js-control=""
