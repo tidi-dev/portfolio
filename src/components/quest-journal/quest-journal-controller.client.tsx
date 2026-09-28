@@ -106,6 +106,9 @@ export function QuestJournalController({
   const crossing = useRef<string[]>([]);
   const observer = useRef<IntersectionObserver | null>(null);
   const settling = useRef(false);
+  // The pending end-of-scroll wait after a mission item, so a new
+  // selection or unmounting cancels it.
+  const pendingSettle = useRef<(() => void) | null>(null);
 
   const reach = useCallback((id: string, selected: boolean) => {
     setState((previous) => {
@@ -164,15 +167,21 @@ export function QuestJournalController({
       const article = elements.current.get(id);
       if (entry === undefined || article === undefined) return;
       reach(id, true);
+      pendingSettle.current?.();
       settling.current = true;
-      const settle = () => {
-        settling.current = false;
+      const cancel = () => {
         clearTimeout(timer);
         window.removeEventListener("scrollend", settle);
+        pendingSettle.current = null;
+      };
+      const settle = () => {
+        cancel();
+        settling.current = false;
         reachCrossing();
       };
       window.addEventListener("scrollend", settle);
       const timer = setTimeout(settle, SETTLE_FALLBACK);
+      pendingSettle.current = cancel;
       document.getElementById(entry.headingId)?.focus({ preventScroll: true });
       article.scrollIntoView({
         behavior: motionSnapshot() ? "smooth" : "instant",
@@ -181,6 +190,14 @@ export function QuestJournalController({
       window.history.pushState(null, "", `#${entry.anchor}`);
     },
     [quests, reach, reachCrossing],
+  );
+
+  // Unmounting mid-scroll drops the pending wait (its listener and timer).
+  useEffect(
+    () => () => {
+      pendingSettle.current?.();
+    },
+    [],
   );
 
   // The provider re-renders only when the journal's state changes (its
