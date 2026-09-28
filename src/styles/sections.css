@@ -209,9 +209,13 @@
   --chamfer-fill: var(--color-surface);
 }
 
-/* training-marker: the 12 px success triangle. */
+/* training-marker: the 12 px success triangle, inline before the topic
+   (gap xs), centred on its first line: one line box high. */
 @utility training-marker {
   display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 1lh;
 }
 
 /* ── Character stats ─────────────────────────────────────────────────── */

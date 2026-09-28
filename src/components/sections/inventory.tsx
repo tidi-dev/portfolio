@@ -9,7 +9,8 @@ import { typography } from "@/lib/format/typography";
 
 /**
  * Leveling up (DESIGN.md → Training card): the owner's topics in `nav`
- * type, each under a success filled triangle (the "▲" neither font has).
+ * type, each led inline by a success filled triangle (the "▲" neither
+ * font has), 12 px, centred on the first line.
  * Its panel reaching the view is the level-up moment (`data-levelup`): the
  * triangles rise in and a gold bar sweeps across the HUD strip, once.
  */
@@ -23,14 +24,12 @@ function LevelingUp() {
           <li
             key={item}
             style={{ "--i": index } as CSSProperties}
-            className="chamfer flex flex-col gap-xs p-md training-card"
+            className="chamfer flex items-start gap-xs p-md type-nav training-card"
           >
             <span className="relative training-marker text-success">
               <Icon name="triangle-filled" size="marker" />
             </span>
-            <span className="relative type-nav text-primary">
-              {typography(item)}
-            </span>
+            <span className="relative text-primary">{typography(item)}</span>
           </li>
         ))}
       </ul>
