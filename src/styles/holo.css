@@ -3,7 +3,9 @@
  * HoloPoster, the CSS-only still that holds the stage before the scene
  * loads and whenever WebGL is missing or lost; the canvas layer, which
  * cross-fades in on its first frame; and the scene tags. The stage carries
- * `data-holo-state="poster|live"`. Poster geometry is in stage units
+ * `data-holo-state="poster|live|lost"`. On "lost" (the WebGL context just
+ * went) the poster cuts in at once and the dead canvas hides at once, with
+ * no cross-fade, so the stage is never blank. Poster geometry is in stage units
  * (container query units), placed like the projector in the scene camera:
  * the base low, the cone rising to the chip right of centre, the host
  * top left. All colours are tokens, so both themes follow the swap.
@@ -16,7 +18,7 @@
 }
 
 /* The canvas cross-fades in over the poster (boot); at once in the calm
-   mode. touch-action: pan-y keeps vertical scrolling on touch screens
+   mode, and hidden at once when its context is lost. touch-action: pan-y keeps vertical scrolling on touch screens
    while a horizontal drag spins the chip. */
 @utility holo-canvas {
   opacity: 0;
@@ -43,7 +45,7 @@
     opacity: 1;
   }
 
-  :root[data-motion="on"] & {
+  :root[data-motion="on"] [data-holo-state]:not([data-holo-state="lost"]) > & {
     transition: opacity var(--transition-duration-boot) var(--ease-out);
   }
 
@@ -59,7 +61,7 @@
     opacity: 0;
   }
 
-  :root[data-motion="on"] & {
+  :root[data-motion="on"] [data-holo-state]:not([data-holo-state="lost"]) > & {
     transition: opacity var(--transition-duration-boot) var(--ease-out);
   }
 }

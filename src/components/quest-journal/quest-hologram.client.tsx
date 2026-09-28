@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import type { Frameloop } from "@/components/holo/hero-scene-props";
 import { QuestPoster } from "@/components/holo/quest-poster";
+import { holoState, type SceneStatus } from "@/components/holo/holo-state";
 import { SceneErrorBoundary } from "@/components/holo/scene-error-boundary.client";
 import { useInView } from "@/components/holo/use-in-view";
 import { useNear } from "@/components/holo/use-near";
@@ -37,8 +38,6 @@ function noSubscription(): () => void {
 function serverWebgl(): boolean | undefined {
   return undefined;
 }
-
-type SceneStatus = "loading" | "live" | "failed";
 
 /** The sticky viewport from `lg`, or one file's band below it. */
 export type QuestHologramPlacement =
@@ -95,7 +94,11 @@ export function QuestHologram(props: QuestHologramProps) {
   const sceneWanted =
     webgl === true && scene !== "failed" && onScreenLayout && near;
   const frameloop: Frameloop =
-    !inView.visible || !pageVisible ? "never" : motion ? "always" : "demand";
+    !inView.visible || !pageVisible || scene === "lost"
+      ? "never"
+      : motion
+        ? "always"
+        : "demand";
   const unlock = band
     ? (journal.unlocks[questId] ?? 0)
     : (journal.last?.seq ?? 0);
@@ -117,6 +120,12 @@ export function QuestHologram(props: QuestHologramProps) {
   const onFailed = useCallback(() => {
     setScene("failed");
   }, []);
+  const onContextLost = useCallback(() => {
+    setScene("lost");
+  }, []);
+  const onContextRestored = useCallback(() => {
+    setScene("live");
+  }, []);
 
   if (entry === undefined) return null;
 
@@ -125,7 +134,7 @@ export function QuestHologram(props: QuestHologramProps) {
       ref={stage}
       aria-hidden="true"
       data-holo-stage="quest"
-      data-holo-state={scene === "live" && sceneWanted ? "live" : "poster"}
+      data-holo-state={holoState(scene, sceneWanted)}
       data-frameloop={frameloop}
       className={
         band
@@ -146,6 +155,8 @@ export function QuestHologram(props: QuestHologramProps) {
               tilt={!band && layout === "wide-fine"}
               tags={{ v1, v2 }}
               onReady={onReady}
+              onContextLost={onContextLost}
+              onContextRestored={onContextRestored}
               onLost={onFailed}
             />
           </div>

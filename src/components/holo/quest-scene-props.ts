@@ -31,6 +31,10 @@ export interface QuestSceneProps {
   };
   /** The first frame is on screen: the canvas cross-fades in. */
   readonly onReady: () => void;
+  /** The WebGL context was just lost: the poster takes the stage at once. */
+  readonly onContextLost: () => void;
+  /** The browser restored the context in time: the scene is live again. */
+  readonly onContextRestored: () => void;
   /** The WebGL context was lost and not restored in time. */
   readonly onLost: () => void;
 }

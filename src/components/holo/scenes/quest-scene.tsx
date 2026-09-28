@@ -81,6 +81,8 @@ function QuestWorld({
   tilt,
   tags,
   onReady,
+  onContextLost,
+  onContextRestored,
   onLost,
 }: QuestSceneProps) {
   const scene = useThree((state) => state.scene);
@@ -139,7 +141,7 @@ function QuestWorld({
     invalidate();
   }, [model, unlock, invalidate]);
 
-  useContextLoss(gl, onLost, invalidate);
+  useContextLoss(gl, { onContextLost, onContextRestored, onLost }, invalidate);
 
   useFrame((state, delta) => {
     const rig = rigRef.current;

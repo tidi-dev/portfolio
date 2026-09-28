@@ -33,6 +33,8 @@ function HeroWorld({
   tags,
   onReady,
   onBooted,
+  onContextLost,
+  onContextRestored,
   onLost,
 }: HeroSceneProps) {
   const scene = useThree((state) => state.scene);
@@ -93,8 +95,9 @@ function HeroWorld({
     invalidate();
   }, [handshake, motion, frameloop, invalidate]);
 
-  // Context loss: allow a restore; if none comes in time, the poster.
-  useContextLoss(gl, onLost, invalidate);
+  // Context loss: the poster at once; allow a restore; if none comes in
+  // time, the canvas unmounts.
+  useContextLoss(gl, { onContextLost, onContextRestored, onLost }, invalidate);
 
   // A horizontal drag spins the chip; the canvas keeps touch-action: pan-y,
   // so a vertical swipe still scrolls the page.

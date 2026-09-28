@@ -24,6 +24,10 @@ export interface HeroSceneProps {
   readonly onReady: () => void;
   /** The boot sequence is over (at once in the calm mode). */
   readonly onBooted: () => void;
+  /** The WebGL context was just lost: the poster takes the stage at once. */
+  readonly onContextLost: () => void;
+  /** The browser restored the context in time: the scene is live again. */
+  readonly onContextRestored: () => void;
   /** The WebGL context was lost and not restored in time. */
   readonly onLost: () => void;
 }

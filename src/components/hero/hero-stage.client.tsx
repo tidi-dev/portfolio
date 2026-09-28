@@ -12,6 +12,7 @@ import {
 } from "react";
 import type { Frameloop } from "@/components/holo/hero-scene-props";
 import { HoloPoster } from "@/components/holo/holo-poster";
+import { holoState, type SceneStatus } from "@/components/holo/holo-state";
 import { SceneErrorBoundary } from "@/components/holo/scene-error-boundary.client";
 import { useInView } from "@/components/holo/use-in-view";
 import { usePageVisible } from "@/components/holo/use-page-visible";
@@ -48,8 +49,6 @@ function noSubscription(): () => void {
 function serverWebgl(): boolean | undefined {
   return undefined;
 }
-
-type SceneStatus = "loading" | "live" | "failed";
 
 interface HeroStageProps {
   /** The hero intro (server-rendered), between the stage and the console. */
@@ -105,9 +104,13 @@ export function HeroStage({
   const posterFinal = webgl === false || scene === "failed";
   // contrib-engineering §5.4: render continuously only while on screen, in
   // a visible tab, with motion on; on demand in the calm mode; not at all
-  // off screen or in a hidden tab.
+  // off screen, in a hidden tab, or while its WebGL context is lost.
   const frameloop: Frameloop =
-    !inView.visible || !pageVisible ? "never" : motion ? "always" : "demand";
+    !inView.visible || !pageVisible || scene === "lost"
+      ? "never"
+      : motion
+        ? "always"
+        : "demand";
   const userRun = isRunning(state.step) && !state.autoplay;
 
   // Step timers: one `packet` per leg; a new run, the switch or unmounting
@@ -166,6 +169,12 @@ export function HeroStage({
   const onFailed = useCallback(() => {
     setScene("failed");
   }, []);
+  const onContextLost = useCallback(() => {
+    setScene("lost");
+  }, []);
+  const onContextRestored = useCallback(() => {
+    setScene("live");
+  }, []);
 
   return (
     <>
@@ -173,7 +182,7 @@ export function HeroStage({
         ref={stage}
         aria-hidden="true"
         data-holo-stage="hero"
-        data-holo-state={scene === "live" && sceneWanted ? "live" : "poster"}
+        data-holo-state={holoState(scene, sceneWanted)}
         data-frameloop={frameloop}
         className="hero-stage"
       >
@@ -189,6 +198,8 @@ export function HeroStage({
                 tags={{ host: hostTag, chip: chipTag }}
                 onReady={onReady}
                 onBooted={onBooted}
+                onContextLost={onContextLost}
+                onContextRestored={onContextRestored}
                 onLost={onFailed}
               />
             </div>
