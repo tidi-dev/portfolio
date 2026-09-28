@@ -24,6 +24,7 @@ colors:
   scene-chip: "#121A2A"       # chip package (3D), both themes
   scene-pin: "#B8C4D6"        # chip pins (3D), both themes
   shadow-pixel: "#0B728533"   # the brand's hard pixel shadow: holo 20 % (decorative)
+  success-wash: "#1A7F3714"   # the active quest's aura: success 8 % (decorative)
   primary-dark: "#E6EDF3"     # Signal
   surface-dark: "#070B14"     # Void
   surface-raised-dark: "#0F1726" # Glass
@@ -41,6 +42,7 @@ colors:
   focus-dark: "{colors.accent-ink-dark}"
   scene-metal-dark: "#0E1524"
   shadow-pixel-dark: "#4FD8E859" # holo cyan 35 % (decorative)
+  success-wash-dark: "#3FB9501F" # success 12 % (decorative)
 typography:
   display: { fontFamily: Galmuri11, fontSize: 3.75rem, fontWeight: 400, lineHeight: 1 }
   heading-section: { fontFamily: Galmuri11, fontSize: 2.25rem, fontWeight: 400, lineHeight: 1.3333 }
@@ -85,6 +87,7 @@ spacing:
   avatar: 200px
   avatar-xl: 264px
   stat-key: 96px
+  quest-card: 312px
 components:
   page: { backgroundColor: "{colors.surface}", textColor: "{colors.primary}", typography: "{typography.body}" }
   hud-bar: { backgroundColor: "{colors.surface}", textColor: "{colors.text-muted}", typography: "{typography.label}", height: 60px }
@@ -130,7 +133,11 @@ components:
   status-active: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.success}", typography: "{typography.label}", height: 28px, padding: 10px }
   status-side: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.label}", height: 28px, padding: 10px }
   status-cleared: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.text-muted}", typography: "{typography.label}", height: 28px, padding: 10px }
-  mission-item: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.nav}", height: 56px, padding: 16px }
+  quest-card: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.heading-quest}", rounded: "{rounded.none}", padding: 24px, width: 312px }
+  quest-card-hover: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.holo}", size: 1px }
+  quest-card-selected: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", size: 2px }
+  quest-card-active: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.success}", size: 1px }
+  quest-card-aura: { backgroundColor: "{colors.success-wash}" }
   facts-term: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.label}", width: 96px }
   facts-value: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body-compact}" }
   stat-readout: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.stat-value}" }
@@ -162,6 +169,7 @@ components:
   verdict-rejected-dark: { backgroundColor: "{colors.surface-raised-dark}", textColor: "{colors.danger-dark}" }
   scene-base-dark: { backgroundColor: "{colors.scene-metal-dark}" }
   brand-shadow-dark: { textColor: "{colors.shadow-pixel-dark}" }
+  quest-card-aura-dark: { backgroundColor: "{colors.success-wash-dark}" }
 ---
 
 # TiDi Portfolio · Design system
@@ -204,8 +212,9 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 | `scrim` / `on-scrim` | `#070B14` 92 % / `#E6EDF3` | same | Avatar caption, both themes. |
 | `scene-*` | metal `#C9D3DE`, chip `#121A2A`, pin `#B8C4D6` | metal `#0E1524` | 3D materials only, never behind text. |
 | `shadow-pixel` | holo 20 % | cyan 35 % | The brand's hard sprite shadow (Typography). Decorative. |
+| `success-wash` | success 8 % | success 12 % | The active quest card's aura, light from its strip. Decorative; the text on it is in the table below. |
 
-**Contrast (WCAG 2.x, computed by script, no rounding): 54 pairs, 0 failures** (re-run 2026-09-28 for the font change; colours unchanged). All text pixel (2026-09-28) adds no pair: the reading roles use `primary`, `text-muted`, `accent-ink` and `on-scrim` on the backgrounds below (17 of these pairs re-run, 0 failures). Translucent layers were checked against the worst backdrop (glass over full `holo`; the HUD strip over gold or ink).
+**Contrast (WCAG 2.x, computed by script, no rounding): 59 pairs, 0 failures** (quest cards add 5 on 2026-09-28: text on the aura, worst case at the top of the gradient, and the Active edge) (re-run 2026-09-28 for the font change; colours unchanged). All text pixel (2026-09-28) adds no pair: the reading roles use `primary`, `text-muted`, `accent-ink` and `on-scrim` on the backgrounds below (17 of these pairs re-run, 0 failures). Translucent layers were checked against the worst backdrop (glass over full `holo`; the HUD strip over gold or ink).
 
 | Pair | Lab | Deck | Needs |
 |---|---|---|---|
@@ -226,6 +235,8 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 | Control border, switch thumb off (`text-muted` on raised) | 6.39 | 5.83 | 3 |
 | State bar (`accent-ink` on `surface`) | 5.60 | 10.11 | 3 |
 | Switch thumb on (`danger` on raised) | 5.36 | 5.35 | 3 |
+| Quest card text on the Active aura: `primary` / `text-muted` / `accent-ink` (stat key) / `success` (chip) | 17.04 / 5.75 / 5.67 / 4.57 | 12.58 / 4.83 / 7.64 / 5.85 | 4.5 |
+| Quest card edges on `surface`: selected `accent-ink` / Active `success` / hover `holo` | 5.60 / 4.51 / 4.96 | 10.11 / 7.75 / 11.55 | 3 |
 
 ## Typography
 | Family | Role | Source, licence | Weights, subsets | Why |
@@ -246,7 +257,7 @@ Front-matter tokens name the source families (`Galmuri11`, `Mona Sans`); the fon
 | `label` | 12 px | 1.5 | 1 px, uppercase | Stat keys, HUD keys, status chips, step numerals, footer |
 | `role` | 12 px | 1.5 | 1 px, uppercase | Role line |
 | `button` | 12 px | 1.5 | 1 px, as written; the verdict alone is uppercase | Buttons, skip link, verdict, video facade |
-| `nav` | 12 px | 1.5 | 1 px, as cased | Nav, switch, mission items, training topics, speaker tag. The menu sheet uses `heading-quest` |
+| `nav` | 12 px | 1.5 | 1 px, as cased | Nav, switch, training topics, speaker tag. The menu sheet uses `heading-quest` |
 | `name` | 24 px | 1.6667 (40 px) | 0, as cased | "Hồ Trọng Đại" (`lang="vi"`) and "Dai Ho Trong", `text-muted` |
 | `body` | 12 px, every width | 2 (24 px) | 0, as written | Paragraphs, the hero sentence, bullets, contact rows, House rules |
 | `body-compact` | 12 px | 1.6667 (20 px) | 0, as written | Facts values, log steps, badges, the toast's quest name, the stat qualifier, the avatar caption |
@@ -323,19 +334,32 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Status chip** (`status-active`, `-side`, `-cleared`). "Active", "Side", "Cleared" with a 1 px border in the text colour. Cleared adds a check icon.
 
-**Mission item** (`mission-item`, `state-bar`). An in-page link to a quest file: status chip + name. Hover: `holo` edge. Current: a 3 px `state-bar` at the left and `aria-current="true"`.
+**Quest card** (`quest-card`, `-hover`, `-selected`, `-active`, `quest-card-aura`, `status-*`). One game card per full project, in content order (owner, 2026-09-28; replaces the stacked files and plan v2's "no hidden tabs" ruling).
+- *Anatomy* (top to bottom, gaps `sm`, padding `lg`): rarity strip; status chip; title (`heading-quest`, `primary`, the project `name`, may wrap); one-liner (`lede`, `body-compact`, `text-muted`); a 1 px `rule` divider pushed down (`margin-top: auto`, so the stats align across the row); the key stat: key (`label`, `accent-ink`), value (`stat-value`, `primary`), qualifier below (`body-compact`, `text-muted`). No period, stack or icons on the card.
+- *Key stat*, existing content only; the keys are the approved `factTerms` labels, and value + space + qualifier rejoins the source verbatim: CyberRock: Scale, "13", "services across Azure and AWS" (`facts.scale`). botmivivi: Customers, "646", "in the first 2 months" (`usage.customers`, `botmivivi.facts.window`). Quest: Users, "~300", "users in Ha Noi, Da Nang, Sai Gon, Can Tho" (`quest.users`). Static on the card (no count-up).
+- *Frame:* opaque `surface-raised`, chamfer 14 px, a 1 px `line` edge along the cut (pseudo-element, so the focus ring is never clipped). Rarity strip: a 4 px bar along the top, from the left corner to the start of the cut, in the status colour (Active `success`, Side `accent-ink`, Cleared `text-muted`). No corner brackets (they belong to the hero and Join party).
+- *Sizes:* layout on the 12 px grid (padding 24, gaps 12, max width `quest-card` 312 px), strokes in whole pixels (1, 2, 4). Cards in a row share one height (stretch). The whole card is the target.
+- *States:* **hover** (`@media (hover: hover)`): edge `holo`; no lift, no fill change. **Focus-visible:** the site's square ring. **Selected** (`aria-selected="true"`): a 2 px `accent-ink` edge along the cut, plus the menu cursor "▸" (pixel glyph, 12 px, `accent-ink`, `aria-hidden`) absolutely placed in the left padding on the title's first line, so nothing reflows. Width and cursor carry the state, not colour alone.
+- *Active quest* (every card whose status is Active, so CyberRock; data-driven, never an id check): a 1 px `success` edge and the aura, `linear-gradient(to bottom, success-wash, transparent 50%)` over the fill. Permanent: it stays when another card is selected; when the Active card is selected, the gold edge takes the outline and the strip, aura and "Active" chip keep it reading. No loop.
 
-**Quest file** (`panel`, `quest-title`, `facts-term`, `facts-value`). An article: status chip, h3, one-liner, facts `dl` (Role, When as `format.period`, then Team, Scale, Users or Stack as the quest has them), the "What I built" / "What it does" bullets with no heading, and the steps `<ol>` in the log style (`a11y.steps.*`). A slot renders only when `info.md` holds its fact.
+**Quest card row** (tablist). `role="tablist"`, `aria-labelledby` the section h2. Each card is a `<button type="button" role="tab">`: id `quest-tab-{id}`, `aria-controls` its panel, `aria-selected`, roving `tabindex` (0 selected, −1 others); name from the title (`aria-labelledby`), description from chip, one-liner and stat (`aria-describedby`). CyberRock is selected on load. Automatic activation: Left / Right move focus and select (wrapping), Home / End go to the first / last; Tab moves on into the panel. Below `md`: a horizontal scroll-snap row (`x mandatory`, cards snap `start`, `overscroll-behavior-x: contain`), full bleed with the page edge as `padding-inline` and `scroll-padding-inline`; cards `min(100% − 48px, 312px)` wide, so the next card peeks (52 px at 320 px); `padding-block` `xs` so rings aren't clipped; a thin native scrollbar (thumb `text-muted`); a focused card scrolls into view (`nearest`). Swiping never changes the selection. From `md`: a 3-column grid, no scroll.
+
+**Quest detail panel** (`panel`, `quest-title`, `facts-term`, `facts-value`). One chamfered panel under the row: the stage plus three tabpanels.
+- *Stage:* `aria-hidden`, outside the tabpanels; one live canvas (Quest holograms) that swaps its model on selection. The quest's poster holds it until the scene is ready, and for good without WebGL. The toast sits at its top-left.
+- *Tabpanel:* `role="tabpanel"`, id = the existing quest anchor (`quest-{id}`), `aria-labelledby` its tab, `tabindex="0"`; the other two carry `hidden`. Contents, as the former quest file: status chip, h3 (`quest-title`), one-liner (`body`, `text-muted`), facts `dl` (Role, When as `format.period`, then Team, Scale, Users or Stack as the quest has them; botmivivi's stat readout), the "What I built" / "What it does" bullets with no heading, Party lead, achievements, video facade, and the steps `<ol>` in the log style (`a11y.steps.*`). A slot renders only when `info.md` holds its fact.
+- *Layout:* from `lg`, 5 / 7 inside the panel: stage (4:3, sticky at `hud` + `md`, aligned to the start) and tabpanel. Below `lg`: the stage band (16:10, ≤ 320 px) above the tabpanel, one column.
+- *Deep links:* a `#quest-{id}` hash on load, or a Mission log link, selects that quest, scrolls the panel into view and focuses the tabpanel.
+- *No JS:* the server markup already has the roles and CyberRock selected. The existing `noscript` style hides the card row and the stage and shows every tabpanel, so all three stack in content order, `lg` apart, each opening with its own chip and h3.
 
 **Stat readout** (`stat-readout`). botmivivi: Users 10, Customers 646, Orders 2,951, the qualifier "in the first 2 months", and Impact as a text line, exactly `botmivivi.facts`. Three columns from `xs`, one below (Responsive).
 
 **Achievement badge** (`achievement-badge`). Quest's four: icon (wall, stopwatch, key, tool) + name in `primary` + description in `text-muted`, both `body-compact`. A 2 × 2 grid from `sm`.
 
-**Toast** (`toast`). A glass chip with a 1 px `accent-ink` edge in the hologram viewport's top-left: "Quest unlocked" plus the quest name in `body-compact` `primary`. `aria-hidden`; the state is carried by `aria-current`.
+**Toast** (`toast`). A glass chip with a 1 px `accent-ink` edge in the stage's top-left: "Quest unlocked" plus the quest name in `body-compact` `primary`. It fires on each selection the visitor makes (click, tap, arrow key, deep link), never for the default on load. `aria-hidden`; the state is carried by `aria-selected`.
 
 **Video facade** (`video-facade`). "Watch Quest by NFQ" with a player-play icon and the caption "Opens the YouTube player."; the iframe loads only on activation.
 
-**Mission log timeline** (`timeline-line`, `timeline-node-current`). A 2 px `holo` line with 16 px square nodes rotated 45°: `holo` outline, and a gold core for the current employer. Each node: h3 employer, title, period, and the projects as a list (links to quest files; Lemonswan's external link).
+**Mission log timeline** (`timeline-line`, `timeline-node-current`). A 2 px `holo` line with 16 px square nodes rotated 45°: `holo` outline, and a gold core for the current employer. Each node: h3 employer, title, period, and the projects as a list (links that select the quest's card; Lemonswan's external link).
 
 **Rule panel** (`panel`, `rule-lead`). A House rule: a numeral chip (1–4; the owner's list is ordered) and the rule as one paragraph. The lead phrase is run in (inline, `rule-lead`), and the rest of the owner's sentence follows on the same line, so no line starts with the owner's dash. Underline: `text-decoration` 2 px, offset 4 px, in `accent-ink`, which wraps with the phrase.
 
@@ -386,16 +410,16 @@ Two R3F canvases, each a dynamically imported client island, `aria-hidden`, rend
 - **Interaction:** a fine pointer tilts the rig (yaw ±0.25 rad, pitch ±0.06, damping 4). Horizontal drag spins the chip (`touch-action: pan-y`, so vertical scroll is kept). Run and the switch drive one state machine shared with the HTML log.
 - **Theme change:** swaps materials, blending and bloom in place; geometry never swaps.
 
-**Quest holograms** (Quest journal). A smaller projector (base r 1.4, two rings, the cone), with the hero's materials per theme (Lab base included), the hero's Deck Bloom, and a `holo` rim ring at r 1.4 so the Deck base never reads as a black disc. FOV 30, fixed three-quarter view, pointer tilt ±0.15 rad from `lg`. One model per quest (`depiction.holograms`):
+**Quest holograms** (Quest journal). A smaller projector (base r 1.4, two rings, the cone), with the hero's materials per theme (Lab base included), the hero's Deck Bloom, and a `holo` rim ring at r 1.4 so the Deck base never reads as a black disc. FOV 30, fixed three-quarter view, pointer tilt ±0.15 rad from `lg`. One canvas, in the detail panel's stage; selection swaps the model in place. One model per quest (`depiction.holograms`):
 - **CyberRock:** the hero chip at 0.7 scale with its scan ring.
 - **botmivivi:** a ledger stack of five slabs (1.6 × 0.08 × 1.1, gap 0.12, `holo` edges) turning at 0.2 rad/s.
 - **Quest:** two linked data slabs (1.2 × 0.5 × 1.2): the left slab is `holo` wireframe at 40 %, the right a solid `scene-chip` slab with `holo` edges. A curved path joins them, and four packets cross left → right in a loop, every 4 s.
-- `aria-hidden` tags "v1" and "v2" on Quest's slabs. The HTML equivalent is the steps list in each quest file.
+- `aria-hidden` tags "v1" and "v2" on Quest's slabs. The HTML equivalent is the steps list in each quest panel.
 
 ## Motion
 **Budget.** The hero lives (a looping hologram and one autoplayed handshake). Every section powers on once when first seen and has one reward moment. Only `transform`, `opacity`, `clip-path`, the colour of 3D materials and the House rules underline colour animate; transitions name their properties; everything is interruptible; there are no scroll listeners (IntersectionObserver, `animation-timeline: view()`). A single **motion mode** exists: `prefers-reduced-motion`, or the HUD motion toggle, sets `data-motion="off"`, which gives the reduced variants below and pauses every loop (WCAG 2.2.2).
 
-**Tokens.** Durations: `feedback` 150 · `verdict` 250 · `toast-in` 300 / `toast-out` 250 / `toast-hold` 1600 · `flip`, `row`, `brackets`, `hud` 400 · `shake` 450 · `sweep`, `release` 500 · `project` 700 · `levelup` 800 · `wipe`, `pulse`, `count` 900 · `packet` 1000 · `boot`, `line` 1200 · `scan` 1400 · `xp`, `verdict-hold` 2200 ms. Staggers: `line` 80 · `row` 100 · `badge`, `ring` 120 · `panel` 160 ms. Delays: `autoplay` 200 (after boot) · `xp` 500 · `rows` 550 · `scan` 600 ms. Easings: `ease-out` `cubic-bezier(0.2, 0.8, 0.2, 1)` · `ease-power` `cubic-bezier(0.7, 0, 0.2, 1)` · `ease-back` `cubic-bezier(0.34, 1.56, 0.64, 1)` · `ease-in-out` `cubic-bezier(0.4, 0, 0.6, 1)` · `linear` for loops. 3D rates are listed in 3D Scenes; ambient: rings 0.4 / −0.6 / 0.15 rad/s, ticks −0.1, chip spin 0.35, bob ±0.08 at 1.3 rad/s, scan `sin(1.1t)`, host 0.8, motes 0.25–0.55 units/s.
+**Tokens.** Durations: `feedback` 150 · `verdict` 250 · `toast-in` 300 / `toast-out` 250 / `toast-hold` 1600 · `swap` 320 · `row`, `brackets`, `hud` 400 · `shake` 450 · `sweep`, `release` 500 · `project` 700 · `levelup` 800 · `wipe`, `pulse`, `count` 900 · `packet` 1000 · `boot`, `line` 1200 · `scan` 1400 · `xp`, `verdict-hold` 2200 ms. Staggers: `line` 80 · `row` 100 · `badge`, `ring` 120 · `panel` 160 ms. Delays: `autoplay` 200 (after boot) · `xp` 500 · `rows` 550 · `scan` 600 ms. Easings: `ease-out` `cubic-bezier(0.2, 0.8, 0.2, 1)` · `ease-power` `cubic-bezier(0.7, 0, 0.2, 1)` · `ease-back` `cubic-bezier(0.34, 1.56, 0.64, 1)` · `ease-in-out` `cubic-bezier(0.4, 0, 0.6, 1)` · `linear` for loops. 3D rates are listed in 3D Scenes; ambient: rings 0.4 / −0.6 / 0.15 rad/s, ticks −0.1, chip spin 0.35, bob ±0.08 at 1.3 rad/s, scan `sin(1.1t)`, host 0.8, motes 0.25–0.55 units/s.
 
 | Element | Trigger | Property | Timing | Communicates | Reduced (`data-motion="off"`) |
 |---|---|---|---|---|---|
@@ -409,16 +433,18 @@ Two R3F canvases, each a dynamically imported client island, `aria-hidden`, rend
 | Panel power-on | ≥ 25 % in view, once | a `surface` cover layer over the content slides `translateX(0 → 100%)` inside its own clipping track (`inset: 0; overflow: clip`, never the panel itself, so focus rings aren't cut); its leading left edge is a 2 px `holo` line at 70 %, shown only while the cover moves: `opacity: 0` while the panel waits, then 0.7 with 0 ms duration and the slide's own delay (stagger), so the edge appears exactly as the slide starts and never stands as a line at rest; after the wipe it sits just outside the track, clipped. Not `clip-path` on the panel: IntersectionObserver never reports an element clipped to nothing | wipe, stagger panel, ease-power | Panels come online | Present at once; no edge |
 | Stat rows, facts | With their panel | opacity + `translateX(−10px→0)` | row, delay rows, stagger row | Stats tick in | Present at once |
 | Avatar scan | With its panel | a `holo` band `translateY` top → bottom, once | scan, delay scan | Character scanned | None |
-| Quest unlocked | A quest file becomes current (≥ 50 % in view, or its mission item) | old model scale → 0.6 + fade; scan sweep; new model scale 0.6 → 1; status chip `rotateX(90°→0)`; toast wipe in, hold, out | project (ease-back), flip, toast-in / hold / out | Opening a quest file | Model cut; toast fades in and out (feedback) |
-| Achievements | First time Quest is current | each badge wipes on + one glint `translateX` | row, stagger badge | Achievements | Present at once |
-| botmivivi readouts | First view | numbers count 0 → value (text stays final for AT) | count, ease-out | Live numbers | Final values |
+| Quest select (panel swap) | Selection changes | the new tabpanel shows and the old hides at once; a `surface-raised` cover in the panel's clipping track slides `translateY(0 → 100%)`, its top edge a 2 px `holo` line at 70 % shown only while moving (the scan); the stage cuts to the new model, which projects in (scale 0.6 → 1) with one scan-disc pass; the cursor `translateX(−4px → 0)` + fade; card edges change colour | swap, ease-power (model ease-back); cursor and edges feedback | Opening a quest | Instant: no cover, model cut to a still frame, cursor and edges at once |
+| Quest unlocked | A selection by the visitor, not the default on load | toast wipe in, hold, out; a new selection restarts it | toast-in / hold / out | A quest opened | Toast fades in and out (feedback) |
+| Active quest lights | With the row's power-on, once | after its card's wipe, the Active strip `scaleX(0 → 1)` from the left and the aura opacity 0 → 1 | sweep, ease-out | The quest in progress | Present at once |
+| Achievements | First time Quest's panel shows | each badge wipes on + one glint `translateX` | row, stagger badge | Achievements | Present at once |
+| botmivivi readouts | First time its panel shows | numbers count 0 → value (text stays final for AT) | count, ease-out | Live numbers | Final values |
 | Mission log line | Scroll | line `scaleY(0→1)` via `view()`, `animation-range: entry 10% cover 45%`, so it is complete before the section's middle passes the viewport's (IO fallback: line); nodes power on as reached | line, wipe | Career progress | Fully drawn |
 | House rules | In view | panels wipe on in reading order; then the lead phrase's underline colour transitions `transparent → accent-ink` | wipe, stagger panel, sweep | The rules of play | Present at once |
 | Level up | Leveling up in view, once per page load (no storage) | a 2 px `accent` bar sweeps across the HUD strip; triangles rise 6 px + fade | levelup, row, stagger row | Skills in training | None; triangles present |
 | AFK | With its panel | each icon rises 4 px + fades in, once | row, stagger row | Idle, then back | Present at once |
 | Join party brackets (from `lg`) | With the sign-off panel | brackets draw (`scale` from the corner) | brackets, ease-out | The frame closes | Present at once |
 | Buttons | Hover | colour; light sweep `translateX(−120%→120%)` | feedback, sweep | Clickable | Colour only |
-| Slots, mission items, links | Hover | colour, edge | feedback | Responsive surface | Same (colour isn't motion) |
+| Slots, quest cards, links | Hover | colour, edge | feedback | Responsive surface | Same (colour isn't motion) |
 | Avatar tilt | Fine pointer over the frame | `rotateX/Y` ≤ 6° | feedback, ease-out | A physical card | Off |
 | Menu, theme | Toggle | menu opacity + `translateY(−8px→0)`; theme instant | feedback | Open / close | Opacity only |
 
@@ -429,7 +455,7 @@ Safety: nothing flashes more than once per verdict and never above 3 Hz; the sha
 |---|---|---|---|
 | HUD bar | TiDi · ▸ PLAYER 1 (≥ 375) · XP 56 px · motion · theme · menu | + "LVL still leveling", XP 120 px | nav from `xl`; XP key and MAX from `2xl` |
 | Hero | Canvas band `min(48svh, 400px)` first (non-focusable, so it may lead), then intro, then console (log full width). Below `sm` the CTA pair and the console controls stack at full width; from `sm` each pair sits in a row | same | 5 / 7 split, `min-height: 100dvh`; stage `min(74svh, 700px)`, ≥ 440 px; console over the stage's bottom edge, log ≤ 360 px |
-| Quest journal | Files stacked; each file opens with its hologram band (16:10, ≤ 320 px); no mission list. Stat readout: 3 columns from `xs`, 1 column below ("CUSTOMERS" in `label` is 84 px; a column at 320 px is 77 px) | same | Left 4: sticky viewport (4:3) + mission list; right 8: stacked files (bullets and terms on one line at 1440 px; owner, 2026-09-28) |
+| Quest journal | Card row scrolls sideways (snap, cards `min(100% − 48px, 312px)`, next card peeks; the page itself never scrolls sideways at 320 px); the detail panel below: stage band (16:10, ≤ 320 px), then the tabpanel. Stat readout: 3 columns from `xs`, 1 below ("CUSTOMERS" in `label` is 84 px; a column at 320 px is 77 px) | cards in 3 columns, no scroll; panel as below `md` | cards 4 · 4 · 4; panel 12: stage 5 (4:3, sticky) · tabpanel 7 (bullets and terms on one line at 1440 px; owner, 2026-09-28) |
 | Mission log | Line at the left; node bodies in one column | node body in 2 columns (role and period, projects) | same, in 8 columns, offset 2 |
 | House rules | 1 column | 2 × 2 | 2 × 2 |
 | Inventory | Stacked; Leveling up 1 column, 2 × 2 from `sm` | same | Inventory 8 + Leveling up 4 (stacked cards) |
@@ -449,12 +475,13 @@ The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead,
 4. **Mobile hero order.** Only the aria-hidden canvas leads; the controls and log follow the intro in both DOM and visual order, so focus order matches what's seen. The preview put the console above the intro; the owner may choose that instead (plan D3), at the cost of a focus-order jump.
 5. **Starting values.** Bloom settings and the quest-hologram sizes are starting points; tune them at the checkpoint without changing the tokens.
 6. **Waiting for the owner:** the `[copy: to draft & approve]` slots (see `docs/plan/v2/contrib-design.md` §5).
-7. **Length:** about 470 lines, past the 300-line target. The front matter alone is about 195 lines (38 colours, 76 component entries), and the brief requires both themes, the 3D spec and the motion table.
+7. **Length:** about 495 lines, past the 300-line target. The front matter alone is about 195 lines (38 colours, 76 component entries), and the brief requires both themes, the 3D spec and the motion table.
 8. **Glyph coverage.** "→" appears in the owner's strings (Five-Minute Window). Both subsets include U+2192; the pixel subset adds U+25B2, U+25B8 and U+25BC for the game glyphs. The engineers' font check verifies it.
 9. **One pixel weight.** Galmuri11 Bold and Galmuri14 fail Vietnamese, so there is no bold pixel face; `font-synthesis: none` forbids a faux one.
 10. **Crispness at other root sizes.** Pixel sizes are rem, so a visitor who raises the browser's default font size gets larger, possibly softer pixel type. Honouring their setting beats crispness.
 11. **Body size.** The owner allowed body one step up; it stays 12 px (Reading on the grid). 24 px paragraphs would need wider panels to reach 45 characters per line, a layout change for the owner.
 12. **Résumé tokens.** `print-*` have no component entries (the linter doesn't require them); only the résumé components use them.
+13. **Card row reflow.** Below `md` the quest cards scroll sideways (owner, 2026-09-28). Each card is narrower than the viewport, so no single card needs two-way scrolling (1.4.10); the page never scrolls sideways.
 
 ## Changelog
 | Date | Change | Why |
@@ -464,3 +491,4 @@ The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead,
 | 2026-09-28 | Differences from the preview and §5: (1) Run keeps its holo fill (preview), limited to the hologram's own control; (2) glass raised from 70–86 % to 92 %; (3) control borders use `text-muted`; (4) the skipped step uses `text-muted` plus a line-through, not 60 % opacity; (5) slots lose the 1 px lift; (6) the Lab host uses `accent-ink` / `accent`, not the preview-only `#9A6E00` / `#B8860B`; (7) the HUD strip gains the nav and a motion toggle, with the readout disclosed by width; (8) icons are `feather` and `wall` (Tabler has no shuttlecock or brick); (9) on mobile the console follows the intro; (10) ▸ ▼ ▲ render as Tabler filled icons. | (1) The preview is the look of record; the lock keeps gold the only action colour elsewhere. (2)–(4) Contrast: at 86 %, muted text over the cone measured 4.34:1; faint borders and faded text failed 3:1 and 4.5:1. (5) Slots aren't interactive, and the ban on hover lift applies. (6) Token-only colours. (7) The preview had no nav; 2.2.2 needs a pause control for the looping hologram. (8) The icon library has none. (9) The focus order matches the visual order (QA Review Focus 5; engineering R5). (10) Neither font has the glyphs. |
 | 2026-09-28 | Font A · Cartridge: Portfolio Pixel (Galmuri11 2.403 subset, renamed) replaces Chakra Petch on every game role, at 400 only, on a 12 px grid with stepped sizes, even whole-pixel line heights and 1 px tracking at 12 px; `stat-value` regains `tnum`; the brand's soft Deck glow becomes a hard one-font-pixel sprite shadow (`shadow-pixel`, both themes); ▸ ▼ ▲ become pixel glyphs; ghost border 1.5 → 1 px; the stat readout stacks below `xs`. Fix-round rulings: the power-on edge shows only while moving; Join party brackets from `lg`; the favicon is the pixel "T" at 2× (`favicon`). | The owner chose A (`docs/design/font-options.md`); main-session rulings on the 12 px grid and the rename. Fractional sizes, tracking or borders blur pixel type. Rulings answer `docs/reports/v2-fix-1.md` (V4 edge, V7 deviation 3, F7 deviation 4). |
 | 2026-09-28 | All text pixel: `name`, `body` and the new `body-compact` move to Portfolio Pixel on the 12 px grid (name 24 / 40 px; body 12 / 24 px; compact 12 / 20 px); `body-strong`, `body-sm`, `slot` and `caption` leave the site (`rule-lead` uses `body`, `inventory-slot` uses `nav`, the rest `body-compact`); their Sans values move to `print-*` for the résumé; `measure` 56ch and `measure-hero` 50ch; a hierarchy table, emphasis by colour, square bullets, 1 px link underline. Portfolio Sans is no longer loaded by the site. | Owner, 2026-09-28: every word on the site in the pixel font, the résumé PDF plain. Galmuri14 fails Vietnamese (40/134), so Galmuri11 sets body; 12 px keeps 39 to 68 characters per line. |
+| 2026-09-28 | Quest cards: the Quest journal becomes a tabbed card row plus one detail panel. Adds `quest-card` (and `-hover`, `-selected`, `-active`, `quest-card-aura`), `success-wash`, spacing `quest-card` 312 px and duration `swap` 320 ms; removes `mission-item`, the sticky aside, the per-file bands and duration `flip`. CyberRock carries a permanent Active aura, distinct from the gold selection edge and "▸" cursor; the panel swaps with a sub-400 ms scan cover (instant when reduced); "Quest unlocked" fires only on the visitor's selections; WAI-ARIA tabs with automatic activation, deep links, and a `noscript` stacked fallback; a scroll-snap row below `md`. | Owner, 2026-09-28: the three projects as game cards, CyberRock highlighted, picked "Card row + detail panel". Overrides plan v2's "files all visible, no hidden tabs" ruling. |
