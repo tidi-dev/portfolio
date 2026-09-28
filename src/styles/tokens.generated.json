@@ -528,6 +528,12 @@
         "unit": "px"
       }
     },
+    "avatar-xl": {
+      "$value": {
+        "value": 264,
+        "unit": "px"
+      }
+    },
     "stat-key": {
       "$value": {
         "value": 96,
