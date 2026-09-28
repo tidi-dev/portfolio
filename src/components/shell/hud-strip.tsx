@@ -23,7 +23,7 @@ export function HudStrip() {
       <div className="flex h-hud items-center gap-xs page-x md:gap-md">
         <Link
           href="/#top"
-          className="inline-flex min-h-target shrink-0 items-center type-wordmark text-primary transition-colors duration-feedback hover:text-accent-ink"
+          className="inline-flex min-h-target min-w-target shrink-0 items-center type-wordmark text-primary transition-colors duration-feedback hover:text-accent-ink"
         >
           {identity.brand}
         </Link>
