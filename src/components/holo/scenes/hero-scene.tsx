@@ -17,6 +17,12 @@ const CAMERA = {
   far: 200,
   position: [0, 3.6, 11.6],
 } as const;
+const HALF_FOV = (CAMERA.fov / 2) * (Math.PI / 180);
+
+// The host in rig space (DESIGN.md → Host: at x −4.3, z 0.4), and the room
+// it needs left of its centre: its radius (0.55) and room for its tag, so
+// the framing at 375 px and wider is unchanged.
+const HOST = { x: -4.3, z: 0.4, room: 0.9 } as const;
 
 /**
  * The hero projector's world (DESIGN.md → 3D Scenes → Hero projector;
@@ -79,13 +85,21 @@ function HeroWorld({
 
   // Camera: FOV 34 at (0, 3.6, 11.6) looking at (0, 2, 0), rig x +1.25;
   // when aspect < 0.95, at (1.1, 3.6, 17) looking at (1.1, 2, 0), rig x +1.9.
+  // On the narrowest stages (320 px), where that framing would cut the host
+  // and its tag at the left edge (QA F10), the camera backs off along z just
+  // enough to keep them in frame; elsewhere the framing is DESIGN.md's.
   useEffect(() => {
-    const narrow = size.width / size.height < 0.95;
-    camera.position.set(narrow ? 1.1 : 0, 3.6, narrow ? 17 : 11.6);
-    camera.lookAt(narrow ? 1.1 : 0, 2, 0);
+    const aspect = size.width / size.height;
+    const narrow = aspect < 0.95;
+    const x = narrow ? 1.1 : 0;
+    const rigX = narrow ? 1.9 : 1.25;
+    const reach = x - (HOST.x + rigX) + HOST.room;
+    const fit = HOST.z + reach / (Math.tan(HALF_FOV) * aspect);
+    camera.position.set(x, 3.6, Math.max(narrow ? 17 : 11.6, fit));
+    camera.lookAt(x, 2, 0);
     camera.updateProjectionMatrix();
     if (rigRef.current !== null) {
-      rigRef.current.rig.position.x = narrow ? 1.9 : 1.25;
+      rigRef.current.rig.position.x = rigX;
     }
     invalidate();
   }, [camera, size, invalidate]);
