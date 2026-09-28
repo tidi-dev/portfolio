@@ -23,6 +23,18 @@
   }
 }
 
+/* An in-text link's 44 × 44 px target (Consistency locks 7) that keeps its
+   line: the box grows to the target around the centred text, and negative
+   block margins hand the extra height back, so the line box, and the
+   look, stay as they were. */
+@utility target-inline {
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--spacing-target);
+  min-height: var(--spacing-target);
+  margin-block: calc((1lh - var(--spacing-target)) / 2);
+}
+
 /* ── Mission log ─────────────────────────────────────────────────────── */
 
 /* Responsive Behavior → Mission log: from lg the log sits in 8 of 12

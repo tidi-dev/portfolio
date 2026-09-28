@@ -51,7 +51,10 @@ function QuestEntry({ project }: { readonly project: FullProject }) {
   return (
     <li className="flex flex-col gap-2xs">
       <h4 className="type-nav">
-        <a href={`#${questAnchor(project.id)}`} className="text-link">
+        <a
+          href={`#${questAnchor(project.id)}`}
+          className="target-inline text-link"
+        >
           {project.shortName ?? project.name}
         </a>
       </h4>
