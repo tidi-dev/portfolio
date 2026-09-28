@@ -10,17 +10,17 @@ import { identity } from "@/content/identity";
 import type { Section } from "@/content/schema/sections";
 import { sections } from "@/content/sections";
 import { joinMiddot, typography } from "@/lib/format/typography";
+import tokens from "@/styles/tokens.generated.json";
 import { AvatarTilt } from "./avatar-tilt.client";
 import { DialogueContinue } from "./dialogue-continue.client";
 
 // "Press A to continue" moves on to AFK, so it renders only when AFK does.
 const AFK = sections.find((section) => section.id === "afk" && section.present);
 
-// The frame's rendered widths (DESIGN.md → Responsive Behavior → Character
-// stats: at most 220 px below sm, 160 px from sm, avatar 200 px from lg,
-// avatar-xl 264 px from xl).
-const AVATAR_SIZES =
-  "(min-width: 1280px) 264px, (min-width: 1024px) 200px, (min-width: 640px) 160px, 220px";
+// The widest the frame renders (DESIGN.md → Responsive Behavior →
+// Character stats): avatar-xl, from xl; narrower everywhere else. Read from
+// the token, so no breakpoint or width is repeated here.
+const AVATAR_SIZES = `${String(tokens.spacing["avatar-xl"].$value.value)}px`;
 
 const { education, languages } = about;
 

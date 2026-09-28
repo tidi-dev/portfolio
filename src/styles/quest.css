@@ -4,9 +4,9 @@
  * facade; 3D Scenes → Quest holograms; Responsive Behavior → Quest
  * journal; Motion → Quest unlocked, Achievements, botmivivi readouts).
  * Every file is visible and stacked (plan → Rulings). Colours, spacing and
- * timings are tokens; the few fixed sizes are the component entries' own
- * (status chip 28 px high with 10 px padding, mission item 56 px, the 3 px
- * state bar, the 16:10 band at most 320 px). Motion runs only under
+ * timings are tokens; component dimensions (status chip, mission item, the
+ * state bar, the band's 320 px cap) are theme.css's mapped names. Motion
+ * runs only under
  * `data-motion="on"`: without JavaScript, or in the calm mode, everything
  * rests in its final state.
  */
@@ -131,7 +131,7 @@
 @utility quest-band {
   --chamfer-fill: var(--color-surface);
   aspect-ratio: 16 / 10;
-  max-height: 320px;
+  max-height: var(--quest-band-max-height);
 
   @variant lg {
     display: none;
@@ -301,8 +301,8 @@
   display: inline-flex;
   flex: none;
   align-items: center;
-  min-height: 28px;
-  padding-inline: 10px;
+  min-height: var(--status-chip-height);
+  padding-inline: var(--status-chip-padding);
 
   :root[data-motion="on"] [data-quest-id][data-current] & {
     animation: chip-flip var(--transition-duration-flip) var(--ease-out);
@@ -326,7 +326,7 @@
 @utility mission-item {
   display: flex;
   align-items: center;
-  min-height: 56px;
+  min-height: var(--row-height);
   padding-inline: var(--spacing-md);
 
   &::before {
@@ -344,7 +344,7 @@
   top: 0;
   bottom: var(--spacing-chamfer);
   left: 0;
-  width: 3px;
+  width: var(--state-bar-width);
   background-color: var(--color-accent-ink);
   opacity: 0;
 

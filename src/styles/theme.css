@@ -93,6 +93,30 @@
     --focus-width: 2px;
     --focus-offset: 3px;
 
+    /* Component dimensions. The export drops the front matter's component
+       entries (Known Gaps 1), so their sizes, and the fixed sizes in
+       Components and Responsive Behavior, are mapped here once; the
+       component styles read these names, never the numbers. */
+    --xp-track-height: 10px; /* components.xp-track.height */
+    --xp-track-width: 170px; /* components.xp-track.width (from 2xl) */
+    --xp-track-width-md: 120px; /* Responsive → HUD bar, md to lg */
+    --xp-track-width-sm: 56px; /* Responsive → HUD bar, below md */
+    --state-bar-width: 3px; /* components.state-bar.width */
+    --button-holo-padding: 20px; /* components.button-holo.padding */
+    --switch-padding: 14px; /* components.switch.padding */
+    --switch-track-width: 34px; /* Components → Switch: 34 × 18 px */
+    --switch-track-height: 18px;
+    --switch-thumb-size: 12px; /* components.switch-thumb.size */
+    --switch-thumb-travel: 16px; /* Components → Switch: slides 16 px */
+    --row-height: 56px; /* mission-item and contact-row height; menu rows, AFK items */
+    --status-chip-height: 28px; /* components.status-*.height */
+    --status-chip-padding: 10px; /* components.status-*.padding */
+    --quest-band-max-height: 320px; /* Responsive → Quest journal: ≤ 320 px */
+    --timeline-line-width: 2px; /* components.timeline-line.width */
+    --timeline-node-size: 16px; /* components.timeline-node-current.size */
+    --avatar-width-sm: 160px; /* Responsive → Character stats, from sm */
+    --avatar-max-width: 220px; /* Responsive → Character stats, below sm */
+
     /* Layout → Fixed HUD strip: anchors and focus clear the 60 px strip. */
     --scroll-padding-hud: 76px;
 

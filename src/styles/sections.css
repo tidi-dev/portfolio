@@ -3,11 +3,10 @@
  * Mission log timeline, Rule panel, Inventory slot, Training card, Avatar
  * frame, Dialogue box, AFK list, Contact row; Responsive Behavior). Their
  * scroll motion lives in reveal.css. Colours, spacing and timings are
- * tokens; the few fixed sizes are the component entries' own (the 2 px
- * timeline line and 16 px nodes, the 12 px training marker, the 56 px AFK
- * and contact rows, the 3:4 avatar at 160 / 200 / at most 220 px) or
- * DESIGN.md's (the rule numeral matches the 28 px status chip, the 2 px
- * lead-phrase underline matches the lead lines).
+ * tokens; component dimensions (the timeline line and nodes, the 56 px
+ * rows, the avatar widths, the rule numeral at the status chip's height)
+ * are theme.css's mapped names. Hairline edges and the 2 px lead-phrase
+ * underline, which matches the lead lines, stay literal.
  */
 
 /* Link (DESIGN.md → Link): accent-ink, underlined; hover primary. */
@@ -66,8 +65,9 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 7px;
-  width: 2px;
+  /* Centred on the nodes. */
+  left: calc((var(--timeline-node-size) - var(--timeline-line-width)) / 2);
+  width: var(--timeline-line-width);
   background-color: var(--color-holo);
   transform-origin: top;
 }
@@ -83,8 +83,8 @@
   position: absolute;
   top: var(--spacing-lg);
   left: calc(-1 * var(--spacing-xl));
-  width: 16px;
-  height: 16px;
+  width: var(--timeline-node-size);
+  height: var(--timeline-node-size);
   border: 2px solid var(--color-holo);
   background-color: var(--color-surface);
   transform: rotate(45deg);
@@ -128,8 +128,8 @@
   display: inline-grid;
   flex: none;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: var(--status-chip-height);
+  height: var(--status-chip-height);
   color: var(--color-accent-ink);
 }
 
@@ -239,7 +239,7 @@
   gap: var(--spacing-lg);
 
   @variant sm {
-    grid-template-columns: 160px minmax(0, 1fr);
+    grid-template-columns: var(--avatar-width-sm) minmax(0, 1fr);
   }
 
   @variant lg {
@@ -275,7 +275,7 @@
    feedback; none in the calm mode. At most 220 px wide below sm. */
 @utility avatar-tilt {
   width: 100%;
-  max-width: 220px;
+  max-width: var(--avatar-max-width);
   transform: perspective(600px) rotateX(var(--tilt-x, 0deg))
     rotateY(var(--tilt-y, 0deg));
   transition: transform var(--transition-duration-feedback) var(--ease-out);
@@ -384,7 +384,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  min-height: 56px;
+  min-height: var(--row-height);
   padding: var(--spacing-xs) var(--spacing-sm);
   border: 1px solid var(--color-rule);
 }
@@ -434,7 +434,7 @@
   display: grid;
   align-items: center;
   gap: var(--spacing-xs);
-  min-height: 56px;
+  min-height: var(--row-height);
   padding-block: var(--spacing-xs);
   border-bottom: 1px solid var(--color-rule);
 
