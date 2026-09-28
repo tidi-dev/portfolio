@@ -14,15 +14,33 @@
  */
 
 /* The power-on cover (panel.tsx): a page-surface layer over the panel's
-   content, at rest with no width, never taking a pointer. */
-@utility power-cover {
+   content, inside its own clipping track (never the panel, so focus rings
+   aren't cut). At rest it sits just past the track's right edge, clipped
+   out of sight; it never takes a pointer. Its leading left edge is a 2 px
+   holo line at 70 %, so the wipe reads as a panel coming online. */
+@utility power-track {
   position: absolute;
   inset: 0;
   z-index: var(--z-index-content);
+  overflow: clip;
   pointer-events: none;
+}
+
+@utility power-cover {
+  position: absolute;
+  inset: 0;
   background-color: var(--color-surface);
-  transform: scaleX(0);
-  transform-origin: right;
+  transform: translateX(100%);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background-color: color-mix(in srgb, var(--color-holo) 70%, transparent);
+  }
 }
 
 @keyframes avatar-scan {
@@ -61,17 +79,20 @@
 
 @media screen {
   /* Panel power-on: ≥ 25 % in view, once; the wipe, left to right, over
-     wipe, ease-power, drawn by the panel's cover shrinking away to the
-     right (panel.tsx says why not a clip); panels reached together follow reading
-     order (stagger panel, --reveal-order). */
+     wipe, ease-power, drawn by the panel's cover sliding out to the right,
+     translateX(0 → 100%), led by its holo edge (panel.tsx says why not a
+     clip); panels reached together follow reading order (stagger panel,
+     --reveal-order). */
   :root[data-motion="on"][data-reveal-ready]
     [data-reveal="panel"]:not([data-revealed])
+    > .power-track
     > .power-cover {
-    transform: scaleX(1);
+    transform: translateX(0);
   }
 
   :root[data-motion="on"][data-reveal-ready]
     [data-reveal="panel"][data-revealed]
+    > .power-track
     > .power-cover {
     transition: transform var(--transition-duration-wipe) var(--ease-power)
       calc(var(--reveal-order, 0) * var(--stagger-panel));
@@ -172,7 +193,7 @@
     var(--delay-scan) both;
 }
 
-/* Level up: once per visit, a 2 px accent bar sweeps across the bottom of
+/* Level up: once per page load, a 2 px accent bar sweeps across the bottom of
    the HUD strip over levelup (shell.css holds the bar). */
 :root[data-motion="on"] .levelup-bar[data-play]::before {
   animation: levelup-sweep var(--transition-duration-levelup) var(--ease-in-out);

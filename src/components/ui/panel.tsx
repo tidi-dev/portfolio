@@ -2,14 +2,21 @@ import type { ReactNode } from "react";
 
 /**
  * The power-on wipe's cover (reveal.css): a page-surface layer over the
- * panel that shrinks away to the right once the panel is reached. The
- * wipe is drawn by this layer rather than by clipping the panel, because
- * an IntersectionObserver never sees a target clipped to nothing, so the
+ * panel that slides out to the right, led by a holo edge, once the panel
+ * is reached. It moves inside its own clipping track, so it never widens
+ * the page and the panel's focus rings are never cut. The wipe is drawn
+ * by this layer rather than by clipping the panel, because an
+ * IntersectionObserver never sees a target clipped to nothing, so the
  * panel would never be revealed. At rest (no JavaScript, the calm mode,
- * after the wipe) the cover has no width, and it never takes a pointer.
+ * after the wipe) the cover sits clipped out of sight, and it never takes
+ * a pointer.
  */
 export function PowerCover() {
-  return <span aria-hidden="true" className="power-cover" />;
+  return (
+    <span aria-hidden="true" className="power-track">
+      <span className="power-cover" />
+    </span>
+  );
 }
 
 /**
