@@ -52,12 +52,13 @@ typography:
   button: { fontFamily: Galmuri11, fontSize: 0.75rem, fontWeight: 400, lineHeight: 1.5, letterSpacing: 1px }
   nav: { fontFamily: Galmuri11, fontSize: 0.75rem, fontWeight: 400, lineHeight: 1.5, letterSpacing: 1px }
   label: { fontFamily: Galmuri11, fontSize: 0.75rem, fontWeight: 400, lineHeight: 1.5, letterSpacing: 1px }
-  name: { fontFamily: Mona Sans, fontSize: 1.125rem, fontWeight: 500, lineHeight: 1.25, fontVariation: "'wdth' 112" }
-  body: { fontFamily: Mona Sans, fontSize: 1rem, fontWeight: 400, lineHeight: 1.6 }
-  body-strong: { fontFamily: Mona Sans, fontSize: 1rem, fontWeight: 600, lineHeight: 1.6 }
-  body-sm: { fontFamily: Mona Sans, fontSize: 0.9375rem, fontWeight: 400, lineHeight: 1.5 }
-  slot: { fontFamily: Mona Sans, fontSize: 0.875rem, fontWeight: 500, lineHeight: 1.2 }
-  caption: { fontFamily: Mona Sans, fontSize: 0.8125rem, fontWeight: 400, lineHeight: 1.4 }
+  name: { fontFamily: Galmuri11, fontSize: 1.5rem, fontWeight: 400, lineHeight: 1.6667 }
+  body: { fontFamily: Galmuri11, fontSize: 0.75rem, fontWeight: 400, lineHeight: 2 }
+  body-compact: { fontFamily: Galmuri11, fontSize: 0.75rem, fontWeight: 400, lineHeight: 1.6667 }
+  print-name: { fontFamily: Mona Sans, fontSize: 1.125rem, fontWeight: 500, lineHeight: 1.25, fontVariation: "'wdth' 112" }
+  print-body-strong: { fontFamily: Mona Sans, fontSize: 1rem, fontWeight: 600, lineHeight: 1.6 }
+  print-body-sm: { fontFamily: Mona Sans, fontSize: 0.9375rem, fontWeight: 400, lineHeight: 1.5 }
+  print-caption: { fontFamily: Mona Sans, fontSize: 0.8125rem, fontWeight: 400, lineHeight: 1.4 }
 rounded:
   none: 0px
 spacing:
@@ -111,7 +112,7 @@ components:
   switch: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.nav}", height: 44px, padding: 14px }
   switch-thumb: { backgroundColor: "{colors.text-muted}", size: 12px }
   switch-thumb-on: { backgroundColor: "{colors.danger}", size: 12px }
-  step-log: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.text-muted}", typography: "{typography.body-sm}", padding: 16px }
+  step-log: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.text-muted}", typography: "{typography.body-compact}", padding: 16px }
   step-on: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}" }
   step-numeral-on: { backgroundColor: "{colors.holo}", textColor: "{colors.on-holo}", typography: "{typography.label}", size: 20px }
   verdict-genuine: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.success}", typography: "{typography.button}" }
@@ -131,17 +132,17 @@ components:
   status-cleared: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.text-muted}", typography: "{typography.label}", height: 28px, padding: 10px }
   mission-item: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.nav}", height: 56px, padding: 16px }
   facts-term: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.label}", width: 96px }
-  facts-value: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body-sm}" }
+  facts-value: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body-compact}" }
   stat-readout: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.stat-value}" }
-  achievement-badge: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body-sm}", padding: 16px }
+  achievement-badge: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body-compact}", padding: 16px }
   toast: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.heading-panel}", padding: 12px }
   video-facade: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.button}", height: 48px }
   timeline-line: { backgroundColor: "{colors.holo}", width: 2px }
   timeline-node-current: { backgroundColor: "{colors.accent}", size: 16px }
-  rule-lead: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.body-strong}" }
-  inventory-slot: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.slot}", padding: 8px }
+  rule-lead: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.accent-ink}", typography: "{typography.body}" }
+  inventory-slot: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.nav}", padding: 8px }
   training-marker: { textColor: "{colors.success}", size: 12px }
-  avatar-caption: { backgroundColor: "{colors.scrim}", textColor: "{colors.on-scrim}", typography: "{typography.caption}" }
+  avatar-caption: { backgroundColor: "{colors.scrim}", textColor: "{colors.on-scrim}", typography: "{typography.body-compact}" }
   speaker-tag: { backgroundColor: "{colors.accent}", textColor: "{colors.on-accent}", typography: "{typography.nav}", padding: 8px }
   contact-row: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body}", height: 56px, padding: 16px }
   link: { textColor: "{colors.accent-ink}" }
@@ -181,7 +182,7 @@ components:
 2. **Accent:** Gold is the one UI accent (CTA, ▸ PLAYER 1, panel headings, stat keys, links, state bars, focus). Holo is light, not an accent: 3D, lines, the role line and the one control that drives the hologram (Run). Success and danger mean verdict and status only.
 3. **Shape:** chamfer, 0 radius. Panels and buttons cut two corners at 45°; everything else is square.
 4. **Icons:** Tabler outline, stroke 1.5, 20 px (24 px in Join party and AFK). The three game glyphs ▸ ▼ ▲ are Portfolio Pixel glyphs, not icons.
-5. **Type:** Portfolio Pixel, the renamed Galmuri11 subset (brand, headings, HUD, labels, stats, controls), + Portfolio Sans, the renamed Mona Sans subset (reading, names). One pixel weight, on its 12 px grid. No mono, no italics.
+5. **Type:** one family on the site: Portfolio Pixel, the renamed Galmuri11 subset, sets every word (owner, 2026-09-28: "all text pixel"). One weight on its 12 px grid; hierarchy comes from size steps, colour, case and spacing. No mono, no italics, no bold. Portfolio Sans, the renamed Mona Sans subset, sets only the résumé PDF.
 6. **Labels:** one per intent. "Résumé" names the PDF everywhere; the hero CTA and the nav's "Join party" both land on `#contact`.
 7. **Controls:** buttons 48 px high; every target ≥ 44 × 44 px.
 
@@ -204,7 +205,7 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 | `scene-*` | metal `#C9D3DE`, chip `#121A2A`, pin `#B8C4D6` | metal `#0E1524` | 3D materials only, never behind text. |
 | `shadow-pixel` | holo 20 % | cyan 35 % | The brand's hard sprite shadow (Typography). Decorative. |
 
-**Contrast (WCAG 2.x, computed by script, no rounding): 54 pairs, 0 failures** (re-run 2026-09-28 for the font change; colours unchanged). Translucent layers were checked against the worst backdrop (glass over full `holo`; the HUD strip over gold or ink).
+**Contrast (WCAG 2.x, computed by script, no rounding): 54 pairs, 0 failures** (re-run 2026-09-28 for the font change; colours unchanged). All text pixel (2026-09-28) adds no pair: the reading roles use `primary`, `text-muted`, `accent-ink` and `on-scrim` on the backgrounds below (17 of these pairs re-run, 0 failures). Translucent layers were checked against the worst backdrop (glass over full `holo`; the HUD strip over gold or ink).
 
 | Pair | Lab | Deck | Needs |
 |---|---|---|---|
@@ -229,10 +230,10 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 ## Typography
 | Family | Role | Source, licence | Weights, subsets | Why |
 |---|---|---|---|---|
-| **Portfolio Pixel** (Galmuri11, renamed) | Brand, wordmark, headings, HUD, labels, stats, role, buttons, nav, speaker tag; the ▸ ▼ ▲ glyphs | npm `galmuri` 2.40.3, `dist/Galmuri11.ttf` ("Version 2.403"), OFL-1.1, © 2019–2025 Lee Minseo. Reserved Font Name "Galmuri", so the subset ships renamed | 400 only (Bold covers 32/134 Vietnamese letters); latin, vietnamese, arrows, U+25B2 U+25B8 U+25BC. 134/134 Vietnamese | A proportional 16-bit console-menu face: "▸ PLAYER 1", "Press A to continue" and "progress saved" read as a game UI at a glance, set against a live hologram. Owner's pick, A · Cartridge. |
-| **Portfolio Sans** (Mona Sans, renamed) | Body, names, facts, slots, captions | google/fonts `ofl/monasans`, OFL-1.1 (GitHub); RFN "Mona", so renamed | wght 400–600, wdth 100–112; latin, vietnamese, arrows | GitHub's typeface, where the owner's RPG README and banner live. Width 112 gives the names their stance. |
+| **Portfolio Pixel** (Galmuri11, renamed) | Every word on the site: brand, headings, names, reading text, facts, captions, HUD, labels, stats, controls; the ▸ ▼ ▲ glyphs | npm `galmuri` 2.40.3, `dist/Galmuri11.ttf` ("Version 2.403"), OFL-1.1, © 2019–2025 Lee Minseo. Reserved Font Name "Galmuri", so the subset ships renamed | 400 only (Bold covers 32/134 Vietnamese letters); latin, vietnamese, arrows, U+25B2 U+25B8 U+25BC. 134/134 Vietnamese | A proportional 16-bit console-menu face: "▸ PLAYER 1", "Press A to continue" and "progress saved" read as a game UI at a glance, set against a live hologram. Owner's pick, A · Cartridge. |
+| **Portfolio Sans** (Mona Sans, renamed) | The résumé PDF only; the site doesn't load it. Owner, 2026-09-28: the PDF stays plain | google/fonts `ofl/monasans`, OFL-1.1 (GitHub); RFN "Mona", so renamed | wght 400–600, wdth 100–112; latin, vietnamese, arrows | GitHub's typeface, where the owner's RPG README and banner live. Width 112 gives the names their stance. |
 
-Front-matter tokens name the source families (`Galmuri11`, `Mona Sans`); the font pipeline serves them under the renamed families.
+Front-matter tokens name the source families (`Galmuri11`, `Mona Sans`); the font pipeline serves them under the renamed families. The `print-*` tokens belong to the résumé and never appear on the site.
 
 | Token | Size (stepped) | Line height | Tracking, case | Use |
 |---|---|---|---|---|
@@ -246,18 +247,35 @@ Front-matter tokens name the source families (`Galmuri11`, `Mona Sans`); the fon
 | `role` | 12 px | 1.5 | 1 px, uppercase | Role line |
 | `button` | 12 px | 1.5 | 1 px, as written; the verdict alone is uppercase | Buttons, skip link, verdict, video facade |
 | `nav` | 12 px | 1.5 | 1 px, as cased | Nav, switch, mission items, training topics, speaker tag. The menu sheet uses `heading-quest` |
-| `name` | 1.125rem | 1.25 | wdth 112 | "Hồ Trọng Đại" (`lang="vi"`) and "Dai Ho Trong" |
-| `body` / `body-strong` | 1 → 1.0625rem, fluid | 1.6 | none | Reading; the bold lead phrases of House rules |
-| `body-sm`, `slot`, `caption` | 0.9375 / 0.875 / 0.8125rem | 1.5 / 1.2 / 1.4 | none | Facts, log steps; inventory items; avatar caption |
+| `name` | 24 px | 1.6667 (40 px) | 0, as cased | "Hồ Trọng Đại" (`lang="vi"`) and "Dai Ho Trong", `text-muted` |
+| `body` | 12 px, every width | 2 (24 px) | 0, as written | Paragraphs, the hero sentence, bullets, contact rows, House rules |
+| `body-compact` | 12 px | 1.6667 (20 px) | 0, as written | Facts values, log steps, badges, the toast's quest name, the stat qualifier, the avatar caption |
+| `print-*` | name 1.125rem (wdth 112), body-strong 1rem at 600, body-sm 0.9375rem, caption 0.8125rem | 1.25 / 1.6 / 1.5 / 1.4 | none | Résumé PDF only, Portfolio Sans, the values the site used before |
 
 **Pixel principles** (Portfolio Pixel only)
 - **The grid.** 1200 units per em at 100 units per font pixel, so one font pixel is size ÷ 12. Sizes are only 12, 24, 36, 48, 60 and 96 px (written in rem at the 16 px root), stepped at breakpoints: no `clamp()`, `vw` or `calc()` on a pixel role, and no scale transform at rest.
 - **Whole pixels.** Line heights resolve to even whole pixels (the table), which keeps baselines on whole pixels under both the Mac (hhea) and Windows (win) metrics. Tracking is 1 px at 12 px and 0 above. Shadow offsets are one font pixel.
 - **One weight.** Regular 400 with `font-synthesis: none`: hierarchy comes from size, colour and case, never bold or italic.
-- **Diacritics.** Stacked tones rise high (Ồ reaches 17/12 em), so names with stacked tones stay in Portfolio Sans, and no container clips pixel text vertically.
+- **Diacritics.** Stacked tones reach 17/12 em (Ồ), 5 font pixels above the ascent. In `body` they fit the 24 px line; in `body-compact` and `name` they rise 2 and 4 px above the line box and still clear the line above by ≥ 1 px. So no container clips pixel text vertically (`overflow: hidden`, fixed heights), the name block keeps `2xs` (4 px) above its first line, clear of the brand's sprite shadow, and a heading carrying Vietnamese takes the `name` leading (40 px at 24 px).
+- **Emphasis.** No bold or italic exists: `strong`, `b` and `em` render at 400, upright, in `accent-ink`. The House rules lead phrase is `accent-ink` plus its underline.
 - **Case.** Uppercase only on `heading-panel`, `label`, `role` and the verdict. Names never take it.
 
-General: body type is fluid, 16 → 17 px; the pixel steps are 12 × 1, 2, 3, 4, 5, 8. Measure ≤ 52ch in the hero and ≤ 68ch elsewhere. Vietnamese text keeps a line height ≥ 1.15 in Portfolio Sans and ≥ 1.3333 in pixel headings. Uppercase is CSS (`text-transform`), never typed; the DOM keeps the owner's casing. Names (TiDi, Hồ Trọng Đại, Dai Ho Trong, project and employer names) never take an uppercase style. Curly quotes; the owner's em dashes stay.
+**Reading on the grid.** Body stays 12 px at every width, and the step up goes to names and titles, not paragraphs. Galmuri11's x-height is 8 of 12 font pixels, so at 12 px it matches a 16 px sans; a character of the owner's copy averages 6.57 px (all 13,269 prose characters of `info.md`, measured with fontTools). At 24 px that doubles: a 320 px panel line would hold about 20 characters and a 5-column panel about 35.
+- **Measure:** `measure` 56ch for paragraphs (1ch is the 8 px "0", so 448 px, about 68 characters); `measure-hero` 50ch (400 px, about 61; the hero sentence runs 4 lines). A 320 px panel line holds about 39 characters, 375 px about 47.
+- **Rhythm:** paragraphs are `lg` (24 px, one line) apart; a label sits `xs` above what it names; list items are `2xs` apart.
+- **Bullets:** a 4 × 4 px `text-muted` square on whole pixels, centred on the first line's x-height, `sm` before the text. Not the browser's disc, which renders soft at this size.
+
+**Hierarchy without a second face**
+| Level | Size | Set apart by |
+|---|---|---|
+| Brand | 96 / 60 px | Size, sprite shadow |
+| Section | 48 / 36 px | Size, `primary`, the holo lead line |
+| Titles, names, stats, wordmark | 24 px | Size; names in `text-muted` |
+| Reading (`body`, `body-compact`) | 12 px | Sentence case, no tracking, 24 or 20 px leading; `primary`, secondary text `text-muted` |
+| Labels (`heading-panel`, `label`, `role`) | 12 px | Uppercase, 1 px tracking, 18 px leading, colour (`accent-ink`, `holo`; HUD keys and footer `text-muted`) |
+| Controls (`button`, `nav`) | 12 px | As cased, 1 px tracking, inside a 44 to 48 px box or a filled tag |
+
+General: every size is on the pixel grid (12 × 1, 2, 3, 4, 5, 8); nothing is fluid. Uppercase is CSS (`text-transform`), never typed; the DOM keeps the owner's casing. Names (TiDi, Hồ Trọng Đại, Dai Ho Trong, project and employer names) never take an uppercase style. Curly quotes; the owner's em dashes stay.
 
 ## Layout
 - **Breakpoints:** `sm` 640, `md` 768, `lg` 1024, `xl` 1280, `2xl` 1440 px, plus a 375 px rule for the HUD strip.
@@ -289,7 +307,7 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Skip link** ("Skip to content") and **focus ring**: 2 px `focus`, offset 3 px (whole pixels, so the ring stays as crisp as the pixel type), a square outline on the element's box, also on chamfered controls. It reads as a HUD selection frame and stays one ring for every control. The chamfer is drawn on a pseudo-element, so `clip-path` never cuts the outline.
 
-**Hero intro** (`hud-player`, `brand-name`, `brand-shadow`, `alt-names`, `role-line`). "▸ PLAYER 1"; one `h1` holding "TiDi" (pixel, with the sprite shadow), "Hồ Trọng Đại" and "Dai Ho Trong" (Portfolio Sans); the role with a 28 × 2 px `holo` lead line; `hero.sentence`; the CTA pair.
+**Hero intro** (`hud-player`, `brand-name`, `brand-shadow`, `alt-names`, `role-line`). "▸ PLAYER 1"; one `h1` holding "TiDi" (pixel, with the sprite shadow), "Hồ Trọng Đại" and "Dai Ho Trong" (pixel `name`, 24 px); the role with a 28 × 2 px `holo` lead line; `hero.sentence` in `body` at `measure-hero`; the CTA pair.
 
 **Buttons.** A 12 px pixel label, 48 px high, padding 24 px (Run: 20 px), icon 20 px with an `xs` gap. 24 px is the next crisp label step if the owner asks for a larger CTA. `button-primary`: gold, chamfered; hover `accent-hover` plus a light sweep; active `translateY(1px)`. `button-ghost`: 1 px inset border in `text-muted` (whole pixels; the 12 px pixel stroke is 1 px), `holo` on hover. `button-holo`: "Run the handshake" only; `aria-disabled` at 55 % opacity while a run plays. Hero CTA "Bring me a pain point" → `#contact`; "Résumé" → the PDF (file-download icon).
 
@@ -311,9 +329,9 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Stat readout** (`stat-readout`). botmivivi: Users 10, Customers 646, Orders 2,951, the qualifier "in the first 2 months", and Impact as a text line, exactly `botmivivi.facts`. Three columns from `xs`, one below (Responsive).
 
-**Achievement badge** (`achievement-badge`). Quest's four: icon (wall, stopwatch, key, tool) + name in `body-strong` + description. A 2 × 2 grid from `sm`.
+**Achievement badge** (`achievement-badge`). Quest's four: icon (wall, stopwatch, key, tool) + name in `primary` + description in `text-muted`, both `body-compact`. A 2 × 2 grid from `sm`.
 
-**Toast** (`toast`). A glass chip with a 1 px `accent-ink` edge in the hologram viewport's top-left: "Quest unlocked" plus the quest name in `body-sm` `primary`. `aria-hidden`; the state is carried by `aria-current`.
+**Toast** (`toast`). A glass chip with a 1 px `accent-ink` edge in the hologram viewport's top-left: "Quest unlocked" plus the quest name in `body-compact` `primary`. `aria-hidden`; the state is carried by `aria-current`.
 
 **Video facade** (`video-facade`). "Watch Quest by NFQ" with a player-play icon and the caption "Opens the YouTube player."; the iframe loads only on activation.
 
@@ -327,13 +345,13 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Avatar frame** (`avatar-caption`). A 3:4 image, `avatar` wide (`avatar-xl` from `xl`) in a 1 px `line` frame, `alt=""`; `avatar.caption` sits visibly on the `scrim` at the bottom. On fine pointers it tilts up to 6° toward the pointer.
 
-**Dialogue box** (`panel`, `speaker-tag`, `link`). The bio as an RPG dialogue: a gold speaker tag "TiDi" in `nav` type (12 px pixel), as cased (never uppercase), both paragraphs always visible in Portfolio Sans, and at the end "Press A to continue ▼" as a button (the ▼ is the pixel glyph) that moves to `#afk`. The A key works only while the box has focus.
+**Dialogue box** (`panel`, `speaker-tag`, `link`). The bio as an RPG dialogue: a gold speaker tag "TiDi" in `nav` type (12 px pixel), as cased (never uppercase), both paragraphs always visible in `body`, and at the end "Press A to continue ▼" as a button (the ▼ is the pixel glyph) that moves to `#afk`. The A key works only while the box has focus.
 
 **AFK list.** Five items, each a 24 px icon + label, 56 px high, in an idle panel.
 
 **Contact row** (`contact-row`, `button-primary`, `button-ghost`). Rows beside the sign-off: Email (the address as `button-primary`), Telegram and GitHub (`button-ghost`, external), Résumé ("PDF, {size}"), Location (plain text). From `lg` the sign-off panel stretches to the rows panel's height, the sign-off at the top, and corner brackets frame the pair.
 
-**Link** (`link`). `accent-ink`, underlined; hover `primary`. External links open in the same tab and add the external-link icon (`aria-hidden`).
+**Link** (`link`). `accent-ink`, underlined 1 px (one font pixel) and clear of the 2 px descenders; hover `primary`. External links open in the same tab and add the external-link icon (`aria-hidden`).
 
 **Footer** (`footer-line`). device-floppy icon + "progress saved · still learning, always solving".
 
@@ -419,7 +437,7 @@ Safety: nothing flashes more than once per verdict and never above 3 Hz; the sha
 | AFK | 2 columns | 3 columns | one row of 5 |
 | Join party | Stacked, no brackets | same | sign-off 5 · rows 7, corner brackets |
 
-Touch targets ≥ 44 px (buttons 48, rows 56). Pixel sizes step at `md` (section headings, stats) and `lg` (the brand), never fluidly. Coarse pointers get no tilt and no hover effects. Safe-area insets pad the strip and the edges. No horizontal scroll from 320 px; content reflows at 200 % zoom.
+Touch targets ≥ 44 px (buttons 48, rows 56). Pixel sizes step at `md` (section headings, stats) and `lg` (the brand), never fluidly; reading text is 12 px at every width. Coarse pointers get no tilt and no hover effects. Safe-area insets pad the strip and the edges. No horizontal scroll from 320 px; content reflows at 200 % zoom.
 
 ## Voice
 The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead, AFK, progress saved), used only where the owner used it. Our own strings are short, sentence case, no em or en dashes. Where a split owner string is rejoined (a term and its description), the owner's own separator is kept verbatim; where we write a separator, it is a colon (Term: value) or, in lists, a middle dot. Rules: `portfolio-content`.
@@ -431,10 +449,12 @@ The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead,
 4. **Mobile hero order.** Only the aria-hidden canvas leads; the controls and log follow the intro in both DOM and visual order, so focus order matches what's seen. The preview put the console above the intro; the owner may choose that instead (plan D3), at the cost of a focus-order jump.
 5. **Starting values.** Bloom settings and the quest-hologram sizes are starting points; tune them at the checkpoint without changing the tokens.
 6. **Waiting for the owner:** the `[copy: to draft & approve]` slots (see `docs/plan/v2/contrib-design.md` §5).
-7. **Length:** about 440 lines, past the 300-line target. The front matter alone is about 195 lines (38 colours, 76 component entries), and the brief requires both themes, the 3D spec and the motion table.
+7. **Length:** about 470 lines, past the 300-line target. The front matter alone is about 195 lines (38 colours, 76 component entries), and the brief requires both themes, the 3D spec and the motion table.
 8. **Glyph coverage.** "→" appears in the owner's strings (Five-Minute Window). Both subsets include U+2192; the pixel subset adds U+25B2, U+25B8 and U+25BC for the game glyphs. The engineers' font check verifies it.
 9. **One pixel weight.** Galmuri11 Bold and Galmuri14 fail Vietnamese, so there is no bold pixel face; `font-synthesis: none` forbids a faux one.
 10. **Crispness at other root sizes.** Pixel sizes are rem, so a visitor who raises the browser's default font size gets larger, possibly softer pixel type. Honouring their setting beats crispness.
+11. **Body size.** The owner allowed body one step up; it stays 12 px (Reading on the grid). 24 px paragraphs would need wider panels to reach 45 characters per line, a layout change for the owner.
+12. **Résumé tokens.** `print-*` have no component entries (the linter doesn't require them); only the résumé components use them.
 
 ## Changelog
 | Date | Change | Why |
@@ -443,3 +463,4 @@ The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead,
 | 2026-09-28 | Phase F design check (`docs/reviews/v2/final/design-check.md`): `stat-value` drops `'tnum' 1`; square focus ring accepted; Deck canvas feather (8 %) specified; speaker tag in `nav` type, names never uppercase; level-up once per page load; power-on is a sliding cover with a `holo` leading edge; the Mission log line range; House rules lead run in, with a `text-decoration` underline; Lab base material and cone; quest hologram Bloom and rim; `avatar-xl`; training marker inline; mobile hero controls full width; AFK icon rise; Join party brackets and stretched sign-off; neutral voice wording; separator rule. | Rulings 1 to 8 and changes V1 to V10 of the check: font capability, build constraints the spec hadn't foreseen, and making the lower page as alive and finished as the hero. |
 | 2026-09-28 | Differences from the preview and §5: (1) Run keeps its holo fill (preview), limited to the hologram's own control; (2) glass raised from 70–86 % to 92 %; (3) control borders use `text-muted`; (4) the skipped step uses `text-muted` plus a line-through, not 60 % opacity; (5) slots lose the 1 px lift; (6) the Lab host uses `accent-ink` / `accent`, not the preview-only `#9A6E00` / `#B8860B`; (7) the HUD strip gains the nav and a motion toggle, with the readout disclosed by width; (8) icons are `feather` and `wall` (Tabler has no shuttlecock or brick); (9) on mobile the console follows the intro; (10) ▸ ▼ ▲ render as Tabler filled icons. | (1) The preview is the look of record; the lock keeps gold the only action colour elsewhere. (2)–(4) Contrast: at 86 %, muted text over the cone measured 4.34:1; faint borders and faded text failed 3:1 and 4.5:1. (5) Slots aren't interactive, and the ban on hover lift applies. (6) Token-only colours. (7) The preview had no nav; 2.2.2 needs a pause control for the looping hologram. (8) The icon library has none. (9) The focus order matches the visual order (QA Review Focus 5; engineering R5). (10) Neither font has the glyphs. |
 | 2026-09-28 | Font A · Cartridge: Portfolio Pixel (Galmuri11 2.403 subset, renamed) replaces Chakra Petch on every game role, at 400 only, on a 12 px grid with stepped sizes, even whole-pixel line heights and 1 px tracking at 12 px; `stat-value` regains `tnum`; the brand's soft Deck glow becomes a hard one-font-pixel sprite shadow (`shadow-pixel`, both themes); ▸ ▼ ▲ become pixel glyphs; ghost border 1.5 → 1 px; the stat readout stacks below `xs`. Fix-round rulings: the power-on edge shows only while moving; Join party brackets from `lg`; the favicon is the pixel "T" at 2× (`favicon`). | The owner chose A (`docs/design/font-options.md`); main-session rulings on the 12 px grid and the rename. Fractional sizes, tracking or borders blur pixel type. Rulings answer `docs/reports/v2-fix-1.md` (V4 edge, V7 deviation 3, F7 deviation 4). |
+| 2026-09-28 | All text pixel: `name`, `body` and the new `body-compact` move to Portfolio Pixel on the 12 px grid (name 24 / 40 px; body 12 / 24 px; compact 12 / 20 px); `body-strong`, `body-sm`, `slot` and `caption` leave the site (`rule-lead` uses `body`, `inventory-slot` uses `nav`, the rest `body-compact`); their Sans values move to `print-*` for the résumé; `measure` 56ch and `measure-hero` 50ch; a hierarchy table, emphasis by colour, square bullets, 1 px link underline. Portfolio Sans is no longer loaded by the site. | Owner, 2026-09-28: every word on the site in the pixel font, the résumé PDF plain. Galmuri14 fails Vietnamese (40/134), so Galmuri11 sets body; 12 px keeps 39 to 68 characters per line. |

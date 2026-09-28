@@ -131,3 +131,55 @@ Unchanged: colours, layout, radius and chamfer, the 3D, motion timings, and ever
   - a DPR 1 screenshot of the HUD, a button and a panel heading at 400 % zoom shows hard pixel edges
   - `fonts:check` lists the new family
   - no "Galmuri" in the served woff2 name table, the CSS or the PDF fonts
+
+## 8. All text pixel (design-lead, 2026-09-28)
+
+- **Decision (owner):** every word on the site is Portfolio Pixel, including the hero sentence, paragraphs, bullets, facts, captions and both name lines. The résumé PDF stays plain, Portfolio Sans only. Contract: `DESIGN.md` Typography ("Reading on the grid", "Hierarchy without a second face") and the Changelog row "All text pixel". Lint: 0 errors, 0 warnings.
+- **Order:** as in the header: `pnpm tokens`, `pnpm fonts`, code, `pnpm resume:pdf`, the gate.
+
+**Token changes**
+
+| Token | Before | After |
+|---|---|---|
+| `name` | Mona Sans 500, 1.125rem, lh 1.25, wdth 112 | Galmuri11 400, 1.5rem (24 px), lh 1.6667 (40 px), every width |
+| `body` | Mona Sans 400, 1 → 1.0625rem fluid, lh 1.6 | Galmuri11 400, 0.75rem (12 px), lh 2 (24 px), every width. Drop the fluid `--text-body` line |
+| `body-compact` (new) | none | Galmuri11 400, 0.75rem, lh 1.6667 (20 px) |
+| `body-strong`, `body-sm`, `caption` | Mona Sans | Removed from the site. The same values return as `print-body-strong`, `print-body-sm`, `print-caption` |
+| `name` for the PDF | `name` | `print-name` (Mona Sans 500, 1.125rem, lh 1.25, wdth 112; `fontVariation` is hand-mapped, as now) |
+| `slot` | Mona Sans 500, 0.875rem | Removed; `inventory-slot` uses `nav` |
+| `measure` / `measure-hero` (`theme.css`) | 68ch / 52ch | **56ch / 50ch** (448 / 400 px at 12 px). `print.css` keeps 68ch for the résumé summary |
+| Components | `step-log`, `facts-value`, `achievement-badge`, `avatar-caption`: `body-sm` or `caption` | `body-compact`. `rule-lead`: `body-strong` → `body`. `inventory-slot`: `slot` → `nav`. `alt-names` keeps `name` (now pixel) |
+
+- **Every pixel utility** keeps the §4 set (`font-weight: 400`, `font-synthesis: none`, `font-stretch: normal`, the two smoothing properties). Put `font-synthesis: none` and the smoothing on `html` too, so no text escapes it.
+- **Emphasis:** `strong`, `b` and `em` on the site: `font-weight: 400`, `font-style: normal`, colour `accent-ink`. The House rules lead loses its weight and keeps `accent-ink` and its 2 px underline.
+- **Bullets:** a 4 × 4 px `text-muted` square (pseudo-element, whole-pixel offsets, centred on the first line's x-height), `sm` before the text; not `list-style: disc`.
+- **Links:** `text-decoration-thickness: 1px`, an offset that clears the 2 px descenders.
+- **Name block:** `margin-top: var(--spacing-2xs)` above "Hồ Trọng Đại", so the stacked tone (34 px above the baseline) clears the "TiDi" sprite shadow. No `overflow: hidden` or fixed height on any line box.
+
+**Affected components** (as in the tree today)
+
+| File | Change |
+|---|---|
+| `src/app/layout.tsx` | Remove the `portfolioSans` `localFont` and its variable from `<html>`. The site loads one face |
+| `src/styles/theme.css` | `type-name`, `type-body`, new `type-body-compact` on `--font-portfolio-pixel`; remove the site's `type-body-strong`, `type-body-sm`, `type-slot`, `type-caption`; add `type-print-*` on `--font-portfolio-sans` (résumé only); the two measures |
+| `hero/hero-lockup.tsx` | Name lines in pixel `name`, the `2xs` top margin; the sentence in `body` at `max-w-measure-hero` |
+| `hero/handshake-log.tsx`, `quest-journal/quest-steps.tsx`, `quest-facts.tsx`, `stat-readout.tsx` (qualifier), `quest-toast.tsx` | `body-sm` or `caption` → `body-compact` |
+| `quest-journal/quest-body.tsx` | Bullets in `body`, square markers |
+| `sections/house-rules.tsx` | `rule-lead` in `body`, no weight |
+| `sections/inventory.tsx` | Slots in `nav` |
+| `sections/character-stats.tsx` | Dialogue paragraphs in `body`; the avatar caption in `body-compact`; badges (name `primary`, description `text-muted`, both `body-compact`) wherever they render |
+| `sections/join-party.tsx`, `mission-log.tsx`, `afk.tsx`, `video-facade/video-facade.client.tsx` | Any Sans role → `body` (paragraphs, rows) or `body-compact` (captions, meta) |
+| `resume/resume-document.tsx` | `type-caption`, `type-body-sm`, `type-body-strong`, `type-name` → `type-print-caption`, `type-print-body-sm`, `type-print-body-strong`, `type-print-name`. The PDF must look as it does now |
+| `src/styles/print.css` | Keep both font variables on "Portfolio Sans". `--font-weight-body-strong` becomes `--font-weight-print-body-strong`; add `--container-measure: 68ch` |
+
+**Font pipeline**
+
+- **The web drops Portfolio Sans.** next/font no longer loads or preloads it, and no site CSS names it. The pipeline keeps building the Portfolio Sans subset (`src/assets/fonts`), because `pnpm resume:pdf` embeds it. `fonts:check` still checks both families. Its note on the site should say "résumé only".
+- **Coverage:** the pixel subset must now cover every visible character on the site. It already covers every character in `info.md` and `src/content/**` (§1). Keep the check and point it at the pixel subset for all site copy.
+- **No extra font file.** Galmuri14 was checked for body, from the same pinned tarball (shasum `8eaa5ee9761d19030807254c5cf357a08958c05e`, re-confirmed): `package/dist/Galmuri14.ttf`, sha256 `d3818c0f2898a3b2d79ccd04ec1e4de5e8940aa26abee261f73e315a44ce8df9`, fontTools 4.60.1. It covers 40/134 Vietnamese letters, misses ạ ả ầ ề ể ọ ồ ộ ợ from the content and ▸. Rejected. Galmuri11 Regular sets all text.
+
+**Watch list additions**
+- Reading sizes are only 12 px (lh 24 or 20) and names 24 px (lh 40). Nothing reading-related is fluid, scaled or fractional.
+- Check at DPR 1: a paragraph, a facts list and "Hồ Trọng Đại" have hard edges, and no stacked tone is clipped or touches the line above.
+- Measure: at 1440 px a quest paragraph wraps at about 68 characters, and the hero sentence runs 4 lines.
+- `CSS.getPlatformFontsForNode` reports only "Portfolio Pixel" on every site node. The PDF's fonts are PortfolioSans only.
