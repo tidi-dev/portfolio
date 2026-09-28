@@ -21,8 +21,11 @@ interface MenuSheetProps {
  * `heading-quest` size in 56 px rows. The sheet is a native popover, so it
  * opens, closes on Esc or an outside press, and returns focus to the button
  * without JavaScript. The script adds `aria-expanded`, the menu-2 / x swap,
- * moving focus in on open, closing when a link is chosen, and the current
- * section's `aria-current` (scroll-spy).
+ * moving focus in on open, closing when a link is chosen, the current
+ * section's `aria-current` (scroll-spy), and a focus loop while the sheet
+ * is open: Tab cycles through the button (its "x") and the links, so focus
+ * never moves behind the sheet (QA F2). Esc still closes it and returns
+ * focus to the button (native popover).
  */
 export function MenuSheet({
   label,
@@ -34,6 +37,7 @@ export function MenuSheet({
   const [open, setOpen] = useState(false);
   const current = useCurrentSection();
   const sheet = useRef<HTMLDivElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
   const sheetId = useId();
 
   useEffect(() => {
@@ -50,9 +54,41 @@ export function MenuSheet({
     };
   }, []);
 
+  // While open, focus loops through the button and the sheet's links: Tab
+  // from the last link goes to the button, Shift+Tab from the button to
+  // the last link. In between, the popover's own focus order (right after
+  // its invoker) already holds.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const trigger = button.current;
+      const links = sheet.current?.querySelectorAll("a");
+      const first = links?.[0];
+      const last = links?.[links.length - 1];
+      if (trigger === null || first === undefined || last === undefined) {
+        return;
+      }
+      const active = document.activeElement;
+      const inside = active === trigger || sheet.current?.contains(active);
+      let next: HTMLElement | undefined;
+      if (!inside) next = event.shiftKey ? last : first;
+      else if (event.shiftKey && active === trigger) next = last;
+      else if (!event.shiftKey && active === last) next = trigger;
+      if (next === undefined) return;
+      event.preventDefault();
+      next.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
     <>
       <button
+        ref={button}
         type="button"
         aria-label={label}
         aria-expanded={open}
