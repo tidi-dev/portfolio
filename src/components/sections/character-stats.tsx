@@ -17,9 +17,10 @@ import { DialogueContinue } from "./dialogue-continue.client";
 const AFK = sections.find((section) => section.id === "afk" && section.present);
 
 // The frame's rendered widths (DESIGN.md → Responsive Behavior → Character
-// stats: at most 220 px below sm, 160 px from sm, avatar 200 px from lg).
+// stats: at most 220 px below sm, 160 px from sm, avatar 200 px from lg,
+// avatar-xl 264 px from xl).
 const AVATAR_SIZES =
-  "(min-width: 1024px) 200px, (min-width: 640px) 160px, 220px";
+  "(min-width: 1280px) 264px, (min-width: 1024px) 200px, (min-width: 640px) 160px, 220px";
 
 const { education, languages } = about;
 
@@ -163,8 +164,8 @@ function LanguagesPanel() {
 
 /**
  * Character stats (DESIGN.md → Avatar frame, Dialogue box; Responsive
- * Behavior → Character stats): from lg the stats panel (avatar 200 px +
- * rows) takes 7 columns and the dialogue 5, then education 7 and
+ * Behavior → Character stats): from lg the stats panel (avatar 200 px,
+ * 264 px from xl, + rows) takes 7 columns and the dialogue 5, then education 7 and
  * languages 5. Stacked below lg: the avatar (at most 220 px) above the
  * rows, beside them at 160 px from sm.
  */

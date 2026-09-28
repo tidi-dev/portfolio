@@ -228,7 +228,7 @@
 }
 
 /* The stats panel: the avatar above the rows; beside them at 160 px from
-   sm, at the avatar's 200 px from lg. */
+   sm, at the avatar's 200 px from lg and avatar-xl's 264 px from xl. */
 @utility stats-card {
   display: grid;
   align-items: start;
@@ -241,6 +241,10 @@
   @variant lg {
     grid-column: span 7 / span 7;
     grid-template-columns: var(--spacing-avatar) minmax(0, 1fr);
+  }
+
+  @variant xl {
+    grid-template-columns: var(--spacing-avatar-xl) minmax(0, 1fr);
   }
 }
 
