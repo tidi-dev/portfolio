@@ -14,9 +14,7 @@
       "file": "src/assets/fonts/chakra-petch-600.woff2",
       "family": "Chakra Petch",
       "weight": 600,
-      "missingFeatures": [
-        "tnum"
-      ],
+      "missingFeatures": [],
       "source": "ofl/chakrapetch/ChakraPetch-SemiBold.ttf",
       "sourceSha256": "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b",
       "bytes": 11068,
@@ -69,9 +67,7 @@
       "file": "src/assets/fonts/chakra-petch-700.woff2",
       "family": "Chakra Petch",
       "weight": 700,
-      "missingFeatures": [
-        "tnum"
-      ],
+      "missingFeatures": [],
       "source": "ofl/chakrapetch/ChakraPetch-Bold.ttf",
       "sourceSha256": "65fbf76d95651697275e19db4d717c0e95a789ddd3476478b05292104db278a0",
       "bytes": 10948,
