@@ -1,6 +1,6 @@
 {
   "file": "public/tidi-resume.pdf",
-  "sources": "e30a5946a8cbbe480a3549ed16dd1218dd4874eff1731815694aba820c5f1330",
+  "sources": "e80e010a9386c253bbaf33e85594f64eedc2b184c4cfafdadf0f3cce0e81032c",
   "inputs": {
     "model": "57decc953555101c45b6cb7f093cb8881b0072dec5edf82459e60847b046fe5d",
     "src/components/resume/resume-document.tsx": "f66faf6efce5d2cd8d049524ce3a25d2222949b3afd0a811d067be7867eb0ae1",
@@ -8,8 +8,8 @@
     "src/lib/format/typography.ts": "5d4b2004f009aac5910e2b229c48832c81b5c0b4d083952d0575a3f184200b55",
     "src/styles/print.css": "3f3b2f896ec65391152cb2c1219095a31bb8ce463cfa6ba2bd48b211b6ac8b42",
     "src/styles/reset.css": "c22d1c1e30586390427d5ec262949b6a519de17dcdbfef2c499d3625a0c50501",
-    "src/styles/tokens.generated.css": "973d4e1a943f3bdaaf4288156d1c5daf7fad2234e163345f8a8fd248c5ad2c25",
-    "src/styles/theme.css": "68a3e7db51b3d7a18e90632bc730c5517dd03467148d17b575c53496bdb6972a",
+    "src/styles/tokens.generated.css": "6b14cf5b6410f4795a0410e41cf2dd5992fc9494ad7c69e6359513ff09d0f90b",
+    "src/styles/theme.css": "1b4a896786b53aa94ddcacf203cc9e965345c0725eb02d58a7804cb401201efe",
     "src/assets/fonts/chakra-petch-600.woff2": "de75c9d2b25b4b0b878932753b3413f5daa5cdf2325ae42787c3e3bd0d7731ad",
     "src/assets/fonts/chakra-petch-700.woff2": "37e5a95565373698fac5ce7aefc423afdfd1b8c4d777cc27f7d21ab0520b9be1",
     "src/assets/fonts/portfolio-sans.woff2": "711c17959293ae72b15d10b54bea00f55d7e27fbd257d56637f0246b1f6af6d8",
@@ -17,7 +17,7 @@
     "scripts/resume/build.ts": "3684372391d7cc3b24f129170bd2e8196978a8bbacdb62b8bf05f26311ad31dd"
   },
   "pdf": {
-    "sha256": "802971cc64e3ec673a9748dc53cd5c2d7eccfd3d6f723a5cb2c2dbd863bd9d36",
+    "sha256": "4ff2e019049aade96e071c82031d3725595e0ed26be3363b778d23ceeaacb24b",
     "bytes": 139949
   }
 }
