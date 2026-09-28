@@ -98,18 +98,19 @@
     );
   }
 
-  /* House rules: once its panel has wiped on, the lead phrase's
-     accent-ink underline sweeps in, scaleX(0 → 1) over sweep. */
+  /* House rules: once its panel has wiped on, the lead phrase's underline
+     colour turns transparent → accent-ink over sweep. */
   :root[data-motion="on"][data-reveal-ready]
     [data-reveal="panel"]:not([data-revealed])
-    .rule-lead::after {
-    transform: scaleX(0);
+    .rule-lead {
+    text-decoration-color: transparent;
   }
 
   :root[data-motion="on"][data-reveal-ready]
     [data-reveal="panel"][data-revealed]
-    .rule-lead::after {
-    transition: transform var(--transition-duration-sweep) var(--ease-out)
+    .rule-lead {
+    transition: text-decoration-color var(--transition-duration-sweep)
+      var(--ease-out)
       calc(
         var(--reveal-order, 0) * var(--stagger-panel) +
           var(--transition-duration-wipe)

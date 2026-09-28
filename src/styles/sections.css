@@ -134,26 +134,16 @@
   color: var(--color-accent-ink);
 }
 
-/* rule-lead: the lead phrase in body-strong accent-ink, on its own line
-   over the rest of the rule, with its 2 px accent-ink underline. */
+/* rule-lead: the lead phrase in body-strong accent-ink, run in: the rest
+   of the owner's sentence follows on the same line, so no line starts with
+   the owner's dash. Its 2 px accent-ink underline is a text decoration,
+   offset 4 px, so it wraps with the phrase. */
 @utility rule-lead {
-  position: relative;
-  display: block;
-  width: fit-content;
-  margin-bottom: var(--spacing-xs);
-  padding-bottom: var(--spacing-2xs);
   color: var(--color-accent-ink);
-
-  &::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background-color: var(--color-accent-ink);
-    transform-origin: left;
-  }
+  text-decoration-line: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-accent-ink);
+  text-underline-offset: 4px;
 }
 
 /* ── Inventory ───────────────────────────────────────────────────────── */

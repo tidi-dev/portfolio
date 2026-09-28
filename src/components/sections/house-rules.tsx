@@ -19,10 +19,11 @@ function splitRule(rule: HouseRule) {
 
 /**
  * House rules (DESIGN.md → Rule panel; Responsive Behavior → House rules):
- * the owner's two intro lines, then his four rules in order, each a panel
- * with its numeral chip and the lead phrase in `rule-lead`. One column,
- * 2 × 2 from md. The panels power on in reading order and each lead
- * phrase's underline sweeps in (reveal.css).
+ * the owner's two intro lines, then the four rules in order, each a panel
+ * with its numeral chip and the rule as one paragraph, its lead phrase run
+ * in as `rule-lead`. One column, 2 × 2 from md. The panels power on in
+ * reading order and each lead phrase's underline colour comes up
+ * (reveal.css).
  */
 export function HouseRules({ section }: { readonly section: Section }) {
   return (
@@ -52,7 +53,7 @@ export function HouseRules({ section }: { readonly section: Section }) {
                   <span className="relative">{index + 1}</span>
                 </span>
                 <p className="max-w-measure">
-                  <strong className="rule-lead type-body-strong">{lead}</strong>
+                  <strong className="type-body-strong rule-lead">{lead}</strong>
                   {rest}
                 </p>
               </Panel>
