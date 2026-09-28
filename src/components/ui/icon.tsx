@@ -1,30 +1,40 @@
 import {
   IconCaretRightFilled,
+  IconCheck,
   IconDeviceFloppy,
   IconFileDownload,
+  IconKey,
   IconMenu2,
   IconMoon,
   IconPlayerPause,
   IconPlayerPlay,
+  IconStopwatch,
   IconSun,
+  IconTool,
+  IconWall,
   IconX,
 } from "@tabler/icons-react";
 
 /**
  * DESIGN.md → Shapes → Icons: Tabler, from the list there. Filled
  * caret-right renders the "▸" of "▸ PLAYER 1", which neither font has
- * (plan → Rulings → Glyphs). Phases 3–4 add the rest of the list as they
- * use them.
+ * (plan → Rulings → Glyphs). Phase 4 adds the rest of the list as it uses
+ * them.
  */
 const ICONS = {
   "caret-right-filled": IconCaretRightFilled,
+  check: IconCheck,
   "device-floppy": IconDeviceFloppy,
   "file-download": IconFileDownload,
+  key: IconKey,
   "menu-2": IconMenu2,
   moon: IconMoon,
   "player-pause": IconPlayerPause,
   "player-play": IconPlayerPlay,
+  stopwatch: IconStopwatch,
   sun: IconSun,
+  tool: IconTool,
+  wall: IconWall,
   x: IconX,
 } as const;
 

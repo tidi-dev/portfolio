@@ -12,6 +12,9 @@ const DURATIONS = [
   "packet",
   "boot",
   "verdict-hold",
+  // Quest journal: the model's project-in and the readouts' count-up.
+  "project",
+  "count",
 ] as const;
 
 const OTHERS = {

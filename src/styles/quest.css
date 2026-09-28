@@ -1,0 +1,468 @@
+/*
+ * The Quest journal (DESIGN.md → Components: Panel heading, Status chip,
+ * Mission item, Quest file, Stat readout, Achievement badge, Toast, Video
+ * facade; 3D Scenes → Quest holograms; Responsive Behavior → Quest
+ * journal; Motion → Quest unlocked, Achievements, botmivivi readouts).
+ * Every file is visible and stacked (plan → Rulings). Colours, spacing and
+ * timings are tokens; the few fixed sizes are the component entries' own
+ * (status chip 28 px high with 10 px padding, mission item 56 px, the 3 px
+ * state bar, the 16:10 band at most 320 px). Motion runs only under
+ * `data-motion="on"`: without JavaScript, or in the calm mode, everything
+ * rests in its final state.
+ */
+
+@keyframes chip-flip {
+  from {
+    transform: perspective(400px) rotateX(90deg);
+  }
+}
+
+@keyframes quest-toast-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes quest-toast-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes quest-toast-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes badge-glint {
+  from {
+    transform: translateX(-120%);
+  }
+
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* Panel heading: an h3 or h4 in heading-panel with a trailing rule. */
+@utility panel-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-rule);
+  }
+}
+
+/* facts-term / facts-value: the term at the 96 px stat-key width, rows
+   split by rule hairlines. */
+@utility facts-row {
+  display: grid;
+  grid-template-columns: var(--spacing-stat-key) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  padding-block: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-rule);
+}
+
+/* Layout: one column below lg; from lg the left 5 of 12 columns hold the
+   sticky viewport and the mission list, the right 7 the files. */
+@utility quest-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-gutter);
+
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@utility quest-aside {
+  display: none;
+
+  @variant lg {
+    position: sticky;
+    top: calc(var(--spacing-hud) + var(--spacing-md));
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    grid-column: span 5 / span 5;
+  }
+}
+
+@utility quest-files {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gutter);
+
+  @variant lg {
+    grid-column: span 7 / span 7;
+  }
+}
+
+/* A hologram stage: a chamfered screen, a size container so the poster
+   scales with it, and its own stacking context, so the toast never rises
+   over the HUD strip. */
+@utility quest-stage {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  container-type: size;
+}
+
+/* The sticky viewport, from lg: 4:3. */
+@utility quest-viewport {
+  aspect-ratio: 4 / 3;
+}
+
+/* A file's band, below lg: 16:10, at most 320 px, on the page surface
+   inside the file's panel. */
+@utility quest-band {
+  --chamfer-fill: var(--color-surface);
+  aspect-ratio: 16 / 10;
+  max-height: 320px;
+
+  @variant lg {
+    display: none;
+  }
+}
+
+/* Quest's scene tags follow the model's fade (--tag-fade, set by the
+   scene each frame). */
+@utility tag-fade {
+  opacity: var(--tag-fade, 1);
+}
+
+/* The quest posters: the small projector (cone, base with two rings) and
+   the model, in stage units. */
+@utility qp-cone {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  width: 44cqmin;
+  height: 46cqh;
+  transform: translateX(-50%);
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 24% 100%);
+  background-image: linear-gradient(
+    to top,
+    color-mix(
+      in srgb,
+      var(--color-holo) calc(var(--backdrop-holo) * 2),
+      transparent
+    ),
+    transparent
+  );
+}
+
+@utility qp-base {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  width: 60cqmin;
+  height: 15cqmin;
+  transform: translateX(-50%);
+  background-image: radial-gradient(
+    closest-side,
+    transparent 50%,
+    var(--color-holo) 51% 53%,
+    transparent 54% 78%,
+    color-mix(in srgb, var(--color-holo) 60%, transparent) 79% 81%,
+    var(--color-scene-metal) 82% 99%,
+    transparent 100%
+  );
+}
+
+@utility qp-chip {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 24cqmin;
+  height: 24cqmin;
+  transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-scene-chip);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 22%;
+    border: 2px solid var(--color-holo);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 18%,
+        color-mix(in srgb, var(--color-holo) 45%, transparent) 18% 22%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 26%,
+        color-mix(in srgb, var(--color-holo) 30%, transparent) 26% 30%
+      );
+  }
+}
+
+/* The ledger stack: five slabs, the top one drawn over the rest. */
+@utility qp-slab {
+  position: absolute;
+  left: 50%;
+  top: calc(34% + var(--slab) * 4.5cqmin);
+  z-index: calc(5 - var(--slab));
+  width: 26cqmin;
+  height: 18cqmin;
+  transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-scene-chip);
+}
+
+/* The two data slabs: v1 a holo wireframe at 40 %, v2 solid with holo
+   edges; the link arcs between them. */
+@utility qp-data {
+  position: absolute;
+  top: 46%;
+  width: 20cqmin;
+  height: 20cqmin;
+  transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
+  border: 2px solid var(--color-holo);
+}
+
+@utility qp-data-v1 {
+  left: 34%;
+  border-color: color-mix(in srgb, var(--color-holo) 40%, transparent);
+}
+
+@utility qp-data-v2 {
+  left: 66%;
+  background-color: var(--color-scene-chip);
+}
+
+@utility qp-link {
+  position: absolute;
+  left: 34%;
+  top: 22%;
+  width: 32%;
+  height: 22%;
+  background-image: radial-gradient(
+    farthest-side ellipse at 50% 100%,
+    transparent 94%,
+    color-mix(in srgb, var(--color-holo) 60%, transparent) 95% 99%,
+    transparent 100%
+  );
+}
+
+/* Toast: a glass chip with a 1 px accent-ink edge in the stage's top-left.
+   Motion on: it wipes in (toast-in), holds (toast-hold) and fades out
+   (toast-out). Calm mode: it fades in and out (feedback). */
+@utility quest-toast {
+  --chamfer-edge: var(--color-accent-ink);
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  z-index: var(--z-index-toast);
+  width: max-content;
+  max-width: calc(100% - 2 * var(--spacing-sm));
+  pointer-events: none;
+  animation:
+    quest-toast-fade var(--transition-duration-feedback) var(--ease-out),
+    quest-toast-out var(--transition-duration-feedback) var(--ease-in-out)
+      calc(
+        var(--transition-duration-feedback) +
+          var(--transition-duration-toast-hold)
+      )
+      forwards;
+
+  :root[data-motion="on"] & {
+    animation:
+      quest-toast-in var(--transition-duration-toast-in) var(--ease-power),
+      quest-toast-out var(--transition-duration-toast-out) var(--ease-in-out)
+        calc(
+          var(--transition-duration-toast-in) +
+            var(--transition-duration-toast-hold)
+        )
+        forwards;
+  }
+}
+
+/* Status chips: the text colour, a 1 px border in the same colour
+   following the small chamfer. In a quest file the chip flips in
+   (rotateX 90° → 0, flip) each time the file becomes current. */
+@utility status-chip {
+  --chamfer-edge: currentColor;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 28px;
+  padding-inline: 10px;
+
+  :root[data-motion="on"] [data-quest-id][data-current] & {
+    animation: chip-flip var(--transition-duration-flip) var(--ease-out);
+  }
+}
+
+@utility status-active {
+  color: var(--color-success);
+}
+
+@utility status-side {
+  color: var(--color-accent-ink);
+}
+
+@utility status-cleared {
+  color: var(--color-text-muted);
+}
+
+/* Mission item: a 56 px in-page link, 16 px padding; hover gives the holo
+   edge; the current item shows the 3 px state bar at its left. */
+@utility mission-item {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding-inline: var(--spacing-md);
+
+  &::before {
+    transition-property: background-color;
+    transition-duration: var(--transition-duration-feedback);
+  }
+
+  &:hover {
+    --chamfer-edge: var(--color-holo);
+  }
+}
+
+@utility mission-bar {
+  position: absolute;
+  top: 0;
+  bottom: var(--spacing-chamfer);
+  left: 0;
+  width: 3px;
+  background-color: var(--color-accent-ink);
+  opacity: 0;
+
+  [aria-current="true"] > & {
+    opacity: 1;
+  }
+}
+
+/* Stat readout: the three figures side by side. */
+@utility stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+}
+
+/* Count-up: the final value holds the width and stays readable to
+   assistive tech; the counting digits sit over it while it counts. */
+@utility count-up {
+  position: relative;
+  display: inline-block;
+}
+
+@utility count-final {
+  [data-counting] > & {
+    color: transparent;
+  }
+}
+
+@utility count-live {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* The steps list, in the log style, on the page surface inside the file. */
+@utility quest-log {
+  --chamfer-fill: var(--color-surface);
+}
+
+/* Bullets: a small holo square per item. */
+@utility quest-bullets {
+  & > li {
+    position: relative;
+    padding-inline-start: var(--spacing-md);
+  }
+
+  & > li::before {
+    content: "";
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-holo);
+  }
+}
+
+/* Achievement badges: a 2 × 2 grid from sm. The first time Quest is
+   current (data-unlocked), each badge wipes on (row, stagger badge) and
+   one glint crosses it. */
+@utility achievement-grid {
+  display: grid;
+  gap: var(--spacing-sm);
+
+  @variant sm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@utility achievement {
+  --chamfer-fill: var(--color-surface);
+
+  :root[data-motion="on"] [data-unlocked] & {
+    animation: line-wipe var(--transition-duration-row) var(--ease-power)
+      calc(var(--i, 0) * var(--stagger-badge)) backwards;
+  }
+}
+
+@utility achievement-glint {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      100deg,
+      transparent 35%,
+      color-mix(in srgb, var(--color-holo) 30%, transparent) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+  }
+
+  :root[data-motion="on"] [data-unlocked] &::before {
+    animation: badge-glint var(--transition-duration-sweep) var(--ease-out)
+      calc(var(--i, 0) * var(--stagger-badge) + var(--transition-duration-row))
+      backwards;
+  }
+}
+
+/* Video facade: a 48 px control on surface-raised with a text-muted edge,
+   holo on hover; the player takes a 16:9 frame once activated. */
+@utility video-facade {
+  --chamfer-edge: var(--color-text-muted);
+  color: var(--color-primary);
+
+  &:hover {
+    --chamfer-edge: var(--color-holo);
+  }
+}
+
+@utility video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-surface);
+}

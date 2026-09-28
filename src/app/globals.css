@@ -13,6 +13,7 @@
 @import "../styles/shell.css";
 @import "../styles/hero.css";
 @import "../styles/holo.css";
+@import "../styles/quest.css";
 
 @layer base {
   /* Typography → Principles. */
