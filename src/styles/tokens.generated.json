@@ -1,0 +1,753 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "A work-first developer portfolio for technical hiring managers and tech-literate clients, with a sleek sci-fi RPG HUD language, leaning toward holographic game UI in the owner's GitHub-dark banner palette.",
+  "color": {
+    "$type": "color",
+    "primary": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.051,
+          0.067,
+          0.09
+        ],
+        "hex": "#0d1117"
+      }
+    },
+    "surface": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.933,
+          0.949,
+          0.965
+        ],
+        "hex": "#eef2f6"
+      }
+    },
+    "surface-raised": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "hex": "#ffffff"
+      }
+    },
+    "text-muted": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.341,
+          0.376,
+          0.416
+        ],
+        "hex": "#57606a"
+      }
+    },
+    "accent": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.89,
+          0.702,
+          0.255
+        ],
+        "hex": "#e3b341"
+      }
+    },
+    "accent-hover": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.941,
+          0.78,
+          0.369
+        ],
+        "hex": "#f0c75e"
+      }
+    },
+    "on-accent": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.051,
+          0.067,
+          0.09
+        ],
+        "hex": "#0d1117"
+      }
+    },
+    "accent-ink": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.49,
+          0.353,
+          0
+        ],
+        "hex": "#7d5a00"
+      }
+    },
+    "holo": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.043,
+          0.447,
+          0.522
+        ],
+        "hex": "#0b7285"
+      }
+    },
+    "on-holo": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          1,
+          1,
+          1
+        ],
+        "hex": "#ffffff"
+      }
+    },
+    "success": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.102,
+          0.498,
+          0.216
+        ],
+        "hex": "#1a7f37"
+      }
+    },
+    "danger": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.812,
+          0.133,
+          0.18
+        ],
+        "hex": "#cf222e"
+      }
+    },
+    "line": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.043,
+          0.447,
+          0.522
+        ],
+        "hex": "#0b728547"
+      }
+    },
+    "rule": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.051,
+          0.067,
+          0.09
+        ],
+        "hex": "#0d111714"
+      }
+    },
+    "scrim": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.027,
+          0.043,
+          0.078
+        ],
+        "hex": "#070b14eb"
+      }
+    },
+    "on-scrim": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.902,
+          0.929,
+          0.953
+        ],
+        "hex": "#e6edf3"
+      }
+    },
+    "scene-metal": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.788,
+          0.827,
+          0.871
+        ],
+        "hex": "#c9d3de"
+      }
+    },
+    "scene-chip": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.071,
+          0.102,
+          0.165
+        ],
+        "hex": "#121a2a"
+      }
+    },
+    "scene-pin": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.722,
+          0.769,
+          0.839
+        ],
+        "hex": "#b8c4d6"
+      }
+    },
+    "primary-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.902,
+          0.929,
+          0.953
+        ],
+        "hex": "#e6edf3"
+      }
+    },
+    "surface-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.027,
+          0.043,
+          0.078
+        ],
+        "hex": "#070b14"
+      }
+    },
+    "surface-raised-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.059,
+          0.09,
+          0.149
+        ],
+        "hex": "#0f1726"
+      }
+    },
+    "text-muted-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.545,
+          0.58,
+          0.62
+        ],
+        "hex": "#8b949e"
+      }
+    },
+    "accent-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.89,
+          0.702,
+          0.255
+        ],
+        "hex": "#e3b341"
+      }
+    },
+    "accent-hover-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.941,
+          0.78,
+          0.369
+        ],
+        "hex": "#f0c75e"
+      }
+    },
+    "on-accent-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.027,
+          0.043,
+          0.078
+        ],
+        "hex": "#070b14"
+      }
+    },
+    "accent-ink-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.89,
+          0.702,
+          0.255
+        ],
+        "hex": "#e3b341"
+      }
+    },
+    "holo-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.31,
+          0.847,
+          0.91
+        ],
+        "hex": "#4fd8e8"
+      }
+    },
+    "on-holo-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.027,
+          0.043,
+          0.078
+        ],
+        "hex": "#070b14"
+      }
+    },
+    "success-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.247,
+          0.725,
+          0.314
+        ],
+        "hex": "#3fb950"
+      }
+    },
+    "danger-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.973,
+          0.318,
+          0.286
+        ],
+        "hex": "#f85149"
+      }
+    },
+    "line-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.31,
+          0.847,
+          0.91
+        ],
+        "hex": "#4fd8e838"
+      }
+    },
+    "rule-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.902,
+          0.929,
+          0.953
+        ],
+        "hex": "#e6edf314"
+      }
+    },
+    "scene-metal-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.055,
+          0.082,
+          0.141
+        ],
+        "hex": "#0e1524"
+      }
+    },
+    "focus": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.49,
+          0.353,
+          0
+        ],
+        "hex": "#7d5a00"
+      }
+    },
+    "focus-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.89,
+          0.702,
+          0.255
+        ],
+        "hex": "#e3b341"
+      }
+    }
+  },
+  "spacing": {
+    "$type": "dimension",
+    "2xs": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "xs": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "xl": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    },
+    "2xl": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      }
+    },
+    "3xl": {
+      "$value": {
+        "value": 64,
+        "unit": "px"
+      }
+    },
+    "section-sm": {
+      "$value": {
+        "value": 56,
+        "unit": "px"
+      }
+    },
+    "section": {
+      "$value": {
+        "value": 112,
+        "unit": "px"
+      }
+    },
+    "edge": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "edge-lg": {
+      "$value": {
+        "value": 56,
+        "unit": "px"
+      }
+    },
+    "gutter": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "container": {
+      "$value": {
+        "value": 1240,
+        "unit": "px"
+      }
+    },
+    "hud": {
+      "$value": {
+        "value": 60,
+        "unit": "px"
+      }
+    },
+    "chamfer": {
+      "$value": {
+        "value": 14,
+        "unit": "px"
+      }
+    },
+    "chamfer-sm": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "bracket": {
+      "$value": {
+        "value": 30,
+        "unit": "px"
+      }
+    },
+    "target": {
+      "$value": {
+        "value": 44,
+        "unit": "px"
+      }
+    },
+    "control": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      }
+    },
+    "avatar": {
+      "$value": {
+        "value": 200,
+        "unit": "px"
+      }
+    },
+    "stat-key": {
+      "$value": {
+        "value": 96,
+        "unit": "px"
+      }
+    }
+  },
+  "rounded": {
+    "$type": "dimension",
+    "none": {
+      "$value": {
+        "value": 0,
+        "unit": "px"
+      }
+    }
+  },
+  "typography": {
+    "display": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 3.5,
+          "unit": "rem"
+        },
+        "fontWeight": 700,
+        "letterSpacing": {
+          "value": -0.01,
+          "unit": "em"
+        }
+      }
+    },
+    "heading-section": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 2,
+          "unit": "rem"
+        },
+        "fontWeight": 700
+      }
+    },
+    "heading-quest": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 1.5,
+          "unit": "rem"
+        },
+        "fontWeight": 700
+      }
+    },
+    "heading-panel": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 700,
+        "letterSpacing": {
+          "value": 0.18,
+          "unit": "em"
+        }
+      }
+    },
+    "stat-value": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 1.75,
+          "unit": "rem"
+        },
+        "fontWeight": 700
+      }
+    },
+    "wordmark": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 1.25,
+          "unit": "rem"
+        },
+        "fontWeight": 700,
+        "letterSpacing": {
+          "value": 0.02,
+          "unit": "em"
+        }
+      }
+    },
+    "role": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 0.9375,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0.06,
+          "unit": "em"
+        }
+      }
+    },
+    "button": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 0.9375,
+          "unit": "rem"
+        },
+        "fontWeight": 700,
+        "letterSpacing": {
+          "value": 0.04,
+          "unit": "em"
+        }
+      }
+    },
+    "nav": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0.02,
+          "unit": "em"
+        }
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Chakra Petch",
+        "fontSize": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "fontWeight": 600,
+        "letterSpacing": {
+          "value": 0.12,
+          "unit": "em"
+        }
+      }
+    },
+    "name": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 1.125,
+          "unit": "rem"
+        },
+        "fontWeight": 500
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    },
+    "body-strong": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "fontWeight": 600
+      }
+    },
+    "body-sm": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 0.9375,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    },
+    "slot": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 0.875,
+          "unit": "rem"
+        },
+        "fontWeight": 500
+      }
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Mona Sans",
+        "fontSize": {
+          "value": 0.8125,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    }
+  }
+}

@@ -1,0 +1,406 @@
+/*
+ * The thin mapping layer (contrib-engineering §4.2), hand-written from
+ * DESIGN.md: the values `design.md export` drops or its schema can't hold
+ * (DESIGN.md → Known Gaps 1). Code review checks each value against the
+ * DESIGN.md section named beside it. Colours are never repeated here: the
+ * dark swap points at the exported `-dark` variables.
+ */
+
+@theme static {
+  /* Layout → Breakpoints, plus the 375 px rule for the HUD strip (xs). */
+  --breakpoint-xs: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+
+  /* Typography table: the fluid roles, 375 → 1440 px, replacing the
+     exported 375 px size. body-strong follows body. */
+  --text-display: clamp(3.5rem, 7vw, 6.5rem);
+  --text-heading-section: clamp(2rem, 1.6rem + 1.7vw, 2.75rem);
+  --text-heading-quest: clamp(1.5rem, 1.412rem + 0.376vw, 1.75rem);
+  --text-stat-value: clamp(1.75rem, 1.662rem + 0.376vw, 2rem);
+  --text-body: clamp(1rem, 0.978rem + 0.094vw, 1.0625rem);
+  --text-body-strong: clamp(1rem, 0.978rem + 0.094vw, 1.0625rem);
+
+  /* Typography → Principles: measure ≤ 52ch in the hero, ≤ 68ch elsewhere,
+     as `max-w-measure-hero` and `max-w-measure`. */
+  --container-measure-hero: 52ch;
+  --container-measure: 68ch;
+
+  /* The structural zero: the reset removes Tailwind's --spacing, so
+     `inset-0`, `m-0` and `gap-0` need a key. Not a DESIGN.md step. */
+  --spacing-0: 0px;
+
+  /* Layout → Z-index. */
+  --z-index-canvas: 0;
+  --z-index-content: 1;
+  --z-index-console: 2;
+  --z-index-hud: 40;
+  --z-index-toast: 50;
+  --z-index-menu: 60;
+  --z-index-skip-link: 70;
+
+  /* Motion → Tokens, durations (`duration-<name>`). */
+  --transition-duration-feedback: 150ms;
+  --transition-duration-verdict: 250ms;
+  --transition-duration-toast-in: 300ms;
+  --transition-duration-toast-out: 250ms;
+  --transition-duration-toast-hold: 1600ms;
+  --transition-duration-flip: 400ms;
+  --transition-duration-row: 400ms;
+  --transition-duration-brackets: 400ms;
+  --transition-duration-hud: 400ms;
+  --transition-duration-shake: 450ms;
+  --transition-duration-sweep: 500ms;
+  --transition-duration-release: 500ms;
+  --transition-duration-project: 700ms;
+  --transition-duration-levelup: 800ms;
+  --transition-duration-wipe: 900ms;
+  --transition-duration-pulse: 900ms;
+  --transition-duration-count: 900ms;
+  --transition-duration-packet: 1000ms;
+  --transition-duration-boot: 1200ms;
+  --transition-duration-line: 1200ms;
+  --transition-duration-scan: 1400ms;
+  --transition-duration-xp: 2200ms;
+  --transition-duration-verdict-hold: 2200ms;
+
+  /* Motion → Tokens, easings (`ease-<name>`); loops use linear. */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-power: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+
+    /* Motion → Tokens, staggers and delays (no utility reads these). */
+    --stagger-line: 80ms;
+    --stagger-row: 100ms;
+    --stagger-badge: 120ms;
+    --stagger-ring: 120ms;
+    --stagger-panel: 160ms;
+    --delay-autoplay: 200ms;
+    --delay-xp: 500ms;
+    --delay-rows: 550ms;
+    --delay-scan: 600ms;
+
+    /* components.focus-ring: `size` is the width, `padding` the offset. */
+    --focus-width: 2px;
+    --focus-offset: 3px;
+
+    /* Layout → Fixed HUD strip: anchors and focus clear the 60 px strip. */
+    --scroll-padding-hud: 76px;
+
+    /* Elevation → Glass: surface-raised at 92 % with an 8 px blur. */
+    --glass-opacity: 92%;
+    --glass-blur: 8px;
+  }
+
+  /* Consistency locks 1: the dark theme (Deck) swaps every colour that
+     has a -dark twin, from a stored choice (data-theme) or the system.
+     scrim, on-scrim, scene-chip and scene-pin are the same in both. */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-primary: var(--color-primary-dark);
+    --color-surface: var(--color-surface-dark);
+    --color-surface-raised: var(--color-surface-raised-dark);
+    --color-text-muted: var(--color-text-muted-dark);
+    --color-accent: var(--color-accent-dark);
+    --color-accent-hover: var(--color-accent-hover-dark);
+    --color-on-accent: var(--color-on-accent-dark);
+    --color-accent-ink: var(--color-accent-ink-dark);
+    --color-holo: var(--color-holo-dark);
+    --color-on-holo: var(--color-on-holo-dark);
+    --color-success: var(--color-success-dark);
+    --color-danger: var(--color-danger-dark);
+    --color-line: var(--color-line-dark);
+    --color-rule: var(--color-rule-dark);
+    --color-focus: var(--color-focus-dark);
+    --color-scene-metal: var(--color-scene-metal-dark);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --color-primary: var(--color-primary-dark);
+      --color-surface: var(--color-surface-dark);
+      --color-surface-raised: var(--color-surface-raised-dark);
+      --color-text-muted: var(--color-text-muted-dark);
+      --color-accent: var(--color-accent-dark);
+      --color-accent-hover: var(--color-accent-hover-dark);
+      --color-on-accent: var(--color-on-accent-dark);
+      --color-accent-ink: var(--color-accent-ink-dark);
+      --color-holo: var(--color-holo-dark);
+      --color-on-holo: var(--color-on-holo-dark);
+      --color-success: var(--color-success-dark);
+      --color-danger: var(--color-danger-dark);
+      --color-line: var(--color-line-dark);
+      --color-rule: var(--color-rule-dark);
+      --color-focus: var(--color-focus-dark);
+      --color-scene-metal: var(--color-scene-metal-dark);
+    }
+  }
+
+  html {
+    scroll-padding-top: var(--scroll-padding-hud);
+  }
+
+  /* Skip link and focus ring: 2 px focus, offset 3 px. Chamfered elements
+     draw their cut on a pseudo-element, so this outline is never clipped. */
+  :focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+}
+
+/* Typography: one utility per token. Sizes, tracking and weights are the
+   exported variables; line height, width (font-stretch), figures and case
+   come from the front matter and the Typography table, which the export
+   drops. */
+@utility type-display {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-display);
+  line-height: 0.9;
+  letter-spacing: var(--tracking-display);
+  font-weight: var(--font-weight-display);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-heading-section {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-heading-section);
+  line-height: 1.1;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-heading-section);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-heading-quest {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-heading-quest);
+  line-height: 1.15;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-heading-quest);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-heading-panel {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-heading-panel);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-heading-panel);
+  font-weight: var(--font-weight-heading-panel);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: uppercase;
+}
+
+/* 'tnum' 1: Chakra Petch has no tnum feature, so the figures stay
+   proportional (raised in the Phase 1 report). */
+@utility type-stat-value {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-stat-value);
+  line-height: 1;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-stat-value);
+  font-stretch: normal;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+}
+
+@utility type-wordmark {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-wordmark);
+  line-height: 1;
+  letter-spacing: var(--tracking-wordmark);
+  font-weight: var(--font-weight-wordmark);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-role {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-role);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-role);
+  font-weight: var(--font-weight-role);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: uppercase;
+}
+
+@utility type-button {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-button);
+  line-height: 1;
+  letter-spacing: var(--tracking-button);
+  font-weight: var(--font-weight-button);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-nav {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-nav);
+  line-height: 1.3;
+  letter-spacing: var(--tracking-nav);
+  font-weight: var(--font-weight-nav);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-label {
+  font-family: var(--font-chakra-petch);
+  font-size: var(--text-label);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-label);
+  font-weight: var(--font-weight-label);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: uppercase;
+}
+
+@utility type-name {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-name);
+  line-height: 1.25;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-name);
+  font-stretch: 112%;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-body {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-body);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-body-strong {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-body-strong);
+  line-height: 1.6;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-body-strong);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-body-sm {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-body-sm);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-slot {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-slot);
+  line-height: 1.2;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-slot);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+@utility type-caption {
+  font-family: var(--font-mona-sans);
+  font-size: var(--text-caption);
+  line-height: 1.4;
+  letter-spacing: normal;
+  font-weight: var(--font-weight-caption);
+  font-stretch: normal;
+  font-variant-numeric: normal;
+  text-transform: none;
+}
+
+/* Layout → Container: side padding clamp(edge, 3.4vw, edge-lg), never
+   inside the safe-area insets (Responsive Behavior). */
+@utility page-x {
+  --page-edge: clamp(var(--spacing-edge), 3.4vw, var(--spacing-edge-lg));
+  padding-inline-start: max(var(--page-edge), env(safe-area-inset-left));
+  padding-inline-end: max(var(--page-edge), env(safe-area-inset-right));
+}
+
+/* Layout → Rhythm: sections pad clamp(section-sm, 8vw, section). */
+@utility section-y {
+  padding-block: clamp(var(--spacing-section-sm), 8vw, var(--spacing-section));
+}
+
+/* Elevation → Glass: over 3D or scrolled content. */
+@utility glass {
+  background-color: color-mix(
+    in srgb,
+    var(--color-surface-raised) var(--glass-opacity),
+    transparent
+  );
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Shapes → Chamfer: the top-right and bottom-left corners cut at 45°,
+   with the 1 px `line` edge following the cut (Elevation → Edges). The
+   cut is drawn on two pseudo-element layers (edge, then fill), never on
+   the element, so its focus outline is never clipped (contrib-engineering
+   R4). `chamfer` is 14 px (panels, buttons), `chamfer-sm` 8 px (chips,
+   the toast, the switch). The fill defaults to surface-raised; set
+   --chamfer-fill to change it. */
+@utility chamfer {
+  --chamfer-cut: var(--spacing-chamfer);
+  position: relative;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    clip-path: polygon(
+      0 0,
+      calc(100% - var(--chamfer-cut)) 0,
+      100% var(--chamfer-cut),
+      100% 100%,
+      var(--chamfer-cut) 100%,
+      0 calc(100% - var(--chamfer-cut))
+    );
+  }
+
+  &::before {
+    inset: 0;
+    background-color: var(--chamfer-edge, var(--color-line));
+  }
+
+  &::after {
+    inset: 1px;
+    background-color: var(--chamfer-fill, var(--color-surface-raised));
+  }
+}
+
+@utility chamfer-sm {
+  --chamfer-cut: var(--spacing-chamfer-sm);
+}
