@@ -14,6 +14,8 @@
 @import "../styles/hero.css";
 @import "../styles/holo.css";
 @import "../styles/quest.css";
+@import "../styles/sections.css";
+@import "../styles/reveal.css";
 
 @layer base {
   /* Typography → Principles. */

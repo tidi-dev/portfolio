@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect, useRef } from "react";
+import { PowerCover } from "@/components/ui/panel";
 import { useQuestJournal } from "./quest-journal-controller.client";
 
 interface QuestFileFrameProps {
@@ -17,6 +18,8 @@ interface QuestFileFrameProps {
  * visible. It reports itself to the journal, which marks it
  * `data-current` while it is the current quest (the status chip flips) and
  * `data-unlocked` once it has been (Quest's achievements power on, once).
+ * Like every panel, it powers on the first time it is reached
+ * (`data-reveal`, reveal.css).
  */
 export function QuestFileFrame({
   id,
@@ -41,8 +44,10 @@ export function QuestFileFrame({
       data-quest-id={id}
       data-current={current === id ? "" : undefined}
       data-unlocked={(unlocks[id] ?? 0) > 0 ? "" : undefined}
+      data-reveal="panel"
       className="chamfer"
     >
+      <PowerCover />
       {children}
     </article>
   );

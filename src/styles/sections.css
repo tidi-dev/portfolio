@@ -1,0 +1,437 @@
+/*
+ * The sections after the Quest journal (DESIGN.md → Components: Link,
+ * Mission log timeline, Rule panel, Inventory slot, Training card, Avatar
+ * frame, Dialogue box, AFK list, Contact row; Responsive Behavior). Their
+ * scroll motion lives in reveal.css. Colours, spacing and timings are
+ * tokens; the few fixed sizes are the component entries' own (the 2 px
+ * timeline line and 16 px nodes, the 12 px training marker, the 56 px AFK
+ * and contact rows, the 3:4 avatar at 160 / 200 / at most 220 px) or
+ * DESIGN.md's (the rule numeral matches the 28 px status chip, the 2 px
+ * lead-phrase underline matches the lead lines).
+ */
+
+/* Link (DESIGN.md → Link): accent-ink, underlined; hover primary. */
+@utility text-link {
+  color: var(--color-accent-ink);
+  text-decoration-line: underline;
+  text-underline-offset: 0.2em;
+  transition-property: color;
+  transition-duration: var(--transition-duration-feedback);
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+/* ── Mission log ─────────────────────────────────────────────────────── */
+
+/* Responsive Behavior → Mission log: from lg the log sits in 8 of 12
+   columns, offset 2. */
+@utility mission-log {
+  @variant lg {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--spacing-gutter);
+  }
+}
+
+/* The line at the left, the node bodies beside it. The block is the view
+   timeline the line draws along (reveal.css): its progress runs while the
+   log's top and then its bottom cross a line 70 % down the viewport. */
+@utility timeline {
+  position: relative;
+  padding-inline-start: var(--spacing-xl);
+  view-timeline-name: --mission-log;
+  view-timeline-axis: block;
+  view-timeline-inset: auto 30%;
+
+  @variant lg {
+    grid-column: 3 / span 8;
+  }
+}
+
+/* timeline-line: 2 px holo, centred on the nodes, drawn from the top. */
+@utility timeline-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 7px;
+  width: 2px;
+  background-color: var(--color-holo);
+  transform-origin: top;
+}
+
+@utility timeline-item {
+  position: relative;
+}
+
+/* A 16 px square node rotated 45°, a holo outline on the page surface,
+   level with the employer's heading; the current employer's node has the
+   gold core (timeline-node-current). */
+@utility timeline-node {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: calc(-1 * var(--spacing-xl));
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-surface);
+  transform: rotate(45deg);
+
+  &[data-current]::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    background-color: var(--color-accent);
+  }
+}
+
+/* A node's body: one column; from md the employer, title and period
+   beside the projects. */
+@utility timeline-body {
+  display: grid;
+  gap: var(--spacing-lg);
+
+  @variant md {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+
+/* ── House rules ─────────────────────────────────────────────────────── */
+
+/* One column; 2 × 2 from md. */
+@utility rules-grid {
+  display: grid;
+  gap: var(--spacing-gutter);
+
+  @variant md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The numeral chip: the small chamfer, an accent-ink edge and numeral,
+   the status chip's 28 px. */
+@utility rule-numeral {
+  --chamfer-edge: var(--color-accent-ink);
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--color-accent-ink);
+}
+
+/* rule-lead: the lead phrase in body-strong accent-ink, on its own line
+   over the rest of the rule, with its 2 px accent-ink underline. */
+@utility rule-lead {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin-bottom: var(--spacing-xs);
+  padding-bottom: var(--spacing-2xs);
+  color: var(--color-accent-ink);
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background-color: var(--color-accent-ink);
+    transform-origin: left;
+  }
+}
+
+/* ── Inventory ───────────────────────────────────────────────────────── */
+
+/* Stacked below lg; from lg Inventory 8 and Leveling up 4. */
+@utility inventory-grid {
+  display: grid;
+  gap: var(--spacing-gutter);
+
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@utility inventory-main {
+  @variant lg {
+    grid-column: span 8 / span 8;
+  }
+}
+
+@utility inventory-training {
+  @variant lg {
+    grid-column: span 4 / span 4;
+  }
+}
+
+/* inventory-slot: square, a 1 px rule edge and a holo 5 % tint; on hover
+   (fine pointers) the holo edge and a 14 % tint, no lift, no pointer. */
+@utility inventory-slot {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--color-rule);
+  background-color: color-mix(in srgb, var(--color-holo) 5%, transparent);
+  color: var(--color-primary);
+  transition-property: border-color, background-color;
+  transition-duration: var(--transition-duration-feedback);
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--color-holo);
+      background-color: color-mix(in srgb, var(--color-holo) 14%, transparent);
+    }
+  }
+}
+
+/* Leveling up: 1 column, 2 × 2 from sm, stacked cards again from lg. */
+@utility training-grid {
+  display: grid;
+  gap: var(--spacing-sm);
+
+  @variant sm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @variant lg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A training card: a chamfered card on the page surface inside the panel. */
+@utility training-card {
+  --chamfer-fill: var(--color-surface);
+}
+
+/* training-marker: the 12 px success triangle. */
+@utility training-marker {
+  display: inline-flex;
+}
+
+/* ── Character stats ─────────────────────────────────────────────────── */
+
+/* Stacked below lg; from lg stats 7 · dialogue 5, education 7 ·
+   languages 5. */
+@utility stats-grid {
+  display: grid;
+  gap: var(--spacing-gutter);
+
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* The stats panel: the avatar above the rows; beside them at 160 px from
+   sm, at the avatar's 200 px from lg. */
+@utility stats-card {
+  display: grid;
+  align-items: start;
+  gap: var(--spacing-lg);
+
+  @variant sm {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+
+  @variant lg {
+    grid-column: span 7 / span 7;
+    grid-template-columns: var(--spacing-avatar) minmax(0, 1fr);
+  }
+}
+
+@utility stats-dialogue {
+  @variant lg {
+    grid-column: span 5 / span 5;
+  }
+}
+
+@utility stats-education {
+  @variant lg {
+    grid-column: span 7 / span 7;
+  }
+}
+
+@utility stats-languages {
+  @variant lg {
+    grid-column: span 5 / span 5;
+  }
+}
+
+/* The avatar's tilt (Motion → Avatar tilt): up to 6° toward a fine
+   pointer (avatar-tilt.client.tsx sets the angles), settling back over
+   feedback; none in the calm mode. At most 220 px wide below sm. */
+@utility avatar-tilt {
+  width: 100%;
+  max-width: 220px;
+  transform: perspective(600px) rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg));
+  transition: transform var(--transition-duration-feedback) var(--ease-out);
+
+  :root:not([data-motion="on"]) & {
+    transform: none;
+  }
+
+  @variant sm {
+    max-width: none;
+  }
+}
+
+/* Avatar frame: the 3:4 image whole (its own aspect ratio, never
+   cropped) in a 1 px line frame. */
+@utility avatar-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+}
+
+@utility avatar-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* avatar-caption: the approved caption, visible on the scrim at the
+   bottom of the frame. */
+@utility avatar-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--spacing-xs);
+  color: var(--color-on-scrim);
+  background-color: var(--color-scrim);
+}
+
+/* The avatar scan's holo band, resting out of sight above the frame;
+   reveal.css runs it once, top to bottom. */
+@utility avatar-scan {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 30%;
+  opacity: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--color-holo) 45%, transparent),
+    transparent
+  );
+  transform: translateY(-100%);
+}
+
+/* speaker-tag: "TiDi" on gold, the small chamfer, 8 px padding. */
+@utility speaker-tag {
+  --chamfer-edge: var(--color-accent);
+  --chamfer-fill: var(--color-accent);
+  display: inline-flex;
+  padding: var(--spacing-xs);
+  color: var(--color-on-accent);
+}
+
+/* ── AFK ─────────────────────────────────────────────────────────────── */
+
+/* 2 columns, 3 from md, one row of 5 from lg. A last item left alone on
+   its row takes the row's free columns, so the longest interest isn't
+   squeezed into one narrow column. */
+@utility afk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+
+  & > :last-child:nth-child(odd) {
+    grid-column: span 2 / span 2;
+  }
+
+  @variant md {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    & > :last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+
+    & > :last-child:nth-child(3n + 2) {
+      grid-column: span 2 / span 2;
+    }
+  }
+
+  @variant lg {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    & > :last-child:nth-child(3n + 2) {
+      grid-column: auto;
+    }
+  }
+}
+
+/* An AFK item: a 24 px icon and its label, 56 px high, on a rule edge. */
+@utility afk-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 56px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--color-rule);
+}
+
+/* ── Join party ──────────────────────────────────────────────────────── */
+
+/* Stacked below lg; from lg the sign-off 5 and the rows 7. */
+@utility contact-grid {
+  display: grid;
+  gap: var(--spacing-gutter);
+
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@utility contact-signoff {
+  @variant lg {
+    grid-column: span 5 / span 5;
+  }
+}
+
+@utility contact-rows {
+  @variant lg {
+    grid-column: span 7 / span 7;
+  }
+}
+
+/* contact-row: 56 px, split by rule hairlines; the term above its value
+   below sm, at the 96 px stat-key width beside it from sm. Below sm a
+   button in a row pads 12 px, not 24, so the email address fits a 320 px
+   screen on one line; it may still wrap rather than overflow. */
+@utility contact-row {
+  display: grid;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-height: 56px;
+  padding-block: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-rule);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  & .btn {
+    max-width: 100%;
+    padding-inline: var(--spacing-sm);
+    overflow-wrap: anywhere;
+  }
+
+  @variant sm {
+    grid-template-columns: var(--spacing-stat-key) minmax(0, 1fr);
+    gap: var(--spacing-sm);
+
+    & .btn {
+      padding-inline: var(--spacing-lg);
+    }
+  }
+}

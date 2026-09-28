@@ -1,0 +1,34 @@
+import { Icon } from "@/components/ui/icon";
+import { Panel } from "@/components/ui/panel";
+import { SectionFrame } from "@/components/ui/section-frame";
+import { interests } from "@/content/interests";
+import type { Section } from "@/content/schema/sections";
+import { typography } from "@/lib/format/typography";
+
+/**
+ * AFK (DESIGN.md → AFK list; Responsive Behavior → AFK): the owner's five
+ * interests, each a 24 px icon and its label in a 56 px row, in one idle
+ * panel: 2 columns, 3 from md, one row of 5 from lg. It powers on and then
+ * stays calm on purpose (contrib-design §3). Its heading takes focus from
+ * "Press A to continue".
+ */
+export function Afk({ section }: { readonly section: Section }) {
+  return (
+    <SectionFrame section={section} focusTarget>
+      <Panel>
+        <ul className="afk-grid">
+          {interests.afk.map((item) => (
+            <li key={item.label} className="afk-item">
+              <span className="text-accent-ink">
+                <Icon name={item.icon} size="large" />
+              </span>
+              <span className="type-body-sm text-primary">
+                {typography(item.label)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+    </SectionFrame>
+  );
+}
