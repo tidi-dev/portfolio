@@ -1,6 +1,6 @@
 import { factTerms } from "@/content/projects";
 import type { Contact } from "@/content/schema/contact";
-import type { FullProject } from "@/content/schema/projects";
+import type { CompactProject, FullProject } from "@/content/schema/projects";
 import { formatNumber } from "@/lib/format/number";
 
 /** One value in a facts list (DESIGN.md → Sheets → Lists). */
@@ -71,6 +71,18 @@ export function projectFacts(project: FullProject): FactRow[] {
     });
   }
   return rows;
+}
+
+/**
+ * A compact sheet's facts-list rows (DESIGN.md → Sheets → Compact sheet):
+ * what was built, then the stack. The meta line and the link render
+ * outside the list.
+ */
+export function compactFacts(project: CompactProject): FactRow[] {
+  return [
+    { term: factTerms.built, value: text(project.built) },
+    { term: factTerms.stack, value: { kind: "list", items: project.stack } },
+  ];
 }
 
 /**

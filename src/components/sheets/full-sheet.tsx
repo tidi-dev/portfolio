@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { BulletList } from "@/components/lists/bullet-list";
 import { FactsList } from "@/components/lists/facts-list";
 import { Subhead } from "@/components/lists/subhead";
+import { TermList } from "@/components/lists/term-list";
+import { VideoFacade } from "@/components/video-facade/video-facade";
 import { drawings } from "@/content/drawings";
 import type { FullProject } from "@/content/schema/projects";
 import { projectFacts } from "@/lib/content/facts";
@@ -17,8 +19,10 @@ interface FullSheetProps {
 
 /**
  * A full sheet (DESIGN.md → Sheets), in DOM order: the head, the lede (the
- * owner's one-liner), the drawing band, the facts list and the body. No box,
- * no card, no numbering; only slots whose fact is in info.md render.
+ * owner's one-liner), the drawing band, the facts list and the body: Party
+ * lead where info.md has it, the subhead over bullets or terms, and the
+ * video facade closing the sheet where there is a video. No box, no card,
+ * no numbering; only slots whose fact is in info.md render.
  *
  * Responsive Behavior: stacked below md; from md the tall drawing sits
  * beside the facts with the body below; from lg the band spans 12 columns
@@ -48,12 +52,24 @@ export function FullSheet({ project, drawing }: FullSheetProps) {
         <FactsList rows={projectFacts(project)} />
       </div>
       <div className="mt-lg md:col-span-2 lg:col-span-7 lg:col-start-1 lg:row-start-3 lg:mt-xl">
+        {project.partyLead === undefined ? null : (
+          <div className="mb-lg">
+            <TermList items={[project.partyLead]} />
+          </div>
+        )}
         <Subhead level={4}>{project.body.heading}</Subhead>
         <div className="mt-xs">
           {project.body.kind === "bullets" ? (
             <BulletList items={project.body.items} />
-          ) : null}
+          ) : (
+            <TermList items={project.body.items} />
+          )}
         </div>
+        {project.video === undefined ? null : (
+          <div className="mt-lg">
+            <VideoFacade video={project.video} />
+          </div>
+        )}
       </div>
     </article>
   );

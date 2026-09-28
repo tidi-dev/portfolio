@@ -96,6 +96,13 @@
      step, with the md step as its indent). */
   --height-bullet-dash: 1.5px;
 
+  /* Components → Links and buttons: the link underline sits 0.2em below
+     the text, as `underline-offset-link`. */
+  --text-underline-offset-link: 0.2em;
+
+  /* Shapes → Ratios: the video poster is 16:9, as `aspect-video`. */
+  --aspect-video: 16 / 9;
+
   /* Typography table, `label` row: drawing labels at 14 units. */
   --text-drawing-label: 14px;
 

@@ -119,6 +119,8 @@ export const Projects = z
 /** The facts-list terms, one per intent across every sheet. */
 export const FactTerms = z.strictObject({
   role: Text,
+  /** A compact sheet's "What I built" (info.md: Lemonswan, Scania). */
+  built: Text,
   team: Text,
   scale: Text,
   users: Text,

@@ -97,3 +97,5 @@ export const LanguageTag = z.enum(["en", "vi"]);
 
 /** The owner's "Name — description" strings, split at the dash. */
 export const Term = z.strictObject({ term: Text, description: Text });
+
+export type Term = Content<typeof Term>;

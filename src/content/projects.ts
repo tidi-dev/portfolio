@@ -94,6 +94,24 @@ export const projects = defineContent("projects", Projects, [
       role: "Tech lead",
       team: "8 juniors",
       users: copy.quest.users,
+      // info.md → Quest @ NFQ Asia → Stack, compiled from the résumé.
+      stack: [
+        "Node.js",
+        "Serverless framework",
+        "AWS Lambda",
+        "DynamoDB",
+        "S3",
+        "API Gateway",
+        "EventBridge",
+        "NestJS",
+        "Prisma",
+        "MySQL",
+        "ReactJS",
+        "VueJS",
+        "Google OAuth 2.0",
+        "Terraform",
+        "New Relic",
+      ],
     },
     partyLead: {
       term: "Party lead",
@@ -151,6 +169,7 @@ export const projects = defineContent("projects", Projects, [
 /** The facts-list terms: info.md's field names, and the approved figure labels. */
 export const factTerms = defineContent("projects", FactTerms, {
   role: "My role",
+  built: "What I built",
   team: "Team",
   scale: "Scale",
   users: "Users",
