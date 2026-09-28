@@ -30,6 +30,12 @@ export const projects = defineContent("projects", Projects, [
         "Argo CD",
       ],
     },
+    cardStat: {
+      source: "scale",
+      key: "scale",
+      value: "13",
+      qualifier: "services across Azure and AWS",
+    },
     body: {
       kind: "bullets",
       heading: "What I built",
@@ -58,6 +64,12 @@ export const projects = defineContent("projects", Projects, [
         impact: copy.botmivivi.facts.impact,
       },
       stack: ["NestJS", "Prisma", "PostgreSQL", "Redis/BullMQ", "Vue 3"],
+    },
+    cardStat: {
+      source: "customers",
+      key: "customers",
+      value: "646",
+      qualifier: copy.botmivivi.facts.window,
     },
     body: {
       kind: "terms",
@@ -112,6 +124,11 @@ export const projects = defineContent("projects", Projects, [
         "Terraform",
         "New Relic",
       ],
+    },
+    cardStat: {
+      source: "users",
+      value: "~300",
+      qualifier: "users in Ha Noi, Da Nang, Sai Gon, Can Tho",
     },
     partyLead: {
       term: "Party lead",

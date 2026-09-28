@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { formatNumber } from "@/lib/format/number";
 import type { Content } from "./define";
 import { HologramId } from "./holograms";
 import {
@@ -88,22 +89,62 @@ const YouTubeWatchUrl = HttpsUrl.refine((url) => {
 
 const ProjectId = () => structuralId("a project id, which experience.ts lists");
 
-/** A quest file (DESIGN.md → Quest file): CyberRock, botmivivi, Quest @ NFQ Asia. */
-export const FullProject = z.strictObject({
-  kind: structuralLiteral("full", "project variant"),
-  id: ProjectId(),
-  name: Text,
-  /** The name in an employer's project list, when it differs. */
-  shortName: Text.optional(),
-  status: z.enum(["Active", "Side", "Cleared"]),
-  period: Period,
-  lede: Text,
-  hologram: HologramId,
-  facts: Facts,
-  partyLead: Term.optional(),
-  body: Body,
-  video: z.strictObject({ url: YouTubeWatchUrl, title: Text }).optional(),
+/**
+ * A quest card's key stat (DESIGN.md → Quest card → Key stat): one fact
+ * restated, never new copy. `source` names the fact; `value` + space +
+ * `qualifier` must rejoin it verbatim (checked below). `key` is the
+ * facts-list term shown above the value, when one is shown (Quest's
+ * qualifier already says "users", so it has none: main-session ruling).
+ */
+const CardStat = z.strictObject({
+  source: z.enum(["scale", "users", "customers"]),
+  key: z.enum(["scale", "users", "customers"]).optional(),
+  value: Text,
+  qualifier: Text,
 });
+
+type CardStatInput = z.output<typeof CardStat>;
+type FactsInput = z.output<typeof Facts>;
+
+/** Whether a card stat rejoins its source fact exactly. */
+function cardStatIsVerbatim(stat: CardStatInput, facts: FactsInput): boolean {
+  switch (stat.source) {
+    case "scale":
+      return `${stat.value} ${stat.qualifier}` === facts.scale;
+    case "users":
+      return `${stat.value} ${stat.qualifier}` === facts.users;
+    case "customers":
+      return (
+        facts.usage !== undefined &&
+        stat.value === formatNumber(facts.usage.customers) &&
+        stat.qualifier === facts.usage.window
+      );
+  }
+}
+
+/** A quest (DESIGN.md → Quest card, Quest detail panel): CyberRock, botmivivi, Quest @ NFQ Asia. */
+export const FullProject = z
+  .strictObject({
+    kind: structuralLiteral("full", "project variant"),
+    id: ProjectId(),
+    name: Text,
+    /** The name in an employer's project list, when it differs. */
+    shortName: Text.optional(),
+    status: z.enum(["Active", "Side", "Cleared"]),
+    period: Period,
+    lede: Text,
+    hologram: HologramId,
+    facts: Facts,
+    cardStat: CardStat,
+    partyLead: Term.optional(),
+    body: Body,
+    video: z.strictObject({ url: YouTubeWatchUrl, title: Text }).optional(),
+  })
+  .refine((project) => cardStatIsVerbatim(project.cardStat, project.facts), {
+    message:
+      "The card stat must rejoin its source fact verbatim: value + space + qualifier (scale, users), or the formatted customers figure and the usage window",
+    path: ["cardStat"],
+  });
 
 /**
  * A project listed under its employer in the Mission log: Lemonswan and
