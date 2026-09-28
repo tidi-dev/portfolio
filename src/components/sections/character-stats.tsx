@@ -81,13 +81,14 @@ function StatRows() {
 
 /**
  * The dialogue box (DESIGN.md → Dialogue box): the bio as an RPG
- * dialogue, a gold speaker tag, both paragraphs always visible, then
+ * dialogue, a gold speaker tag in `nav` type ("TiDi" as cased, never
+ * uppercase), both paragraphs always visible, then
  * "Press A to continue ▼" on to AFK.
  */
 function DialogueBox() {
   return (
     <Panel className="stats-dialogue flex flex-col items-start gap-md">
-      <span className="chamfer speaker-tag type-label chamfer-sm">
+      <span className="chamfer speaker-tag type-nav chamfer-sm">
         <span className="relative">{identity.brand}</span>
       </span>
       {about.bio.map((paragraph) => (

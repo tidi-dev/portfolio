@@ -337,7 +337,8 @@
   transform: translateY(-100%);
 }
 
-/* speaker-tag: "TiDi" on gold, the small chamfer, 8 px padding. */
+/* speaker-tag: "TiDi" on gold in nav type (names never take an uppercase
+   style), the small chamfer, 8 px padding. */
 @utility speaker-tag {
   --chamfer-edge: var(--color-accent);
   --chamfer-fill: var(--color-accent);
