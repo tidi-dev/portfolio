@@ -18,7 +18,9 @@
    content, inside its own clipping track (never the panel, so focus rings
    aren't cut). At rest it sits just past the track's right edge, clipped
    out of sight; it never takes a pointer. Its leading left edge is a 2 px
-   holo line at 70 %, so the wipe reads as a panel coming online. */
+   holo line, shown at 70 % only while the cover moves (below), so the wipe
+   reads as a panel coming online and a waiting panel shows no line. No
+   edge in the calm mode or without JavaScript. */
 @utility power-track {
   position: absolute;
   inset: 0;
@@ -40,7 +42,8 @@
     bottom: 0;
     left: 0;
     width: 2px;
-    background-color: color-mix(in srgb, var(--color-holo) 70%, transparent);
+    background-color: var(--color-holo);
+    opacity: 0;
   }
 }
 
@@ -96,6 +99,18 @@
     > .power-track
     > .power-cover {
     transition: transform var(--transition-duration-wipe) var(--ease-power)
+      calc(var(--reveal-order, 0) * var(--stagger-panel));
+  }
+
+  /* The holo edge appears in the frame the slide starts (after the same
+     stagger delay), never during the wait; once the wipe ends it rests
+     just outside the track, clipped. */
+  :root[data-motion="on"][data-reveal-ready]
+    [data-reveal="panel"][data-revealed]
+    > .power-track
+    > .power-cover::before {
+    opacity: 0.7;
+    transition: opacity 0ms linear
       calc(var(--reveal-order, 0) * var(--stagger-panel));
   }
 

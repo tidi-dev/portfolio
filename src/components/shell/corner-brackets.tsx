@@ -24,8 +24,9 @@ export function HeroBrackets() {
 }
 
 /**
- * The same frame around the Join party grid, so it opens and closes the
- * page; it draws on when the sign-off panel powers on (reveal.css).
+ * The same frame around the Join party grid, from lg only (shell.css), so
+ * it opens and closes the page; it draws on when the sign-off panel powers
+ * on (reveal.css).
  */
 export function PartyBrackets() {
   return <Brackets motion="bracket-reveal" />;

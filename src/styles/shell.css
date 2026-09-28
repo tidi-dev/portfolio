@@ -116,6 +116,17 @@
   }
 }
 
+/* Join party's brackets show from lg only (Shapes → Corner brackets):
+   below lg the pair stacks into one tall column, and brackets outside the
+   grid would crowd the 16 px page edge. Their draw is in reveal.css. */
+@utility bracket-reveal {
+  display: none;
+
+  @variant lg {
+    display: block;
+  }
+}
+
 @utility bracket-tl {
   top: var(--bracket-top);
   left: var(--bracket-side);
@@ -185,11 +196,12 @@
   }
 }
 
-/* button-ghost: a 1.5 px text-muted edge on surface; holo on hover. */
+/* button-ghost: a 1 px text-muted edge on surface (whole pixels, like the
+   12 px pixel stroke); holo on hover. */
 @utility btn-ghost {
   --chamfer-edge: var(--color-text-muted);
   --chamfer-fill: var(--color-surface);
-  --chamfer-edge-width: 1.5px;
+  --chamfer-edge-width: 1px;
   color: var(--color-primary);
 
   &:hover {
