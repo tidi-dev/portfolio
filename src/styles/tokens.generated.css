@@ -19,6 +19,7 @@
   --color-scene-chip: #121a2a;
   --color-scene-pin: #b8c4d6;
   --color-shadow-pixel: #0b728533;
+  --color-success-wash: #1a7f3714;
   --color-primary-dark: #e6edf3;
   --color-surface-dark: #070b14;
   --color-surface-raised-dark: #0f1726;
@@ -35,6 +36,7 @@
   --color-rule-dark: #e6edf314;
   --color-scene-metal-dark: #0e1524;
   --color-shadow-pixel-dark: #4fd8e859;
+  --color-success-wash-dark: #3fb9501f;
   --color-focus: #7d5a00;
   --color-focus-dark: #e3b341;
   --font-display: "Galmuri11";
@@ -117,4 +119,5 @@
   --spacing-avatar: 200px;
   --spacing-avatar-xl: 264px;
   --spacing-stat-key: 96px;
+  --spacing-quest-card: 312px;
 }

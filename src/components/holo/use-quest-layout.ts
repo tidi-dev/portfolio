@@ -2,10 +2,11 @@ import { useSyncExternalStore } from "react";
 
 /**
  * Whether the Quest journal shows its wide layout (DESIGN.md → Responsive
- * Behavior → Quest journal: from `lg`, the sticky viewport and the mission
- * list; below it, a hologram band per file), and whether a fine pointer may
- * tilt the viewport. The breakpoint is read from the `--breakpoint-lg`
- * token, so CSS and script agree. Browser-only; the server knows neither.
+ * Behavior → Quest journal: from `lg` the detail panel splits 5 / 7 with
+ * the stage sticky), and whether a fine pointer may tilt the hologram
+ * there (DESIGN.md → Quest holograms: pointer tilt from `lg`). The
+ * breakpoint is read from the `--breakpoint-lg` token, so CSS and script
+ * agree. Browser-only; the server knows neither.
  */
 function query(): string {
   const lg = getComputedStyle(document.documentElement)

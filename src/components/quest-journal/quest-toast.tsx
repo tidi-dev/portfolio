@@ -13,10 +13,12 @@ interface QuestToastProps {
 
 /**
  * The toast (DESIGN.md → Toast): a glass chip with a 1 px accent-ink edge
- * in the hologram viewport's top-left, "Quest unlocked" plus the quest's
- * name. It wipes in, holds and leaves (toast-in, toast-hold, toast-out);
- * in the calm mode it fades in and out. It sits inside the aria-hidden
- * stage: the state is carried by the mission item's `aria-current`.
+ * in the stage's top-left, "Quest unlocked" plus the quest's name, on each
+ * selection the visitor makes (never the default on load); a new one
+ * restarts it (keyed by the selection count). It wipes in, holds and
+ * leaves (toast-in, toast-hold, toast-out); in the calm mode it fades in
+ * and out. It sits inside the aria-hidden stage: the state is carried by
+ * the cards' `aria-selected`.
  */
 export function QuestToast({ label, name, onDone }: QuestToastProps) {
   return (

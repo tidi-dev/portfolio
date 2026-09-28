@@ -1,19 +1,29 @@
 /*
  * The Quest journal (DESIGN.md → Components: Panel heading, Status chip,
- * Mission item, Quest file, Stat readout, Achievement badge, Toast, Video
- * facade; 3D Scenes → Quest holograms; Responsive Behavior → Quest
- * journal; Motion → Quest unlocked, Achievements, botmivivi readouts).
- * Every file is visible and stacked (plan → Rulings). Colours, spacing and
- * timings are tokens; component dimensions (status chip, mission item, the
- * state bar, the band's 320 px cap) are theme.css's mapped names. Motion
- * runs only under
- * `data-motion="on"`: without JavaScript, or in the calm mode, everything
- * rests in its final state.
+ * Quest card, Quest card row, Quest detail panel, Stat readout,
+ * Achievement badge, Toast, Video facade; 3D Scenes → Quest holograms;
+ * Responsive Behavior → Quest journal; Motion → Quest select, Quest
+ * unlocked, Achievements, botmivivi readouts). Colours, spacing and
+ * timings are tokens; component dimensions (status chip, the card's strip
+ * and selected edge, the stage band's 320 px cap) are theme.css's mapped
+ * names. Motion runs only under `data-motion="on"`: without JavaScript,
+ * or in the calm mode, everything rests in its final state.
  */
 
-@keyframes chip-flip {
+@keyframes swap-scan {
   from {
-    transform: perspective(400px) rotateX(90deg);
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes swap-edge {
+  from,
+  to {
+    opacity: 0.7;
   }
 }
 
@@ -74,13 +84,153 @@
   border-bottom: 1px solid var(--color-rule);
 }
 
-/* Layout: one column below lg; from lg the left 4 of 12 columns hold the
-   sticky viewport and the mission list, the right 8 the files (wide enough
-   for each bullet and term to sit on one line at 1440 px). */
-@utility quest-grid {
+/* Quest card row (tablist). Below md: a full-bleed row that scrolls
+   sideways and snaps each card to its start, the page edge as its padding
+   and scroll padding, so the next card peeks; xs above and below, so the
+   focus rings aren't clipped. From md: a 3-column grid, no scroll. */
+@utility quest-row {
+  --row-edge-start: max(var(--page-edge), env(safe-area-inset-left));
+  --row-edge-end: max(var(--page-edge), env(safe-area-inset-right));
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-inline: calc(-1 * var(--row-edge-start)) calc(-1 * var(--row-edge-end));
+  padding-block: var(--spacing-xs);
+  padding-inline: var(--row-edge-start) var(--row-edge-end);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--row-edge-start) var(--row-edge-end);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-text-muted) transparent;
+
+  @variant md {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-gutter);
+    margin-inline: 0;
+    padding: 0;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+}
+
+/* Quest card: the whole card is the tab. Below md it is
+   min(100% − 48px, 312px) wide in the row; from md it fills its column.
+   Edges along the cut (the chamfer's edge layer): line at rest, success on
+   the Active quest, holo on hover, and on the selected card 2 px of
+   accent-ink, which wins. Edge colours change over feedback with motion
+   on, at once in the calm mode. */
+@utility quest-card {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: min(100% - var(--spacing-2xl), var(--spacing-quest-card));
+  padding: var(--spacing-lg);
+  text-align: start;
+  color: var(--color-primary);
+  cursor: pointer;
+  scroll-snap-align: start;
+
+  @variant md {
+    width: auto;
+  }
+
+  &[data-status="Active"] {
+    --chamfer-edge: var(--color-success);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      --chamfer-edge: var(--color-holo);
+    }
+  }
+
+  &[aria-selected="true"] {
+    --chamfer-edge: var(--color-accent-ink);
+    --chamfer-edge-width: var(--quest-card-selected-edge);
+  }
+
+  :root[data-motion="on"] &::before {
+    transition-property: background-color;
+    transition-duration: var(--transition-duration-feedback);
+    transition-timing-function: var(--ease-out);
+  }
+}
+
+/* The Active quest's aura: light from its strip, success-wash fading out
+   by half the card, over the fill and under the content. */
+@utility quest-card-aura {
+  position: absolute;
+  inset: var(--chamfer-edge-width, 1px);
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-success-wash),
+    transparent 50%
+  );
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--chamfer-cut)) 0,
+    100% var(--chamfer-cut),
+    100% 100%,
+    var(--chamfer-cut) 100%,
+    0 calc(100% - var(--chamfer-cut))
+  );
+}
+
+/* The rarity strip: 4 px along the top, inside the edge, from the left
+   corner to the start of the cut, in the status colour (status-*). */
+@utility quest-card-strip {
+  position: absolute;
+  top: var(--chamfer-edge-width, 1px);
+  right: var(--chamfer-cut);
+  left: var(--chamfer-edge-width, 1px);
+  height: var(--quest-card-strip);
+  background-color: currentColor;
+  transform-origin: left;
+}
+
+/* The menu cursor "▸": 12 px, accent-ink, in the left padding on the
+   title's first line, so nothing reflows. Selected, it slides in
+   (translateX(−4px → 0) and fades over feedback, at once in the calm
+   mode). */
+@utility quest-card-cursor {
+  @apply type-nav;
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--spacing-md));
+  line-height: var(--leading-heading-quest);
+  color: var(--color-accent-ink);
+  opacity: 0;
+  transform: translateX(-4px);
+
+  [aria-selected="true"] & {
+    opacity: 1;
+    transform: none;
+  }
+
+  :root[data-motion="on"] & {
+    transition-property: opacity, transform;
+    transition-duration: var(--transition-duration-feedback);
+    transition-timing-function: var(--ease-out);
+  }
+}
+
+/* The 1 px rule, pushed down so the stats align across the row. */
+@utility quest-card-rule {
+  align-self: stretch;
+  height: 1px;
+  margin-top: auto;
+  background-color: var(--color-rule);
+}
+
+/* Quest detail panel: one column below lg (the stage band above the
+   tabpanel); from lg, 5 / 7 on 12 columns, the stage sticky under the HUD
+   strip and aligned to the start. */
+@utility quest-detail {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-gutter);
+  gap: var(--spacing-lg);
 
   @variant lg {
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -88,54 +238,75 @@
   }
 }
 
-@utility quest-aside {
-  display: none;
-
+@utility quest-stage-slot {
   @variant lg {
     position: sticky;
     top: calc(var(--spacing-hud) + var(--spacing-md));
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    grid-column: span 4 / span 4;
+    grid-column: span 5 / span 5;
   }
 }
 
-@utility quest-files {
+/* The tabpanels, with the swap cover's track over them. */
+@utility quest-panels {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-gutter);
+  gap: var(--spacing-lg);
+  min-width: 0;
 
   @variant lg {
-    grid-column: span 8 / span 8;
+    grid-column: span 7 / span 7;
   }
 }
 
-/* A hologram stage: a chamfered screen, a size container so the poster
-   scales with it, and its own stacking context, so the toast never rises
-   over the HUD strip. */
+/* The hologram stage: a chamfered screen on the page surface inside the
+   panel, a size container so the poster scales with it, and its own
+   stacking context, so the toast never rises over the HUD strip. 16:10 at
+   most 320 px tall below lg; 4:3 from lg. */
 @utility quest-stage {
+  --chamfer-fill: var(--color-surface);
   position: relative;
   isolation: isolate;
   width: 100%;
-  overflow: hidden;
-  container-type: size;
-}
-
-/* The sticky viewport, from lg: 4:3. */
-@utility quest-viewport {
-  aspect-ratio: 4 / 3;
-}
-
-/* A file's band, below lg: 16:10, at most 320 px, on the page surface
-   inside the file's panel. */
-@utility quest-band {
-  --chamfer-fill: var(--color-surface);
   aspect-ratio: 16 / 10;
   max-height: var(--quest-band-max-height);
+  overflow: hidden;
+  container-type: size;
 
   @variant lg {
-    display: none;
+    aspect-ratio: 4 / 3;
+    max-height: none;
+  }
+}
+
+/* The swap cover (Motion → Quest select): at rest just below its track,
+   clipped. On each change of quest, with motion on, it starts over the new
+   tabpanel and slides down out of the track over swap (ease-power), its
+   top edge a 2 px holo line at 70 % shown only while it moves (the
+   scan). */
+@utility swap-cover {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-surface-raised);
+  transform: translateY(100%);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background-color: var(--color-holo);
+    opacity: 0;
+  }
+
+  :root[data-motion="on"] & {
+    animation: swap-scan var(--transition-duration-swap) var(--ease-power);
+  }
+
+  :root[data-motion="on"] &::before {
+    animation: swap-edge var(--transition-duration-swap) linear;
   }
 }
 
@@ -295,8 +466,7 @@
 }
 
 /* Status chips: the text colour, a 1 px border in the same colour
-   following the small chamfer. In a quest file the chip flips in
-   (rotateX 90° → 0, flip) each time the file becomes current. */
+   following the small chamfer. */
 @utility status-chip {
   --chamfer-edge: currentColor;
   display: inline-flex;
@@ -304,10 +474,6 @@
   align-items: center;
   min-height: var(--status-chip-height);
   padding-inline: var(--status-chip-padding);
-
-  :root[data-motion="on"] [data-quest-id][data-current] & {
-    animation: chip-flip var(--transition-duration-flip) var(--ease-out);
-  }
 }
 
 @utility status-active {
@@ -320,38 +486,6 @@
 
 @utility status-cleared {
   color: var(--color-text-muted);
-}
-
-/* Mission item: a 56 px in-page link, 16 px padding; hover gives the holo
-   edge; the current item shows the 3 px state bar at its left. */
-@utility mission-item {
-  display: flex;
-  align-items: center;
-  min-height: var(--row-height);
-  padding-inline: var(--spacing-md);
-
-  &::before {
-    transition-property: background-color;
-    transition-duration: var(--transition-duration-feedback);
-  }
-
-  &:hover {
-    --chamfer-edge: var(--color-holo);
-  }
-}
-
-@utility mission-bar {
-  position: absolute;
-  top: 0;
-  bottom: var(--spacing-chamfer);
-  left: 0;
-  width: var(--state-bar-width);
-  background-color: var(--color-accent-ink);
-  opacity: 0;
-
-  [aria-current="true"] > & {
-    opacity: 1;
-  }
 }
 
 /* Stat readout: stacked below xs (375 px), where a third of the panel is
@@ -386,7 +520,7 @@
   left: 0;
 }
 
-/* The steps list, in the log style, on the page surface inside the file. */
+/* The steps list, in the log style, on the page surface inside the panel. */
 @utility quest-log {
   --chamfer-fill: var(--color-surface);
 }
@@ -414,8 +548,8 @@
   }
 }
 
-/* Achievement badges: a 2 × 2 grid from sm. The first time Quest is
-   current (data-unlocked), each badge wipes on (row, stagger badge) and
+/* Achievement badges: a 2 × 2 grid from sm. The first time Quest's panel
+   shows (data-first-show), each badge wipes on (row, stagger badge) and
    one glint crosses it. */
 @utility achievement-grid {
   display: grid;
@@ -429,7 +563,7 @@
 @utility achievement {
   --chamfer-fill: var(--color-surface);
 
-  :root[data-motion="on"] [data-unlocked] & {
+  :root[data-motion="on"] [data-first-show] & {
     animation: line-wipe var(--transition-duration-row) var(--ease-power)
       calc(var(--i, 0) * var(--stagger-badge)) backwards;
   }
@@ -454,7 +588,7 @@
     transform: translateX(-120%);
   }
 
-  :root[data-motion="on"] [data-unlocked] &::before {
+  :root[data-motion="on"] [data-first-show] &::before {
     animation: badge-glint var(--transition-duration-sweep) var(--ease-out)
       calc(var(--i, 0) * var(--stagger-badge) + var(--transition-duration-row))
       backwards;

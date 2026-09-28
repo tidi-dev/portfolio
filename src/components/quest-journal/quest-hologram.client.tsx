@@ -39,27 +39,23 @@ function serverWebgl(): boolean | undefined {
   return undefined;
 }
 
-/** The sticky viewport from `lg`, or one file's band below it. */
-export type QuestHologramPlacement =
-  | { readonly placement: "viewport" }
-  | { readonly placement: "band"; readonly questId: string };
-
-type QuestHologramProps = QuestHologramPlacement & {
+interface QuestHologramProps {
   /** The aria-hidden tags on Quest's slabs ("v1", "v2"). */
   readonly tags: { readonly v1: string; readonly v2: string };
-};
+}
 
 /**
- * A quest hologram stage (DESIGN.md → 3D Scenes → Quest holograms;
- * Responsive Behavior → Quest journal). From `lg` one sticky viewport shows
- * the current quest's model; below `lg` each file opens with its own band.
- * Only the stages of the layout on screen mount a canvas, and each renders
- * only while on screen in a visible tab (on demand in the calm mode). The
- * poster holds the stage before the scene, and for good when WebGL is
- * missing, fails or is lost. Everything here is `aria-hidden`: the file's
- * steps list says what the hologram shows.
+ * The quest hologram stage (DESIGN.md → Quest detail panel → Stage; 3D
+ * Scenes → Quest holograms): one canvas in the detail panel, showing the
+ * selected quest's model; each change of quest cuts to the new model and
+ * projects it in. It renders only while on screen in a visible tab (on
+ * demand in the calm mode). The poster holds the stage before the scene,
+ * and for good when WebGL is missing, fails or is lost. The toast sits at
+ * its top-left, restarted by each visitor selection. Everything here is
+ * `aria-hidden`: each tabpanel's steps list says what the hologram shows,
+ * and the cards' `aria-selected` carries the selection.
  */
-export function QuestHologram(props: QuestHologramProps) {
+export function QuestHologram({ tags }: QuestHologramProps) {
   const journal = useQuestJournal();
   const layout = useQuestLayout();
   const motion = useSyncExternalStore(
@@ -86,30 +82,16 @@ export function QuestHologram(props: QuestHologramProps) {
   const [scene, setScene] = useState<SceneStatus>("loading");
   const [dismissed, setDismissed] = useState(0);
 
-  const band = props.placement === "band";
-  const questId = band ? props.questId : journal.shown;
-  const entry = journal.quests.find((quest) => quest.id === questId);
-  const onScreenLayout =
-    layout !== undefined && (band ? layout === "narrow" : layout !== "narrow");
-  const sceneWanted =
-    webgl === true && scene !== "failed" && onScreenLayout && near;
+  const entry = journal.quests.find((quest) => quest.id === journal.selected);
+  const sceneWanted = webgl === true && scene !== "failed" && near;
   const frameloop: Frameloop =
     !inView.visible || !pageVisible || scene === "lost"
       ? "never"
       : motion
         ? "always"
         : "demand";
-  const unlock = band
-    ? (journal.unlocks[questId] ?? 0)
-    : (journal.last?.seq ?? 0);
   const last = journal.last;
-  const toast =
-    last !== null &&
-    onScreenLayout &&
-    last.seq > dismissed &&
-    (!band || last.id === questId)
-      ? last
-      : null;
+  const toast = last !== null && last.seq > dismissed ? last : null;
   const toastName = journal.quests.find(
     (quest) => quest.id === toast?.id,
   )?.name;
@@ -136,11 +118,7 @@ export function QuestHologram(props: QuestHologramProps) {
       data-holo-stage="quest"
       data-holo-state={holoState(scene, sceneWanted)}
       data-frameloop={frameloop}
-      className={
-        band
-          ? "quest-stage chamfer quest-band"
-          : "quest-stage chamfer quest-viewport"
-      }
+      className="quest-stage chamfer"
     >
       <QuestPoster model={entry.model} />
       {sceneWanted ? (
@@ -148,11 +126,11 @@ export function QuestHologram(props: QuestHologramProps) {
           <div className="holo-layer holo-canvas">
             <QuestScene
               model={entry.model}
-              unlock={unlock}
+              unlock={journal.swaps}
               theme={theme}
               motion={motion}
               frameloop={frameloop}
-              tilt={!band && layout === "wide-fine"}
+              tilt={layout === "wide-fine"}
               tags={{ v1, v2 }}
               onReady={onReady}
               onContextLost={onContextLost}
@@ -162,20 +140,16 @@ export function QuestHologram(props: QuestHologramProps) {
           </div>
         </SceneErrorBoundary>
       ) : null}
-      {!band || entry.model === "quest" ? (
-        <>
-          <span ref={v1} className="scene-tag">
-            <span className="chamfer block p-scene-tag type-label tag-fade chamfer-glass chamfer-sm">
-              {props.tags.v1}
-            </span>
-          </span>
-          <span ref={v2} className="scene-tag">
-            <span className="chamfer block p-scene-tag type-label tag-fade chamfer-glass chamfer-sm">
-              {props.tags.v2}
-            </span>
-          </span>
-        </>
-      ) : null}
+      <span ref={v1} className="scene-tag">
+        <span className="chamfer block p-scene-tag type-label tag-fade chamfer-glass chamfer-sm">
+          {tags.v1}
+        </span>
+      </span>
+      <span ref={v2} className="scene-tag">
+        <span className="chamfer block p-scene-tag type-label tag-fade chamfer-glass chamfer-sm">
+          {tags.v2}
+        </span>
+      </span>
       {toast !== null && toastName !== undefined ? (
         <QuestToast
           key={toast.seq}

@@ -44,7 +44,7 @@ export interface QuestRig {
   readonly rig: Group;
   readonly rings: readonly Mesh[];
   readonly coneUniforms: ConeUniforms;
-  /** The scan sweep that crosses the cone during "Quest unlocked". */
+  /** The scan sweep that crosses the cone when a quest is selected. */
   readonly sweep: Mesh<RingGeometry, MeshBasicMaterial>;
   readonly models: Readonly<Record<QuestModelId, QuestModel>>;
   readonly applyPalette: (palette: ScenePalette) => void;

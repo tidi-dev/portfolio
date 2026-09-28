@@ -32,9 +32,9 @@ export function PartyLead({ lead }: { readonly lead: Term }) {
 /**
  * Quest's achievements (DESIGN.md → Achievement badge): an h4, then the
  * four badges, each its icon, the name (`primary`) and the description
- * (`text-muted`), both body-compact; a 2 × 2 grid from `sm`. The first time Quest is current each badge wipes
- * on with one glint (quest.css); otherwise, and without JavaScript, they
- * simply show.
+ * (`text-muted`), both body-compact; a 2 × 2 grid from `sm`. The first
+ * time Quest's panel shows each badge wipes on with one glint (quest.css);
+ * otherwise, and without JavaScript, they simply show.
  */
 function AchievementBadges({ body }: { readonly body: Achievements }) {
   return (
@@ -65,7 +65,7 @@ function AchievementBadges({ body }: { readonly body: Achievements }) {
 }
 
 /**
- * A quest file's body (DESIGN.md → Quest file): the "What I built" /
+ * A quest's body (DESIGN.md → Quest detail panel → Tabpanel): the "What I built" /
  * "What it does" lists with no heading (bullets, or the owner's "Name —
  * description" strings as terms), or Quest's achievements.
  */

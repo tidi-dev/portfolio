@@ -22,12 +22,9 @@ const CAMERA = {
 } as const;
 const LOOK_AT = new Vector3(0, 1.2, 0);
 
-// "Quest unlocked" (DESIGN.md → Motion), over `project`: the old model
-// scales to 0.6 and fades in the first 35 %, a scan sweeps the cone, then
-// the new model scales 0.6 → 1 (ease-back).
-const OUT_END = 0.35;
-const SWEEP_START = 0.15;
-const SWEEP_END = 0.85;
+// Quest select (DESIGN.md → Motion), over `swap`: the stage cuts to the new
+// model, which projects in (scale 0.6 → 1, ease-back) with one scan-disc
+// pass up the cone.
 const SWEEP_FROM = 0.2;
 const SWEEP_RISE = 2.4;
 
@@ -39,8 +36,6 @@ const TAG_POINT = new Vector3();
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 
 interface Swap {
-  /** The model that leaves, or none when the same model projects in again. */
-  from: QuestModelId | null;
   to: QuestModelId;
   /** `performance.now()` at the swap's start; undefined once it is done. */
   start: number | undefined;
@@ -69,7 +64,7 @@ function placeTag(
 
 /**
  * One quest projector (DESIGN.md → 3D Scenes → Quest holograms; Motion →
- * Quest unlocked): the rig is built once, and a frame callback poses the
+ * Quest select): the rig is built once, and a frame callback poses the
  * ambient loops and the swap. In the calm mode the clock stands still, the
  * swap is a cut, and the canvas renders on demand only.
  */
@@ -95,7 +90,7 @@ function QuestWorld({
   const rigRef = useRef<QuestRig | null>(null);
   const [timings] = useState(readMotionTimings);
   const clock = useRef({ t: 0, ready: false });
-  const swap = useRef<Swap>({ from: null, to: model, start: undefined });
+  const swap = useRef<Swap>({ to: model, start: undefined });
   const motionRef = useRef(motion);
   const seen = useRef({ model, unlock });
 
@@ -130,18 +125,15 @@ function QuestWorld({
     invalidate();
   }, [motion, frameloop, invalidate]);
 
-  // A new model or a new unlock: project in (motion on), or cut.
+  // A new selection: cut to the model and project it in (motion on), or
+  // cut to its still frame.
   useEffect(() => {
     if (seen.current.model === model && seen.current.unlock === unlock) return;
     seen.current = { model, unlock };
-    const current = swap.current;
-    swap.current = motionRef.current
-      ? {
-          from: current.to === model ? null : current.to,
-          to: model,
-          start: performance.now(),
-        }
-      : { from: null, to: model, start: undefined };
+    swap.current = {
+      to: model,
+      start: motionRef.current ? performance.now() : undefined,
+    };
     invalidate();
   }, [model, unlock, invalidate]);
 
@@ -160,36 +152,25 @@ function QuestWorld({
     rig.rings[1]?.rotation.set(0, -t * 0.6, 0);
     for (const id of MODEL_IDS) rig.models[id].pose(t);
 
-    // The swap.
+    // The swap: the new model alone, projecting in; the others are gone.
     const current = swap.current;
     const progress =
       current.start === undefined
         ? 1
-        : clamp01(
-            (performance.now() - current.start) / timings.durations.project,
-          );
-    if (progress >= 1) {
-      current.start = undefined;
-      current.from = null;
-    }
-    const leaving = clamp01(progress / OUT_END);
-    const entering = clamp01((progress - OUT_END) / (1 - OUT_END));
+        : clamp01((performance.now() - current.start) / timings.durations.swap);
+    if (progress >= 1) current.start = undefined;
     for (const id of MODEL_IDS) {
       const target = rig.models[id];
       if (id === current.to) {
-        target.group.scale.setScalar(0.6 + 0.4 * easeBack(entering));
-        target.setFade(easeOutCubic(entering));
-      } else if (id === current.from) {
-        target.group.scale.setScalar(1 - 0.4 * easeOutCubic(leaving));
-        target.setFade(1 - leaving);
+        target.group.scale.setScalar(0.6 + 0.4 * easeBack(progress));
+        target.setFade(easeOutCubic(progress));
       } else {
         target.setFade(0);
       }
     }
-    const sweep = clamp01((progress - SWEEP_START) / (SWEEP_END - SWEEP_START));
-    rig.sweep.visible = progress > SWEEP_START && progress < SWEEP_END;
-    rig.sweep.position.y = SWEEP_FROM + sweep * SWEEP_RISE;
-    rig.sweep.material.opacity = Math.sin(sweep * Math.PI) * 0.9;
+    rig.sweep.visible = progress > 0 && progress < 1;
+    rig.sweep.position.y = SWEEP_FROM + progress * SWEEP_RISE;
+    rig.sweep.material.opacity = Math.sin(progress * Math.PI) * 0.9;
 
     // Pointer tilt ±0.15 rad (fine pointers from lg), damping 4.
     if (tilt && motionRef.current) {
@@ -203,7 +184,7 @@ function QuestWorld({
     }
 
     // Quest's tags follow its slabs and its fade.
-    const questFade = current.to === "quest" ? easeOutCubic(entering) : 0;
+    const questFade = current.to === "quest" ? easeOutCubic(progress) : 0;
     const [v1, v2] = rig.models.quest.anchors;
     const pins = [
       [tags.v1.current, v1],

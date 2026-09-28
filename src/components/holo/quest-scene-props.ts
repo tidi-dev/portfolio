@@ -12,12 +12,12 @@ export type QuestModelId = "cyberrock" | "botmivivi" | "quest";
 
 /**
  * A quest canvas's props: a pure view of which model shows, how many times
- * it has been unlocked (each new count projects it in), the theme and the
- * motion mode.
+ * the selection has changed (each new count projects the model in), the
+ * theme and the motion mode.
  */
 export interface QuestSceneProps {
   readonly model: QuestModelId;
-  /** Grows by one per "Quest unlocked" for this stage. */
+  /** Grows by one per selection change (DESIGN.md → Motion → Quest select). */
   readonly unlock: number;
   readonly theme: Theme;
   readonly motion: boolean;

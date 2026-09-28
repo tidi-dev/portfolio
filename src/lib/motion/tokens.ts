@@ -12,8 +12,9 @@ const DURATIONS = [
   "packet",
   "boot",
   "verdict-hold",
-  // Quest journal: the model's project-in and the readouts' count-up.
-  "project",
+  // Quest journal: the panel swap (the model projects in) and the
+  // readouts' count-up.
+  "swap",
   "count",
 ] as const;
 

@@ -1,6 +1,6 @@
 {
   "file": "public/tidi-resume.pdf",
-  "sources": "ac425aff81daace9a190683ab719d1969fb1d5309f7874e5794226791ed95552",
+  "sources": "730553fab9b0ac6304b9357327688a8553613450f00e9f92e1bd6990d1fdb296",
   "inputs": {
     "model": "57decc953555101c45b6cb7f093cb8881b0072dec5edf82459e60847b046fe5d",
     "src/components/resume/resume-document.tsx": "eb6013092c4767ea97847f58a0eaa5d2311d3c58f2a1460317109a1cdaebf708",
@@ -8,14 +8,14 @@
     "src/lib/format/typography.ts": "5d4b2004f009aac5910e2b229c48832c81b5c0b4d083952d0575a3f184200b55",
     "src/styles/print.css": "5619075b102dc6f3923caadd96fedbf60d2177ed1526f529be00516026c37069",
     "src/styles/reset.css": "c22d1c1e30586390427d5ec262949b6a519de17dcdbfef2c499d3625a0c50501",
-    "src/styles/tokens.generated.css": "7220c785b862e94cda88b3cb818bd1467111c77d60b7394899916619f60a956b",
-    "src/styles/theme.css": "245b464d21e7aecfcaf258bd499d79f0a70fcea2f4698ea49353a191741628de",
+    "src/styles/tokens.generated.css": "74b90808ca8ec015af73ef0b7ce64049d59678f47c604d173bbbba5e6361d0a6",
+    "src/styles/theme.css": "10038b4a95749667ee57e551af8d21be324f15051b5fc5ff723329d8bac24cbb",
     "src/assets/fonts/portfolio-sans.woff2": "711c17959293ae72b15d10b54bea00f55d7e27fbd257d56637f0246b1f6af6d8",
     "scripts/resume/render.ts": "166746521290e9f4b65bf76cc50c0f6279dbc5fb88019ff22e368e839b8538da",
     "scripts/resume/build.ts": "3684372391d7cc3b24f129170bd2e8196978a8bbacdb62b8bf05f26311ad31dd"
   },
   "pdf": {
-    "sha256": "9c8a5320f9427afb51b127b0e73b9795b5b226a461024a862a4e80e0fe748fa4",
+    "sha256": "fc216d5f57efa6a8a20fa9d242c08af9c7c5a2f7d1d75adef0897691160ac133",
     "bytes": 170725
   }
 }

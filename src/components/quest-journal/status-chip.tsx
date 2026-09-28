@@ -11,8 +11,7 @@ const TONE: Record<FullProject["status"], string> = {
 
 /**
  * A status chip (DESIGN.md → Status chip): "Active", "Side" or "Cleared",
- * the owner's words; Cleared adds a check icon. Inside a quest file it
- * flips in when the file becomes current (quest.css).
+ * the owner's words; Cleared adds a check icon.
  */
 export function StatusChip({
   status,

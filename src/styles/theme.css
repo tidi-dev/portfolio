@@ -50,14 +50,13 @@
   --transition-duration-toast-in: 300ms;
   --transition-duration-toast-out: 250ms;
   --transition-duration-toast-hold: 1600ms;
-  --transition-duration-flip: 400ms;
+  --transition-duration-swap: 320ms;
   --transition-duration-row: 400ms;
   --transition-duration-brackets: 400ms;
   --transition-duration-hud: 400ms;
   --transition-duration-shake: 450ms;
   --transition-duration-sweep: 500ms;
   --transition-duration-release: 500ms;
-  --transition-duration-project: 700ms;
   --transition-duration-levelup: 800ms;
   --transition-duration-wipe: 900ms;
   --transition-duration-pulse: 900ms;
@@ -118,17 +117,18 @@
     --xp-track-width: 170px; /* components.xp-track.width (from 2xl) */
     --xp-track-width-md: 120px; /* Responsive → HUD bar, md to lg */
     --xp-track-width-sm: 56px; /* Responsive → HUD bar, below md */
-    --state-bar-width: 3px; /* components.state-bar.width */
     --button-holo-padding: 20px; /* components.button-holo.padding */
     --switch-padding: 14px; /* components.switch.padding */
     --switch-track-width: 34px; /* Components → Switch: 34 × 18 px */
     --switch-track-height: 18px;
     --switch-thumb-size: 12px; /* components.switch-thumb.size */
     --switch-thumb-travel: 16px; /* Components → Switch: slides 16 px */
-    --row-height: 56px; /* mission-item and contact-row height; menu rows, AFK items */
+    --row-height: 56px; /* contact-row height; menu rows, AFK items */
     --status-chip-height: 28px; /* components.status-*.height */
     --status-chip-padding: 10px; /* components.status-*.padding */
-    --quest-band-max-height: 320px; /* Responsive → Quest journal: ≤ 320 px */
+    --quest-band-max-height: 320px; /* Responsive → Quest journal: the stage band ≤ 320 px */
+    --quest-card-strip: 4px; /* Components → Quest card: the 4 px rarity strip */
+    --quest-card-selected-edge: 2px; /* components.quest-card-selected.size */
     --timeline-line-width: 2px; /* components.timeline-line.width */
     --timeline-node-size: 16px; /* components.timeline-node-current.size */
     --avatar-width-sm: 160px; /* Responsive → Character stats, from sm */
@@ -164,6 +164,7 @@
     --color-holo: var(--color-holo-dark);
     --color-on-holo: var(--color-on-holo-dark);
     --color-success: var(--color-success-dark);
+    --color-success-wash: var(--color-success-wash-dark);
     --color-danger: var(--color-danger-dark);
     --color-line: var(--color-line-dark);
     --color-rule: var(--color-rule-dark);
@@ -190,6 +191,7 @@
       --color-holo: var(--color-holo-dark);
       --color-on-holo: var(--color-on-holo-dark);
       --color-success: var(--color-success-dark);
+      --color-success-wash: var(--color-success-wash-dark);
       --color-danger: var(--color-danger-dark);
       --color-line: var(--color-line-dark);
       --color-rule: var(--color-rule-dark);

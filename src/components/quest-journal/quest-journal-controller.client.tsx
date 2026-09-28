@@ -5,50 +5,43 @@ import {
   type ReactNode,
   useCallback,
   useContext,
-  useEffect,
-  useRef,
   useState,
 } from "react";
 import type { QuestModelId } from "@/components/holo/quest-scene-props";
-import { motionSnapshot } from "@/lib/motion/store";
 
-/** One quest file, as the journal's client leaves need it. */
+/** One quest, as the journal's client leaves need it. */
 export interface QuestEntry {
   readonly id: string;
   /** The quest's name, for the toast. */
   readonly name: string;
-  /** The article's id (`#quest-…`) and its heading's id. */
+  /** The tabpanel's id (`quest-…`), the deep-link target. */
   readonly anchor: string;
-  readonly headingId: string;
+  /** The card's (tab's) id (`quest-tab-…`). */
+  readonly tabId: string;
   readonly model: QuestModelId;
 }
 
-/** The latest "Quest unlocked": which quest, and a running count. */
+/** The latest visitor selection, for the toast: which quest, and a count. */
 export interface QuestUnlock {
   readonly id: string;
   readonly seq: number;
 }
 
 interface JournalState {
-  /** The current quest file, once one has been reached. */
-  readonly current: string | null;
+  readonly selected: string;
+  /** Selection changes so far: each one runs the panel swap. */
+  readonly swaps: number;
+  /** How many times each panel has shown (the default counts once). */
+  readonly shows: Readonly<Record<string, number>>;
+  /** The visitor's latest selection; null until they make one. */
   readonly last: QuestUnlock | null;
-  /** How many times each quest has been unlocked. */
-  readonly unlocks: Readonly<Record<string, number>>;
-  /** A quest whose mission item was just activated, to announce. */
-  readonly announced: string | null;
 }
 
-interface QuestJournalValue {
+interface QuestJournalValue extends JournalState {
   readonly quests: readonly QuestEntry[];
-  readonly current: string | null;
-  /** The quest the viewport shows: the current one, else the first. */
-  readonly shown: string;
-  readonly last: QuestUnlock | null;
-  readonly unlocks: Readonly<Record<string, number>>;
   /** Approved copy toast.quest-unlocked. */
   readonly toastLabel: string;
-  readonly register: (id: string, element: HTMLElement) => () => void;
+  /** A selection the visitor made: a card, an arrow key, a deep link. */
   readonly select: (id: string) => void;
 }
 
@@ -64,33 +57,19 @@ export function useQuestJournal(): QuestJournalValue {
   return value;
 }
 
-// A quest file is current while it crosses this band, a little above the
-// viewport's middle (DESIGN.md → Motion → Quest unlocked: "≥ 50 % in
-// view"). A band, not an area ratio, so a file taller than the screen still
-// becomes current.
-const CURRENT_BAND = "-40% 0px -55% 0px";
-
-// After a mission item is activated, scroll-driven changes wait for the
-// scroll to end, so the files it passes don't unlock on the way.
-const SETTLE_FALLBACK = 1500;
-
-const INITIAL: JournalState = {
-  current: null,
-  last: null,
-  unlocks: {},
-  announced: null,
-};
+function initialState(quests: readonly QuestEntry[]): JournalState {
+  const first = quests[0]?.id ?? "";
+  return { selected: first, swaps: 0, shows: { [first]: 1 }, last: null };
+}
 
 /**
- * The Quest journal's state (DESIGN.md → Quest journal; contrib-design §3:
- * every file stays visible and stacked, plan → Rulings). The current quest
- * is the file crossing the band above the middle of the viewport, or the
- * one whose mission item was activated. Each change is a "Quest unlocked":
- * the viewport or band projects the model in and shows the toast, the
- * file's status chip flips, and the mission item takes `aria-current`.
- * The toast is `aria-hidden`; a polite status region announces an unlock
- * only when the visitor activates a mission item, so scrolling never
- * chatters.
+ * The Quest journal's selection (DESIGN.md → Quest card row, Quest detail
+ * panel, Toast; Motion → Quest select, Quest unlocked, Achievements). The
+ * first quest in content order (CyberRock) is selected on load, which
+ * counts as its panel's first show but is not a visitor selection, so no
+ * toast. Every visitor selection restarts the toast; a change of quest
+ * also runs the swap (the cover, the model projecting in) and counts a
+ * show, whose first time powers on Quest's achievements.
  */
 export function QuestJournalController({
   quests,
@@ -101,128 +80,28 @@ export function QuestJournalController({
   readonly toastLabel: string;
   readonly children: ReactNode;
 }) {
-  const [state, setState] = useState<JournalState>(INITIAL);
-  const elements = useRef(new Map<string, HTMLElement>());
-  const crossing = useRef<string[]>([]);
-  const observer = useRef<IntersectionObserver | null>(null);
-  const settling = useRef(false);
-  // The pending end-of-scroll wait after a mission item, so a new
-  // selection or unmounting cancels it.
-  const pendingSettle = useRef<(() => void) | null>(null);
+  const [state, setState] = useState<JournalState>(() => initialState(quests));
 
-  const reach = useCallback((id: string, selected: boolean) => {
-    setState((previous) => {
-      if (previous.current === id) return previous;
-      const last: QuestUnlock = { id, seq: (previous.last?.seq ?? 0) + 1 };
-      return {
-        current: id,
-        last,
-        unlocks: { ...previous.unlocks, [id]: (previous.unlocks[id] ?? 0) + 1 },
-        announced: selected ? id : null,
-      };
-    });
-  }, []);
-
-  const reachCrossing = useCallback(() => {
-    const latest = crossing.current.at(-1);
-    if (latest !== undefined) reach(latest, false);
-  }, [reach]);
-
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = (entry.target as HTMLElement).dataset.questId;
-          if (id === undefined) continue;
-          crossing.current = crossing.current.filter((other) => other !== id);
-          if (entry.isIntersecting) crossing.current.push(id);
-        }
-        if (!settling.current) reachCrossing();
-      },
-      { rootMargin: CURRENT_BAND },
-    );
-    observer.current = io;
-    for (const element of elements.current.values()) io.observe(element);
-    return () => {
-      io.disconnect();
-      observer.current = null;
-    };
-  }, [reachCrossing]);
-
-  const register = useCallback((id: string, element: HTMLElement) => {
-    elements.current.set(id, element);
-    observer.current?.observe(element);
-    return () => {
-      elements.current.delete(id);
-      observer.current?.unobserve(element);
-      crossing.current = crossing.current.filter((other) => other !== id);
-    };
-  }, []);
-
-  // A mission item: the file becomes current, its heading takes focus, and
-  // the page scrolls to it (at once in the calm mode).
   const select = useCallback(
     (id: string) => {
-      const entry = quests.find((quest) => quest.id === id);
-      const article = elements.current.get(id);
-      if (entry === undefined || article === undefined) return;
-      reach(id, true);
-      pendingSettle.current?.();
-      settling.current = true;
-      const cancel = () => {
-        clearTimeout(timer);
-        window.removeEventListener("scrollend", settle);
-        pendingSettle.current = null;
-      };
-      const settle = () => {
-        cancel();
-        settling.current = false;
-        reachCrossing();
-      };
-      window.addEventListener("scrollend", settle);
-      const timer = setTimeout(settle, SETTLE_FALLBACK);
-      pendingSettle.current = cancel;
-      document.getElementById(entry.headingId)?.focus({ preventScroll: true });
-      article.scrollIntoView({
-        behavior: motionSnapshot() ? "smooth" : "instant",
-        block: "start",
+      if (!quests.some((quest) => quest.id === id)) return;
+      setState((previous) => {
+        const last = { id, seq: (previous.last?.seq ?? 0) + 1 };
+        if (previous.selected === id) return { ...previous, last };
+        return {
+          selected: id,
+          swaps: previous.swaps + 1,
+          shows: { ...previous.shows, [id]: (previous.shows[id] ?? 0) + 1 },
+          last,
+        };
       });
-      window.history.pushState(null, "", `#${entry.anchor}`);
     },
-    [quests, reach, reachCrossing],
-  );
-
-  // Unmounting mid-scroll drops the pending wait (its listener and timer).
-  useEffect(
-    () => () => {
-      pendingSettle.current?.();
-    },
-    [],
+    [quests],
   );
 
   // The provider re-renders only when the journal's state changes (its
   // children are server-rendered), so the value needs no memo.
-  const value: QuestJournalValue = {
-    quests,
-    current: state.current,
-    shown: state.current ?? quests[0]?.id ?? "",
-    last: state.last,
-    unlocks: state.unlocks,
-    toastLabel,
-    register,
-    select,
-  };
+  const value: QuestJournalValue = { ...state, quests, toastLabel, select };
 
-  const announcedName = quests.find(
-    (quest) => quest.id === state.announced,
-  )?.name;
-  const announcement =
-    announcedName === undefined ? "" : [toastLabel, announcedName].join(" ");
-
-  return (
-    <QuestJournalContext value={value}>
-      {children}
-      <output className="sr-only">{announcement}</output>
-    </QuestJournalContext>
-  );
+  return <QuestJournalContext value={value}>{children}</QuestJournalContext>;
 }

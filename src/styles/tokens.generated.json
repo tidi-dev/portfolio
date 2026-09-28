@@ -223,6 +223,17 @@
         "hex": "#0b728533"
       }
     },
+    "success-wash": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.102,
+          0.498,
+          0.216
+        ],
+        "hex": "#1a7f3714"
+      }
+    },
     "primary-dark": {
       "$value": {
         "colorSpace": "srgb",
@@ -399,6 +410,17 @@
         "hex": "#4fd8e859"
       }
     },
+    "success-wash-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.247,
+          0.725,
+          0.314
+        ],
+        "hex": "#3fb9501f"
+      }
+    },
     "focus": {
       "$value": {
         "colorSpace": "srgb",
@@ -559,6 +581,12 @@
     "stat-key": {
       "$value": {
         "value": 96,
+        "unit": "px"
+      }
+    },
+    "quest-card": {
+      "$value": {
+        "value": 312,
         "unit": "px"
       }
     }

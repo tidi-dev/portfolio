@@ -3,7 +3,7 @@ import type { FactRow } from "@/lib/content/facts";
 import { joinMiddot, typography } from "@/lib/format/typography";
 
 /**
- * A quest file's facts list (DESIGN.md → Quest file: `facts-term`,
+ * A quest's facts list (DESIGN.md → Quest detail panel: `facts-term`,
  * `facts-value`): a `dl` of present rows only, the term in accent-ink
  * labels at the 96 px stat-key width, the value in body-compact. Lists show as
  * the owner writes them, joined by middots. The rows tick in, in order,
