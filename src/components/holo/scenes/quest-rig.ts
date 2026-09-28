@@ -114,14 +114,20 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
 
   // A smaller projector: base r 1.4, two rings, the cone.
   const baseMaterial = own(
-    new MeshStandardMaterial({ metalness: 0.7, roughness: 0.35 }),
+    new MeshStandardMaterial({
+      metalness: palette.baseMetalness,
+      roughness: palette.baseRoughness,
+    }),
   );
   rig.add(
     new Mesh(track(new CylinderGeometry(1.4, 1.52, 0.12, 64)), baseMaterial),
   );
+  // Two rings, then a holo rim at the base's edge (r 1.4), so the Deck base
+  // never reads as a black disc.
   const rings = [
     { radius: 0.8, width: 0.02, opacity: 0.9, arc: Math.PI * 2 },
     { radius: 1.22, width: 0.025, opacity: 0.6, arc: Math.PI * 1.35 },
+    { radius: 1.37, width: 0.03, opacity: 0.9, arc: Math.PI * 2 },
   ].map((spec, index) => {
     const ring = new Mesh(
       track(
@@ -301,6 +307,8 @@ export function buildQuestRig(palette: ScenePalette): QuestRig {
     coneMaterial.blending = next.blending;
     coneMaterial.needsUpdate = true;
     baseMaterial.color.copy(next.metal);
+    baseMaterial.metalness = next.baseMetalness;
+    baseMaterial.roughness = next.baseRoughness;
     for (const material of chipBodies) material.color.copy(next.chip);
     cyberrock.chipModel.applyPalette(next);
   };

@@ -116,7 +116,10 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
 
   // Base: a cylinder r 2.6 → 2.85, h 0.2.
   const baseMaterial = own(
-    new MeshStandardMaterial({ metalness: 0.7, roughness: 0.35 }),
+    new MeshStandardMaterial({
+      metalness: palette.baseMetalness,
+      roughness: palette.baseRoughness,
+    }),
   );
   rig.add(
     new Mesh(track(new CylinderGeometry(2.6, 2.85, 0.2, 64)), baseMaterial),
@@ -300,6 +303,8 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
     coneMaterial.blending = next.blending;
     coneMaterial.needsUpdate = true;
     baseMaterial.color.copy(next.metal);
+    baseMaterial.metalness = next.baseMetalness;
+    baseMaterial.roughness = next.baseRoughness;
     chipModel.applyPalette(next);
     hostEdgeMaterial.color.copy(next.hostEdge);
     hostCoreMaterial.color.copy(next.hostCore);

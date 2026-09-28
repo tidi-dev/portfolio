@@ -7,6 +7,7 @@ import type {
 } from "@/components/holo/quest-scene-props";
 import { readMotionTimings } from "@/lib/motion/tokens";
 import { DPR, GL } from "./canvas-config";
+import { DeckBloom } from "./deck-bloom";
 import { easeBack, easeOutCubic } from "./hero-timeline";
 import { buildQuestRig, type QuestRig } from "./quest-rig";
 import { scenePalette } from "./palette";
@@ -231,13 +232,16 @@ function QuestWorld({
 
 /**
  * A quest hologram canvas: a dynamically imported client island
- * (contrib-engineering §5.1), rendered flat and without bloom
- * (contrib-engineering §5.3). Its stage makes it `aria-hidden`.
+ * (contrib-engineering §5.1), rendered flat, with the hero's Bloom in Deck
+ * only (DESIGN.md → 3D Scenes → Quest holograms), so the second 3D moment
+ * glows like the first. Its stage makes it `aria-hidden`.
  */
 export default function QuestScene(props: QuestSceneProps) {
+  const bloom = scenePalette(props.theme).bloom;
   return (
     <Canvas frameloop={props.frameloop} dpr={DPR} flat gl={GL} camera={CAMERA}>
       <QuestWorld {...props} />
+      {bloom ? <DeckBloom /> : null}
     </Canvas>
   );
 }

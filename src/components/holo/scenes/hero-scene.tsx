@@ -1,10 +1,10 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { useEffect, useRef, useState } from "react";
 import type { PointLight } from "three";
 import type { HeroSceneProps } from "@/components/holo/hero-scene-props";
 import { readMotionTimings } from "@/lib/motion/tokens";
 import { DPR, GL } from "./canvas-config";
+import { DeckBloom } from "./deck-bloom";
 import { buildHeroRig, type HeroRig } from "./hero-rig";
 import { poseHero } from "./hero-pose";
 import { scenePalette } from "./palette";
@@ -216,16 +216,7 @@ export default function HeroScene(props: HeroSceneProps) {
   return (
     <Canvas frameloop={props.frameloop} dpr={DPR} flat gl={GL} camera={CAMERA}>
       <HeroWorld {...props} />
-      {bloom ? (
-        <EffectComposer>
-          <Bloom
-            intensity={0.9}
-            luminanceThreshold={0.2}
-            luminanceSmoothing={0.3}
-            mipmapBlur
-          />
-        </EffectComposer>
-      ) : null}
+      {bloom ? <DeckBloom /> : null}
     </Canvas>
   );
 }

@@ -28,7 +28,14 @@ export interface ScenePalette {
   readonly light: Color;
   /** Deck blends holo light additively; Lab uses normal blending. */
   readonly blending: Blending;
-  /** The cone: 0.28 in Deck, 0.16 in Lab. */
+  /**
+   * The projector base: Deck metalness 0.7, roughness 0.35; Lab 0.15 and
+   * 0.6, because without an environment map a metallic Lab base renders as
+   * a dark slab instead of `scene-metal`.
+   */
+  readonly baseMetalness: number;
+  readonly baseRoughness: number;
+  /** The cone: 0.28 in Deck, 0.22 in Lab. */
   readonly coneOpacity: number;
   /** Bloom in Deck only. */
   readonly bloom: boolean;
@@ -46,7 +53,9 @@ const LAB: ScenePalette = {
   pin: colour("scene-pin"),
   light: colour("surface-raised"),
   blending: NormalBlending,
-  coneOpacity: 0.16,
+  baseMetalness: 0.15,
+  baseRoughness: 0.6,
+  coneOpacity: 0.22,
   bloom: false,
 };
 
@@ -62,6 +71,8 @@ const DECK: ScenePalette = {
   pin: colour("scene-pin"),
   light: colour("surface-raised"),
   blending: AdditiveBlending,
+  baseMetalness: 0.7,
+  baseRoughness: 0.35,
   coneOpacity: 0.28,
   bloom: true,
 };
