@@ -143,6 +143,17 @@ export default defineConfig([
   // jsx-a11y strict. eslint-config-next already registers the plugin
   // (the same 6.10.2), so only the preset's rules are applied here.
   { name: "project/jsx-a11y-strict", rules: jsxA11y.flatConfigs.strict.rules },
+  // WAI-ARIA tabs: a tabpanel takes tabindex="0" so Tab reaches its content
+  // (the plugin's recommended preset exempts tabpanel the same way).
+  {
+    name: "project/jsx-a11y-tabpanel",
+    rules: {
+      "jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        { tags: [], roles: ["tabpanel"], allowExpressionValues: true },
+      ],
+    },
+  },
 
   // typescript-eslint, type-checked, on TypeScript files only.
   ...tseslint.configs.strictTypeChecked.map((config) => ({
