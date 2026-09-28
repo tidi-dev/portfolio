@@ -249,3 +249,11 @@ Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their a
   3. a missing `/favicon.ico` logs a 404
 - Gate re-run fresh by the main session after the removal: `pnpm check` and `pnpm build` both green (static).
 - **Phase F started.**
+- **F · design check (design-lead): SIGN-OFF WITH CHANGES.** Report `docs/reviews/v2/final/design-check.md`; `DESIGN.md` updated (lint 0/0; the 52 contrast pairs unchanged). Rulings: `tnum` dropped from `stat-value`; the square focus ring and the Deck feather accepted; the speaker tag uses `nav` type (names never uppercase); level-up once per load accepted; the power-on is a translateX cover (documented); the voice line is now neutral. Visual changes V1–V10 (5 Important, 5 Minor), all within direction B, so no owner approval is needed.
+  - Correction: the résumé separators are the owner's own em dashes, verbatim from `info.md` (lines 163, 171, 174), so they stay. The Phase 5 "logged for F" note was wrong.
+  - `DESIGN.md` front matter changed, so `frontend-engineer` must run `pnpm tokens` first in the fix round.
+- **Owner (2026-09-28): "can we change the font? make it like rpg game style".** This is a material design change, so it needs the owner's choice. `design-lead` is preparing 3 RPG font options (retro pixel, fantasy, game HUD), with Vietnamese and licence checks, a preview page `docs/design/font-options.html`, and screenshots. The fix round waits for the owner's pick so the font change and the F fixes land together.
+- **F · QA review (qa-reviewer): FAIL** (0 blocker, 3 major, 11 minor). Report `docs/reviews/v2/final/qa-review.md`, 79 screens. Gate green fresh; axe 0 violations in 44 runs; content verification clean.
+  - Major: F1 the hero is blank for about 2 s plus a 1.2 s fade after context loss; F2 below 1280 px, focus escapes behind the open menu sheet; F3 the Mission log links "CyberRock" and "Quest" are 18 px high (target 44 px).
+  - The verdict `<output>` and the PDF dashes are not defects.
+  - The fix round (QA majors and minors plus design V1–V10 plus the owner's 3 bugs) waits for the owner's font pick.

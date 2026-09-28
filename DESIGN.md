@@ -44,7 +44,7 @@ typography:
   heading-section: { fontFamily: Chakra Petch, fontSize: 2rem, fontWeight: 700, lineHeight: 1.1 }
   heading-quest: { fontFamily: Chakra Petch, fontSize: 1.5rem, fontWeight: 700, lineHeight: 1.15 }
   heading-panel: { fontFamily: Chakra Petch, fontSize: 0.8125rem, fontWeight: 700, lineHeight: 1.2, letterSpacing: 0.18em }
-  stat-value: { fontFamily: Chakra Petch, fontSize: 1.75rem, fontWeight: 700, lineHeight: 1, fontFeature: "'tnum' 1" }
+  stat-value: { fontFamily: Chakra Petch, fontSize: 1.75rem, fontWeight: 700, lineHeight: 1 }
   wordmark: { fontFamily: Chakra Petch, fontSize: 1.25rem, fontWeight: 700, lineHeight: 1, letterSpacing: 0.02em }
   role: { fontFamily: Chakra Petch, fontSize: 0.9375rem, fontWeight: 600, lineHeight: 1.2, letterSpacing: 0.06em }
   button: { fontFamily: Chakra Petch, fontSize: 0.9375rem, fontWeight: 700, lineHeight: 1, letterSpacing: 0.04em }
@@ -80,6 +80,7 @@ spacing:
   target: 44px
   control: 48px
   avatar: 200px
+  avatar-xl: 264px
   stat-key: 96px
 components:
   page: { backgroundColor: "{colors.surface}", textColor: "{colors.primary}", typography: "{typography.body}" }
@@ -138,7 +139,7 @@ components:
   inventory-slot: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.slot}", padding: 8px }
   training-marker: { textColor: "{colors.success}", size: 12px }
   avatar-caption: { backgroundColor: "{colors.scrim}", textColor: "{colors.on-scrim}", typography: "{typography.caption}" }
-  speaker-tag: { backgroundColor: "{colors.accent}", textColor: "{colors.on-accent}", typography: "{typography.label}", padding: 8px }
+  speaker-tag: { backgroundColor: "{colors.accent}", textColor: "{colors.on-accent}", typography: "{typography.nav}", padding: 8px }
   contact-row: { backgroundColor: "{colors.surface-raised}", textColor: "{colors.primary}", typography: "{typography.body}", height: 56px, padding: 16px }
   link: { textColor: "{colors.accent-ink}" }
   footer-line: { backgroundColor: "{colors.surface}", textColor: "{colors.text-muted}", typography: "{typography.label}" }
@@ -229,7 +230,7 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 | `display` | `clamp(3.5rem, 7vw, 6.5rem)` | 0.9 | −0.01em | "TiDi" only. Dark: holo `text-shadow` 0 0 32px at 45 %; none in Lab |
 | `heading-section` | `clamp(2rem, 1.6rem + 1.7vw, 2.75rem)` | 1.1 | sentence case | h2 per section |
 | `heading-quest` | 1.5 → 1.75rem | 1.15 | sentence case | Quest, employer and menu titles |
-| `stat-value` | 1.75 → 2rem | 1 | tabular | botmivivi readouts |
+| `stat-value` | 1.75 → 2rem | 1 | proportional figures (Chakra Petch has no `tnum`) | botmivivi readouts. Each stands alone, and the count-up overlays the final text, which holds the width |
 | `heading-panel` | 0.8125rem | 1.2 | 0.18em, uppercase | Panel h3, toast. The one all-caps system, for the owner's labels only |
 | `label` | 0.75rem | 1.5 | 0.12em, uppercase | Stat keys, HUD keys, status chips, step numerals |
 | `role`, `button`, `nav`, `wordmark` | 0.9375 / 0.9375 / 0.875 / 1.25rem | 1.2 / 1 / 1.3 / 1 | per front matter; role uppercase | Role line, buttons, nav and controls, wordmark |
@@ -237,7 +238,7 @@ Hex values are §5's, plus roles §5 left open (`accent-hover`, `on-holo`, `line
 | `body` / `body-strong` | 1 → 1.0625rem | 1.6 | none | Reading; the bold lead phrases of House rules |
 | `body-sm`, `slot`, `caption` | 0.9375 / 0.875 / 0.8125rem | 1.5 / 1.2 / 1.4 | none | Facts, log steps; inventory items; avatar caption |
 
-Principles: ratio ≈ 1.333. Measure ≤ 52ch in the hero and ≤ 68ch elsewhere. Vietnamese text keeps a line height ≥ 1.15. Uppercase is CSS (`text-transform`), never typed; the DOM keeps the owner's casing. Curly quotes; the owner's em dashes stay.
+Principles: ratio ≈ 1.333. Measure ≤ 52ch in the hero and ≤ 68ch elsewhere. Vietnamese text keeps a line height ≥ 1.15. Uppercase is CSS (`text-transform`), never typed; the DOM keeps the owner's casing. Names (TiDi, Hồ Trọng Đại, Dai Ho Trong, project and employer names) never take an uppercase style. Curly quotes; the owner's em dashes stay.
 
 ## Layout
 - **Breakpoints:** `sm` 640, `md` 768, `lg` 1024, `xl` 1280, `2xl` 1440 px, plus a 375 px rule for the HUD strip.
@@ -250,12 +251,12 @@ Principles: ratio ≈ 1.333. Measure ≤ 52ch in the hero and ≤ 68ch elsewhere
 ## Elevation & Depth
 Depth is light and glass, never drop shadows.
 - **Glass:** `surface-raised` at 92 % with `backdrop-filter: blur(8px)` wherever a panel sits over 3D or scrolled content (HUD strip, log, toast, tags, menu). Elsewhere panels are opaque.
-- **Glow (Deck only):** Bloom inside canvases; the brand's text shadow; the hero backdrop, radial `holo` 16 % at 72 % 50 % and `accent` 8 % at 10 % 90 %, over `surface`. Lab keeps the backdrop at half strength with no glow.
+- **Glow (Deck only):** Bloom inside canvases, whose edges feather out over 8 % of the canvas on each side (a mask), so the halo never ends in a seam. The feather stays inside the stage and never sits under text; Lab has no Bloom and no feather; the brand's text shadow; the hero backdrop, radial `holo` 16 % at 72 % 50 % and `accent` 8 % at 10 % 90 %, over `surface`. Lab keeps the backdrop at half strength with no glow.
 - **Edges:** 1 px `line`, following the chamfer, including the 45° cut. Glow never sits behind body text.
 
 ## Shapes
 - **Chamfer:** `clip-path` cuts the top-right and bottom-left corners: `chamfer` (14 px) on panels and buttons, `chamfer-sm` (8 px) on chips, the toast and the switch. `rounded.none` elsewhere.
-- **Corner brackets:** four 30 px L-marks, 2 px `holo` at 70 %, framing the hero viewport only.
+- **Corner brackets:** four 30 px L-marks, 2 px `holo` at 70 %, framing the hero viewport and the Join party grid only, so the same frame opens and closes the page.
 - **Icons:** Tabler (`@tabler/icons-react` 3.48.0, MIT): sun, moon, menu-2, x, player-pause, player-play, file-download, external-link, mail, brand-telegram, brand-github, map-pin, ball-football, feather (Badminton: Tabler has no shuttlecock), swimming, device-gamepad-2, coffee, check, wall, stopwatch, key, tool, device-floppy. Filled: caret-right for the "▸" of "▸ PLAYER 1", caret-down for the "▼" after "Press A to continue", and triangle for training markers. Neither family has these glyphs, so the icon renders them (`aria-hidden`) and the text node keeps the words.
 - **Images:** the avatar is 3:4 (the source is 1086 × 1448), shown whole, never cropped to a sticker.
 
@@ -266,7 +267,7 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Menu sheet** (`menu-sheet`). Below `xl`: a full-height glass sheet under the strip, nav links at `heading-quest` size, 56 px rows. Focus moves in, Esc and the "x" close it, and focus returns to the button.
 
-**Skip link** ("Skip to content") and **focus ring**: 2 px `focus`, offset 3 px, following the chamfer. Draw it on an unclipped wrapper or pseudo-element, because `clip-path` would cut an outline.
+**Skip link** ("Skip to content") and **focus ring**: 2 px `focus`, offset 3 px, a square outline on the element's box, also on chamfered controls. It reads as a HUD selection frame and stays one ring for every control. The chamfer is drawn on a pseudo-element, so `clip-path` never cuts the outline.
 
 **Hero intro** (`hud-player`, `brand-name`, `alt-names`, `role-line`). "▸ PLAYER 1"; one `h1` holding "TiDi", "Hồ Trọng Đại" and "Dai Ho Trong"; the role with a 28 × 2 px `holo` lead line; `hero.sentence`; the CTA pair.
 
@@ -298,19 +299,19 @@ States not listed as tokens are described here; colours always come from the tok
 
 **Mission log timeline** (`timeline-line`, `timeline-node-current`). A 2 px `holo` line with 16 px square nodes rotated 45°: `holo` outline, and a gold core for the current employer. Each node: h3 employer, title, period, and the projects as a list (links to quest files; Lemonswan's external link).
 
-**Rule panel** (`panel`, `rule-lead`). A House rule: a numeral chip (1–4; the owner's list is ordered) and the rule, with its lead phrase in `rule-lead`.
+**Rule panel** (`panel`, `rule-lead`). A House rule: a numeral chip (1–4; the owner's list is ordered) and the rule as one paragraph. The lead phrase is run in (inline, `rule-lead`), and the rest of the owner's sentence follows on the same line, so no line starts with the owner's dash. Underline: `text-decoration` 2 px, offset 4 px, in `accent-ink`, which wraps with the phrase.
 
 **Inventory slot** (`inventory-slot`). A square list item with a 1 px `rule` edge and a `holo` 5 % tint; hover: `holo` edge and 14 % tint, no lift, no pointer cursor.
 
-**Training card** (`panel`, `training-marker`). A Leveling up topic in `nav` type, under a `success` filled triangle.
+**Training card** (`panel`, `training-marker`). A Leveling up topic in `nav` type, led inline by a `success` filled triangle (12 px, gap `xs`, centred on the first line), 16 px padding.
 
-**Avatar frame** (`avatar-caption`). A 3:4 image in a 1 px `line` frame, `alt=""`; `avatar.caption` sits visibly on the `scrim` at the bottom. On fine pointers it tilts up to 6° toward the pointer.
+**Avatar frame** (`avatar-caption`). A 3:4 image, `avatar` wide (`avatar-xl` from `xl`) in a 1 px `line` frame, `alt=""`; `avatar.caption` sits visibly on the `scrim` at the bottom. On fine pointers it tilts up to 6° toward the pointer.
 
-**Dialogue box** (`panel`, `speaker-tag`, `link`). The bio as an RPG dialogue: a gold speaker tag "TiDi", both paragraphs always visible, and at the end "Press A to continue ▼" as a button that moves to `#afk`. The A key works only while the box has focus.
+**Dialogue box** (`panel`, `speaker-tag`, `link`). The bio as an RPG dialogue: a gold speaker tag "TiDi" in `nav` type, as cased (never uppercase), both paragraphs always visible, and at the end "Press A to continue ▼" as a button that moves to `#afk`. The A key works only while the box has focus.
 
 **AFK list.** Five items, each a 24 px icon + label, 56 px high, in an idle panel.
 
-**Contact row** (`contact-row`, `button-primary`, `button-ghost`). Rows under the sign-off: Email (the address as `button-primary`), Telegram and GitHub (`button-ghost`, external), Résumé ("PDF, {size}"), Location (plain text).
+**Contact row** (`contact-row`, `button-primary`, `button-ghost`). Rows beside the sign-off: Email (the address as `button-primary`), Telegram and GitHub (`button-ghost`, external), Résumé ("PDF, {size}"), Location (plain text). From `lg` the sign-off panel stretches to the rows panel's height, the sign-off at the top, and corner brackets frame the pair.
 
 **Link** (`link`). `accent-ink`, underlined; hover `primary`. External links open in the same tab and add the external-link icon (`aria-hidden`).
 
@@ -335,8 +336,8 @@ States not listed as tokens are described here; colours always come from the tok
 Two R3F canvases, each a dynamically imported client island, `aria-hidden`, rendering only while on screen and the tab is visible. DPR capped at 1.75. Procedural geometry only. Colours come from the tokens; lights are white (`surface-raised`, Lab value).
 
 **Hero projector** (scene units; the preview's `HoloDeck` class is the reference).
-- **Base:** a cylinder r 2.6 → 2.85, h 0.2, `scene-base`, metalness 0.7, roughness 0.35. Three `holo` rings at r 1.15, 1.9 (a 243° arc) and 2.5; a tick ring of 90 ticks at r 2.2, every fifth tick double length.
-- **Cone:** an open cylinder r 1.9 (top) → 1.0, h 3.4, with a vertical alpha fade; opacity 0.28 in Deck (additive), 0.16 in Lab (normal).
+- **Base:** a cylinder r 2.6 → 2.85, h 0.2, `scene-base`; Deck metalness 0.7, roughness 0.35; Lab metalness 0.15, roughness 0.6, because without an environment map a metallic Lab base renders as a dark slab instead of `scene-metal`. Three `holo` rings at r 1.15, 1.9 (a 243° arc) and 2.5; a tick ring of 90 ticks at r 2.2, every fifth tick double length.
+- **Cone:** an open cylinder r 1.9 (top) → 1.0, h 3.4, with a vertical alpha fade; opacity 0.28 in Deck (additive), 0.22 in Lab (normal).
 - **Chip:** a 2.1 × 0.26 × 2.1 `scene-chip` body with `holo` edges, 40 `scene-pins` (10 per side, metalness 0.9), and a procedural circuit-die texture tinted `holo`. A scan ring (r 1.5) and disc sweep y 1.5 ↔ 3.2. 150 motes rise in the cone.
 - **Host:** a wireframe octahedron (r 0.55) with an icosahedron core at (−4.3, 2.9, 0.4): Deck `accent`; Lab edge `accent-ink`, core `accent`. A faint stem line.
 - **Paths:** two quadratic curves, host → chip and chip → host, as `holo` tubes at 25 %. The packet is a 7-sphere comet: `accent` for the challenge, `holo` for the response.
@@ -345,35 +346,37 @@ Two R3F canvases, each a dynamically imported client island, `aria-hidden`, rend
 - **Interaction:** a fine pointer tilts the rig (yaw ±0.25 rad, pitch ±0.06, damping 4). Horizontal drag spins the chip (`touch-action: pan-y`, so vertical scroll is kept). Run and the switch drive one state machine shared with the HTML log.
 - **Theme change:** swaps materials, blending and bloom in place; geometry never swaps.
 
-**Quest holograms** (Quest journal). A smaller projector (base r 1.4, two rings, the cone), FOV 30, fixed three-quarter view, pointer tilt ±0.15 rad from `lg`. One model per quest (`depiction.holograms`):
+**Quest holograms** (Quest journal). A smaller projector (base r 1.4, two rings, the cone), with the hero's materials per theme (Lab base included), the hero's Deck Bloom, and a `holo` rim ring at r 1.4 so the Deck base never reads as a black disc. FOV 30, fixed three-quarter view, pointer tilt ±0.15 rad from `lg`. One model per quest (`depiction.holograms`):
 - **CyberRock:** the hero chip at 0.7 scale with its scan ring.
 - **botmivivi:** a ledger stack of five slabs (1.6 × 0.08 × 1.1, gap 0.12, `holo` edges) turning at 0.2 rad/s.
 - **Quest:** two linked data slabs (1.2 × 0.5 × 1.2): the left slab is `holo` wireframe at 40 %, the right a solid `scene-chip` slab with `holo` edges. A curved path joins them, and four packets cross left → right in a loop, every 4 s.
 - `aria-hidden` tags "v1" and "v2" on Quest's slabs. The HTML equivalent is the steps list in each quest file.
 
 ## Motion
-**Budget.** The hero lives (a looping hologram and one autoplayed handshake). Every section powers on once when first seen and has one reward moment. Only `transform`, `opacity`, `clip-path` and the colour of 3D materials animate; transitions name their properties; everything is interruptible; there are no scroll listeners (IntersectionObserver, `animation-timeline: view()`). A single **motion mode** exists: `prefers-reduced-motion`, or the HUD motion toggle, sets `data-motion="off"`, which gives the reduced variants below and pauses every loop (WCAG 2.2.2).
+**Budget.** The hero lives (a looping hologram and one autoplayed handshake). Every section powers on once when first seen and has one reward moment. Only `transform`, `opacity`, `clip-path`, the colour of 3D materials and the House rules underline colour animate; transitions name their properties; everything is interruptible; there are no scroll listeners (IntersectionObserver, `animation-timeline: view()`). A single **motion mode** exists: `prefers-reduced-motion`, or the HUD motion toggle, sets `data-motion="off"`, which gives the reduced variants below and pauses every loop (WCAG 2.2.2).
 
 **Tokens.** Durations: `feedback` 150 · `verdict` 250 · `toast-in` 300 / `toast-out` 250 / `toast-hold` 1600 · `flip`, `row`, `brackets`, `hud` 400 · `shake` 450 · `sweep`, `release` 500 · `project` 700 · `levelup` 800 · `wipe`, `pulse`, `count` 900 · `packet` 1000 · `boot`, `line` 1200 · `scan` 1400 · `xp`, `verdict-hold` 2200 ms. Staggers: `line` 80 · `row` 100 · `badge`, `ring` 120 · `panel` 160 ms. Delays: `autoplay` 200 (after boot) · `xp` 500 · `rows` 550 · `scan` 600 ms. Easings: `ease-out` `cubic-bezier(0.2, 0.8, 0.2, 1)` · `ease-power` `cubic-bezier(0.7, 0, 0.2, 1)` · `ease-back` `cubic-bezier(0.34, 1.56, 0.64, 1)` · `ease-in-out` `cubic-bezier(0.4, 0, 0.6, 1)` · `linear` for loops. 3D rates are listed in 3D Scenes; ambient: rings 0.4 / −0.6 / 0.15 rad/s, ticks −0.1, chip spin 0.35, bob ±0.08 at 1.3 rad/s, scan `sin(1.1t)`, host 0.8, motes 0.25–0.55 units/s.
 
 | Element | Trigger | Property | Timing | Communicates | Reduced (`data-motion="off"`) |
 |---|---|---|---|---|---|
-| HUD strip, brackets | Load | strip `translateY(−100%→0)`; brackets draw (`scale` from the corner) | hud, brackets, ease-out | System online | Present at once |
+| HUD strip, hero brackets | Load | strip `translateY(−100%→0)`; brackets draw (`scale` from the corner) | hud, brackets, ease-out | System online | Present at once |
 | XP bar | Load | fill `scaleX(0→0.7)` | xp, delay xp, ease-out | Still leveling | Rests at 0.7 |
 | Hero intro lines | Load | `clip-path` wipe left → right | wipe, stagger line, ease-power | Player 1 loads in | Present at once |
 | Hologram boot | Canvas ready | rings `scale 0→1` (stagger ring), cone opacity, chip materialises with one scan pass | boot, ease-back | The projector powers up | One still composed frame |
 | Hologram ambient | Continuous while visible | rings, ticks, scan, motes, bob, host spin | linear | A live hologram | Still; renders on demand only |
 | Handshake, genuine | Autoplay once, or Run | 0–1000 gold comet host → chip, step 1 lit; 1000–2000 holo comet back, step 2; 2000: step 3, verdict, chip lerps to `success`, pulse ring scale 1 → 2.4 fading; hold, then release to `holo` | packet ×2, verdict, pulse, verdict-hold, release | The chip proves it's genuine | Final state at once; colour holds until the next run |
 | Handshake, counterfeit | Run with the switch on | challenge only; at 1000 step 2 struck, "rejected", chip lerps to `danger`, one decaying ±0.06 shake | packet, verdict, shake | A fake fails after the challenge | Final state at once, no shake |
-| Panel power-on | ≥ 25 % in view, once | `clip-path: inset(0 100% 0 0 → 0)` | wipe, stagger panel, ease-power | Panels come online | Present at once |
+| Panel power-on | ≥ 25 % in view, once | a `surface` cover layer over the content slides `translateX(0 → 100%)` inside its own clipping track (`inset: 0; overflow: clip`, never the panel itself, so focus rings aren't cut); its leading left edge is a 2 px `holo` line at 70 %. Not `clip-path` on the panel: IntersectionObserver never reports an element clipped to nothing | wipe, stagger panel, ease-power | Panels come online | Present at once |
 | Stat rows, facts | With their panel | opacity + `translateX(−10px→0)` | row, delay rows, stagger row | Stats tick in | Present at once |
 | Avatar scan | With its panel | a `holo` band `translateY` top → bottom, once | scan, delay scan | Character scanned | None |
 | Quest unlocked | A quest file becomes current (≥ 50 % in view, or its mission item) | old model scale → 0.6 + fade; scan sweep; new model scale 0.6 → 1; status chip `rotateX(90°→0)`; toast wipe in, hold, out | project (ease-back), flip, toast-in / hold / out | Opening a quest file | Model cut; toast fades in and out (feedback) |
 | Achievements | First time Quest is current | each badge wipes on + one glint `translateX` | row, stagger badge | Achievements | Present at once |
 | botmivivi readouts | First view | numbers count 0 → value (text stays final for AT) | count, ease-out | Live numbers | Final values |
-| Mission log line | Scroll | line `scaleY(0→1)` via `view()` (IO fallback: line); nodes power on as reached | line, wipe | Career progress | Fully drawn |
-| House rules | In view | panels wipe on in reading order; lead phrase `accent-ink` underline `scaleX(0→1)` | wipe, stagger panel, sweep | The rules of play | Present at once |
-| Level up | Leveling up in view, once per visit | a 2 px `accent` bar sweeps across the HUD strip; triangles rise 6 px + fade | levelup, row, stagger row | Skills in training | None; triangles present |
+| Mission log line | Scroll | line `scaleY(0→1)` via `view()`, `animation-range: entry 10% cover 45%`, so it is complete before the section's middle passes the viewport's (IO fallback: line); nodes power on as reached | line, wipe | Career progress | Fully drawn |
+| House rules | In view | panels wipe on in reading order; then the lead phrase's underline colour transitions `transparent → accent-ink` | wipe, stagger panel, sweep | The rules of play | Present at once |
+| Level up | Leveling up in view, once per page load (no storage) | a 2 px `accent` bar sweeps across the HUD strip; triangles rise 6 px + fade | levelup, row, stagger row | Skills in training | None; triangles present |
+| AFK | With its panel | each icon rises 4 px + fades in, once | row, stagger row | Idle, then back | Present at once |
+| Join party brackets | With the sign-off panel | brackets draw (`scale` from the corner) | brackets, ease-out | The frame closes | Present at once |
 | Buttons | Hover | colour; light sweep `translateX(−120%→120%)` | feedback, sweep | Clickable | Colour only |
 | Slots, mission items, links | Hover | colour, edge | feedback | Responsive surface | Same (colour isn't motion) |
 | Avatar tilt | Fine pointer over the frame | `rotateX/Y` ≤ 6° | feedback, ease-out | A physical card | Off |
@@ -385,19 +388,19 @@ Safety: nothing flashes more than once per verdict and never above 3 Hz; the sha
 | Section | < `md` | `md`–`lg` | ≥ `lg` |
 |---|---|---|---|
 | HUD bar | TiDi · ▸ PLAYER 1 (≥ 375) · XP 56 px · motion · theme · menu | + "LVL still leveling", XP 120 px | nav from `xl`; XP key and MAX from `2xl` |
-| Hero | Canvas band `min(48svh, 400px)` first (non-focusable, so it may lead), then intro, then console (controls in a row, log full width) | same | 5 / 7 split, `min-height: 100dvh`; stage `min(74svh, 700px)`, ≥ 440 px; console over the stage's bottom edge, log ≤ 360 px |
+| Hero | Canvas band `min(48svh, 400px)` first (non-focusable, so it may lead), then intro, then console (log full width). Below `sm` the CTA pair and the console controls stack at full width; from `sm` each pair sits in a row | same | 5 / 7 split, `min-height: 100dvh`; stage `min(74svh, 700px)`, ≥ 440 px; console over the stage's bottom edge, log ≤ 360 px |
 | Quest journal | Files stacked; each file opens with its hologram band (16:10, ≤ 320 px); no mission list | same | Left 5: sticky viewport (4:3) + mission list; right 7: stacked files |
 | Mission log | Line at the left; node bodies in one column | node body in 2 columns (role and period, projects) | same, in 8 columns, offset 2 |
 | House rules | 1 column | 2 × 2 | 2 × 2 |
 | Inventory | Stacked; Leveling up 1 column, 2 × 2 from `sm` | same | Inventory 8 + Leveling up 4 (stacked cards) |
-| Character stats | Stacked; avatar ≤ 220 px above the stats; stats side by side with the avatar (160 px) from `sm` | same | Stats 7 (avatar 200 px + rows) · dialogue 5; education 7 · languages 5 |
+| Character stats | Stacked; avatar ≤ 220 px above the stats; stats side by side with the avatar (160 px) from `sm` | same | Stats 7 (avatar 200 px, 264 px from `xl`, + rows) · dialogue 5; education 7 · languages 5 |
 | AFK | 2 columns | 3 columns | one row of 5 |
 | Join party | Stacked | same | sign-off 5 · rows 7 |
 
 Touch targets ≥ 44 px (buttons 48, rows 56). Coarse pointers get no tilt and no hover effects. Safe-area insets pad the strip and the edges. No horizontal scroll from 320 px; content reflows at 200 % zoom.
 
 ## Voice
-The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead, AFK, progress saved), used only where he used it. Our own strings are short, sentence case, no em dashes. Rules: `portfolio-content`.
+The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead, AFK, progress saved), used only where the owner used it. Our own strings are short, sentence case, no em or en dashes. Where a split owner string is rejoined (a term and its description), the owner's own separator is kept verbatim; where we write a separator, it is a colon (Term: value) or, in lists, a middle dot. Rules: `portfolio-content`.
 
 ## Known Gaps
 1. **Schema limits.** The format has no groups for motion, breakpoints, z-index, borders, opacity or 3D, and `export` drops `fontVariation` and `fontFeature`. Those values live in the tables above and are mapped by hand into the theme file; code review checks them against this file.
@@ -406,11 +409,12 @@ The owner's RPG vocabulary is the UI ("▸ PLAYER 1", Quest journal, Party lead,
 4. **Mobile hero order.** Only the aria-hidden canvas leads; the controls and log follow the intro in both DOM and visual order, so focus order matches what's seen. The preview put the console above the intro; the owner may choose that instead (plan D3), at the cost of a focus-order jump.
 5. **Starting values.** Bloom settings and the quest-hologram sizes are starting points; tune them at the checkpoint without changing the tokens.
 6. **Waiting for the owner:** the `[copy: to draft & approve]` slots (see `docs/plan/v2/contrib-design.md` §5).
-7. **Length:** about 415 lines, past the 300-line target. The front matter alone is about 190 lines (36 colours, 73 component entries), and the brief requires both themes, the 3D spec and the motion table.
+7. **Length:** about 420 lines, past the 300-line target. The front matter alone is about 190 lines (36 colours, 73 component entries), and the brief requires both themes, the 3D spec and the motion table.
 8. **Glyph coverage.** "→" appears in the owner's strings (Five-Minute Window). The font subset must include U+2192, and the engineers' font check verifies it.
 
 ## Changelog
 | Date | Change | Why |
 |---|---|---|
 | 2026-09-28 | Created from B · Holo Deck (directions-v2 §3, §5, §12; the preview's B tab). | The owner selected B on 2026-09-28. |
+| 2026-09-28 | Phase F design check (`docs/reviews/v2/final/design-check.md`): `stat-value` drops `'tnum' 1`; square focus ring accepted; Deck canvas feather (8 %) specified; speaker tag in `nav` type, names never uppercase; level-up once per page load; power-on is a sliding cover with a `holo` leading edge; the Mission log line range; House rules lead run in, with a `text-decoration` underline; Lab base material and cone; quest hologram Bloom and rim; `avatar-xl`; training marker inline; mobile hero controls full width; AFK icon rise; Join party brackets and stretched sign-off; neutral voice wording; separator rule. | Rulings 1 to 8 and changes V1 to V10 of the check: font capability, build constraints the spec hadn't foreseen, and making the lower page as alive and finished as the hero. |
 | 2026-09-28 | Differences from the preview and §5: (1) Run keeps its holo fill (preview), limited to the hologram's own control; (2) glass raised from 70–86 % to 92 %; (3) control borders use `text-muted`; (4) the skipped step uses `text-muted` plus a line-through, not 60 % opacity; (5) slots lose the 1 px lift; (6) the Lab host uses `accent-ink` / `accent`, not the preview-only `#9A6E00` / `#B8860B`; (7) the HUD strip gains the nav and a motion toggle, with the readout disclosed by width; (8) icons are `feather` and `wall` (Tabler has no shuttlecock or brick); (9) on mobile the console follows the intro; (10) ▸ ▼ ▲ render as Tabler filled icons. | (1) The preview is the look of record; the lock keeps gold the only action colour elsewhere. (2)–(4) Contrast: at 86 %, muted text over the cone measured 4.34:1; faint borders and faded text failed 3:1 and 4.5:1. (5) Slots aren't interactive, and the ban on hover lift applies. (6) Token-only colours. (7) The preview had no nav; 2.2.2 needs a pause control for the looping hologram. (8) The icon library has none. (9) The focus order matches the visual order (QA Review Focus 5; engineering R5). (10) Neither font has the glyphs. |
