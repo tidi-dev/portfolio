@@ -1,6 +1,12 @@
 "use client";
 
-import { type MouseEvent, type ReactNode, useState } from "react";
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 interface VideoFacadePlayerProps {
   /** The YouTube watch URL: the link without JavaScript. */
@@ -17,6 +23,18 @@ interface VideoFacadePlayerProps {
   readonly playIcon: ReactNode;
 }
 
+function noSubscription(): () => void {
+  return () => undefined;
+}
+
+function clientSnapshot(): boolean {
+  return true;
+}
+
+function serverSnapshot(): boolean {
+  return false;
+}
+
 // Stable, so React calls it once, when the player mounts: focus moves to it
 // on activation and never again.
 function focusOnMount(node: HTMLIFrameElement | null) {
@@ -26,7 +44,8 @@ function focusOnMount(node: HTMLIFrameElement | null) {
 /**
  * The video facade's behaviour (DESIGN.md → Video facade; v1's, restyled).
  * The server HTML is a link to the watch URL, so it works without
- * JavaScript and loads nothing from YouTube. A plain click swaps in the
+ * JavaScript and loads nothing from YouTube. Once hydrated it acts as a
+ * button (`role="button"`): a plain click, Enter or Space swaps in the
  * youtube-nocookie player, which takes focus. A modified click (new tab,
  * window) keeps the link's default.
  */
@@ -39,6 +58,12 @@ export function VideoFacadePlayer({
   playIcon,
 }: VideoFacadePlayerProps) {
   const [active, setActive] = useState(false);
+  // The server HTML (and a visitor without JavaScript) keeps a plain link.
+  const hydrated = useSyncExternalStore(
+    noSubscription,
+    clientSnapshot,
+    serverSnapshot,
+  );
 
   function activate(event: MouseEvent<HTMLAnchorElement>) {
     if (
@@ -50,6 +75,14 @@ export function VideoFacadePlayer({
     ) {
       return;
     }
+    event.preventDefault();
+    setActive(true);
+  }
+
+  // A button answers Space too (Enter already clicks the link); without
+  // this, Space would scroll the page.
+  function activateOnSpace(event: KeyboardEvent<HTMLAnchorElement>) {
+    if (event.key !== " ") return;
     event.preventDefault();
     setActive(true);
   }
@@ -69,7 +102,9 @@ export function VideoFacadePlayer({
     <div className="flex flex-col items-start gap-xs">
       <a
         href={watchUrl}
+        role={hydrated ? "button" : undefined}
         onClick={activate}
+        onKeyDown={activateOnSpace}
         className="chamfer btn type-button video-facade"
       >
         <span className="relative inline-flex items-center gap-xs">
