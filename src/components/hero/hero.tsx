@@ -1,7 +1,9 @@
+import { ResumeLink } from "@/components/contact/resume-link";
 import { HandshakeBench } from "@/components/handshake-bench/handshake-bench";
 import { copy } from "@/content/copy";
 import { identity } from "@/content/identity";
 import { typography } from "@/lib/format/typography";
+import { RESUME_FILE } from "@/lib/resume/file";
 import { HeroLockup } from "./hero-lockup";
 
 const HEADING_ID = "hero-heading";
@@ -13,9 +15,10 @@ const HEADING_ID = "hero-heading";
  * where both columns stretch to one height so the bench's caption and the
  * CTA share the bottom edge. The LCP element is text.
  *
- * The CTA links to #contact, so it renders only once Contact does (Phase 9;
- * no dangling anchors). The Résumé link joins in Phase 10, once the PDF
- * exists.
+ * The CTA pair: the CTA links to #contact, so it renders only once Contact
+ * does (no dangling anchors); the Résumé link renders only when the PDF
+ * exists. Below md they stack, the CTA full width; from md they share a
+ * row, the CTA at its own width.
  */
 export function Hero({ ctaHref }: { readonly ctaHref: string | undefined }) {
   return (
@@ -29,15 +32,20 @@ export function Hero({ ctaHref }: { readonly ctaHref: string | undefined }) {
         <p className="mt-xs max-w-measure-lead type-lead">
           {typography(copy.hero.sentence)}
         </p>
-        {ctaHref === undefined ? null : (
-          <p className="mt-xl flex lg:mt-auto lg:pt-xl">
-            <a
-              href={ctaHref}
-              className="inline-flex h-2xl w-full items-center justify-center rounded-base bg-accent px-button type-ui-strong text-on-accent transition-feedback hover:bg-accent-hover active:bg-accent-hover md:w-auto"
-            >
-              {copy.hero.cta}
-            </a>
-          </p>
+        {ctaHref === undefined && RESUME_FILE === undefined ? null : (
+          <div className="mt-xl flex flex-col gap-y-xs md:flex-row md:flex-wrap md:items-center md:gap-x-lg lg:mt-auto lg:pt-xl">
+            {ctaHref === undefined ? null : (
+              <a
+                href={ctaHref}
+                className="inline-flex h-2xl w-full items-center justify-center rounded-base bg-accent px-button type-ui-strong text-on-accent transition-feedback hover:bg-accent-hover active:bg-accent-hover md:w-auto"
+              >
+                {copy.hero.cta}
+              </a>
+            )}
+            {RESUME_FILE === undefined ? null : (
+              <ResumeLink file={RESUME_FILE} />
+            )}
+          </div>
         )}
       </div>
       <div className="flex flex-col lg:col-span-7">

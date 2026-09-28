@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui/icon";
 import type { FactRow, FactValue } from "@/lib/content/facts";
 import { typography } from "@/lib/format/typography";
 import { InlineList } from "./inline-list";
@@ -8,6 +9,20 @@ function Value({ value }: { readonly value: FactValue }) {
       return typography(value.text);
     case "list":
       return <InlineList items={value.items} />;
+    case "download":
+      // Contact's Résumé row: the PDF, downloaded, with `download`.
+      return (
+        <a
+          href={value.href}
+          download
+          className="group inline-flex min-h-target items-center gap-xs text-accent transition-feedback hover:text-accent-hover"
+        >
+          <span className="underline decoration-1 underline-offset-link group-hover:decoration-2">
+            {typography(value.text)}
+          </span>
+          <Icon name="download" />
+        </a>
+      );
     case "link":
       // DESIGN.md → Links: Contact's rows. No sheet fact is a link. The link
       // is a 44 px target on its own row; the underline sits on the text.
