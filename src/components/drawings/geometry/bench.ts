@@ -25,6 +25,8 @@ const LINE_OFFSET = 12;
 const PIN = GRID;
 const HOST = { x: GRID, width: 56 };
 const CHIP = NODE_HEIGHT;
+/** The packet, the drawing's only circle (DESIGN.md → Consistency locks 3): 8 units across, like the arrowhead. */
+export const PACKET_RADIUS = 4;
 
 export interface BenchGeometry {
   readonly width: number;
@@ -50,6 +52,24 @@ export interface BenchGeometry {
     readonly to: Point;
     readonly label: Point;
   };
+  /**
+   * Each packet's start and how far it travels along its line (negative:
+   * chip → host). It sets off inside the sender's edge and stops at the
+   * receiver's.
+   */
+  readonly packets: {
+    readonly challenge: { readonly start: Point; readonly travel: number };
+    readonly response: { readonly start: Point; readonly travel: number };
+  };
+  /**
+   * The step numerals 1 and 2 (reduced motion), on each line's label
+   * baseline at the end it starts from: the host end for the challenge, the
+   * chip end for the response.
+   */
+  readonly numerals: {
+    readonly challenge: Point;
+    readonly response: Point;
+  };
 }
 
 export function benchGeometry(variant: BenchVariant): BenchGeometry {
@@ -61,6 +81,9 @@ export function benchGeometry(variant: BenchVariant): BenchGeometry {
   const hostRight = HOST.x + HOST.width;
   const pinTip = chipX - PIN;
   const middle = (hostRight + pinTip) / 2;
+  const trip = pinTip - hostRight - 2 * PACKET_RADIUS;
+  const challengeLabel = upper - LABEL_GAP - LABEL_DESCENT;
+  const responseLabel = lower + LABEL_GAP + LABEL_ASCENT;
   const side = [top + (CHIP / 2 - LINE_OFFSET), top + (CHIP / 2 + LINE_OFFSET)];
   const across = [
     chipX + (CHIP / 2 - LINE_OFFSET),
@@ -104,12 +127,26 @@ export function benchGeometry(variant: BenchVariant): BenchGeometry {
     challenge: {
       from: { x: hostRight, y: upper },
       to: { x: pinTip, y: upper },
-      label: { x: middle, y: upper - LABEL_GAP - LABEL_DESCENT },
+      label: { x: middle, y: challengeLabel },
     },
     response: {
       from: { x: pinTip, y: lower },
       to: { x: hostRight, y: lower },
-      label: { x: middle, y: lower + LABEL_GAP + LABEL_ASCENT },
+      label: { x: middle, y: responseLabel },
+    },
+    packets: {
+      challenge: {
+        start: { x: hostRight + PACKET_RADIUS, y: upper },
+        travel: trip,
+      },
+      response: {
+        start: { x: pinTip - PACKET_RADIUS, y: lower },
+        travel: -trip,
+      },
+    },
+    numerals: {
+      challenge: { x: hostRight + GRID, y: challengeLabel },
+      response: { x: pinTip - GRID, y: responseLabel },
     },
   };
 }

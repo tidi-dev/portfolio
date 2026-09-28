@@ -2,7 +2,8 @@
    CSS; the token files and font assets hold no class names, so they are not
    scanned either. Order (contrib-engineering §4.1): Tailwind, the reset that
    removes its default theme, the tokens exported from DESIGN.md, the theme
-   generated from DESIGN.md, then the hand-mapped supplement. */
+   generated from DESIGN.md, then the hand-mapped supplement. The bench's
+   states and keyframes follow, keyed off its data attributes. */
 @import "tailwindcss" source("..");
 @source not "../styles";
 @source not "../assets";
@@ -10,6 +11,7 @@
 @import "../styles/tokens.generated.css";
 @import "../styles/theme.generated.css";
 @import "../styles/theme.supplement.css";
+@import "../components/handshake-bench/bench.css";
 
 /* Base rules and compositions. Every value below is a token (var(--…)) or a
    keyword: nothing here adds a design value (contrib-verification G5). */

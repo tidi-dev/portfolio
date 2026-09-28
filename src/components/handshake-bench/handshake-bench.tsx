@@ -1,38 +1,51 @@
 import { Icon } from "@/components/ui/icon";
+import { copy } from "@/content/copy";
 import { drawings } from "@/content/drawings";
+import { typography } from "@/lib/format/typography";
 import { BenchDrawing } from "./bench-drawing";
+import { HandshakeBenchControls } from "./handshake-bench.client";
+
+// Hoisted: the labels and icons the client leaf receives never change.
+const LABELS = {
+  run: copy.bench.run,
+  toggle: copy.bench.toggle,
+  challenge: drawings.bench.labels.challenge,
+  response: drawings.bench.labels.response,
+  genuine: drawings.bench.verdicts.genuine,
+  rejected: drawings.bench.verdicts.rejected,
+};
+
+const ICONS = {
+  play: <Icon name="player-play" />,
+  square: <Icon name="square" />,
+  squareCheck: <Icon name="square-check" />,
+  check: <Icon name="check" />,
+  x: <Icon name="x" />,
+};
 
 /**
- * The handshake bench at rest (DESIGN.md → Handshake bench; Phase 4): a
- * `plate` figure with the completed handshake, the readout "genuine" with
- * `check`, and the caption, plus a visually hidden list of the steps (Approved
- * copy a11y.steps.bench). This is the server HTML, and it stays after
- * hydration. The run and counterfeit controls arrive with their behaviour in
- * Phase 6, so no button is ever dead.
+ * The handshake bench (DESIGN.md → Handshake bench): a `plate` figure with
+ * the drawing, the readout (a polite live region), the run and counterfeit
+ * controls, and the caption, plus a visually hidden list of the steps
+ * (Approved copy a11y.steps.bench). The server HTML is the rest state: the
+ * completed handshake and the readout "genuine" with `check`. The client
+ * leaf adds the behaviour; without JavaScript its controls are hidden.
  */
 export function HandshakeBench() {
-  const { caption, steps, verdicts } = drawings.bench;
+  const { caption, steps } = drawings.bench;
 
   return (
     <figure className="@container flex flex-1 flex-col rounded-base border border-rule bg-surface-raised p-md md:p-lg">
-      <div className="flex flex-1 flex-col justify-center gap-md">
+      <HandshakeBenchControls labels={LABELS} icons={ICONS}>
         <BenchDrawing />
-        {/* The readout is the bench's polite live region (Phase 6 announces the steps). */}
-        <p
-          aria-live="polite"
-          className="flex items-center gap-xs type-ui-strong text-accent"
-        >
-          <Icon name="check" />
-          {verdicts.genuine}
-        </p>
-      </div>
+      </HandshakeBenchControls>
       <ol className="sr-only">
         {steps.map((step) => (
-          <li key={step}>{step}</li>
+          <li key={step}>{typography(step)}</li>
         ))}
       </ol>
       <figcaption className="mt-md type-body-sm text-text-muted">
-        {caption}
+        {typography(caption)}
       </figcaption>
     </figure>
   );

@@ -44,6 +44,11 @@
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
 
+  /* Motion table: the chip frame pulses to 1.04, and the rejected readout
+     shakes ±3 px. Only bench.css reads these; no utility takes them. */
+  --bench-pulse-scale: 1.04;
+  --bench-shake: 3px;
+
   /* Responsive Behavior: md from 768 px, lg from 1024 px. */
   --breakpoint-md: 48rem;
   --breakpoint-lg: 64rem;
@@ -68,6 +73,10 @@
 
   /* Layout → Layers: anchor targets. */
   --scroll-margin-anchor: 24px;
+
+  /* Components → Conventions and button-toggle: the toggle's 1.5 px
+     border, as `border-toggle` (pressed, it is 2 px: `border-2`). */
+  --border-width-toggle: 1.5px;
 
   /* Components → button-primary: 20 px padding (the export carries no
      components). */

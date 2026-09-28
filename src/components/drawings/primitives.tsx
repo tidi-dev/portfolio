@@ -27,6 +27,9 @@ export type LabelTone = "ink" | "proof" | "muted";
 /** `drawing-node` (ink), or a node on the proof (2 px `accent`, label-strong). */
 export type NodeTone = "ink" | "proof";
 
+/** A node's outline: ink, proof, or construction (1.5 px `trace`, dashed 6 4). */
+export type FrameTone = NodeTone | "construction";
+
 type Anchor = "start" | "middle" | "end";
 
 interface LabelProps {
@@ -120,33 +123,83 @@ interface NodeProps {
   readonly tone?: NodeTone;
 }
 
+interface NodeFrameProps {
+  /** Top-left corner. */
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly tone: FrameTone;
+}
+
+/** A node's 40-unit, radius-6 outline on a Plate fill, without its label. */
+export function NodeFrame({ x, y, width, tone }: NodeFrameProps) {
+  switch (tone) {
+    case "ink":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={NODE_HEIGHT}
+          rx={NODE_RADIUS}
+          className="fill-surface-raised stroke-current stroke-ink text-primary"
+        />
+      );
+    case "proof":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={NODE_HEIGHT}
+          rx={NODE_RADIUS}
+          className="fill-surface-raised stroke-current stroke-proof text-accent"
+        />
+      );
+    case "construction":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={NODE_HEIGHT}
+          rx={NODE_RADIUS}
+          className="fill-surface-raised stroke-current stroke-ink text-trace dash-construction"
+        />
+      );
+  }
+}
+
+/** The label centred in a node's box. */
+export function NodeLabel({
+  x,
+  y,
+  width,
+  label,
+  tone = "ink",
+}: Omit<NodeProps, "tone"> & { readonly tone?: LabelTone }) {
+  return (
+    <Label
+      x={x + width / 2}
+      y={y + NODE_HEIGHT / 2 + LABEL_CENTRE_OFFSET}
+      text={label}
+      tone={tone}
+    />
+  );
+}
+
 /** A 40-unit node with its label centred (DESIGN.md: 12-unit padding at least). */
 export function Node({ x, y, width, label, tone = "ink" }: NodeProps) {
-  const labelX = x + width / 2;
-  const labelY = y + NODE_HEIGHT / 2 + LABEL_CENTRE_OFFSET;
-  return tone === "proof" ? (
+  return (
     <>
-      <rect
+      <NodeFrame x={x} y={y} width={width} tone={tone} />
+      <NodeLabel
         x={x}
         y={y}
         width={width}
-        height={NODE_HEIGHT}
-        rx={NODE_RADIUS}
-        className="fill-surface-raised stroke-current stroke-proof text-accent"
+        label={label}
+        tone={tone === "proof" ? "proof" : "ink"}
       />
-      <Label x={labelX} y={labelY} text={label} tone="proof" />
-    </>
-  ) : (
-    <>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={NODE_HEIGHT}
-        rx={NODE_RADIUS}
-        className="fill-surface-raised stroke-current stroke-ink text-primary"
-      />
-      <Label x={labelX} y={labelY} text={label} />
     </>
   );
 }
