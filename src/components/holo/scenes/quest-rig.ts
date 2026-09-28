@@ -64,7 +64,9 @@ export const QUARTER_TURN = -0.6;
  * 0.6 → 1 (Quest was 95 % wide in it).
  */
 export const MODEL_FIT: Readonly<Record<QuestModelId, number>> = {
-  cyberrock: 1,
+  // The chip spanned about 53 % of the stage at 1; 1.5 brings it to about
+  // 80 %, level with the others (its scan ring reaches ±1.64).
+  cyberrock: 1.5,
   botmivivi: 1,
   quest: 0.85,
 };
