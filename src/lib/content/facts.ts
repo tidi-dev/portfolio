@@ -20,12 +20,6 @@ export type FactValue =
 export interface FactRow {
   readonly term: string;
   readonly value: FactValue;
-  /**
-   * A phrase that qualifies this value. Consecutive rows may share one: in
-   * the approved botmivivi set, "in the first 2 months" qualifies both
-   * customers and orders.
-   */
-  readonly qualifier?: string;
 }
 
 function text(value: string): FactValue {
@@ -42,7 +36,8 @@ function listOrText(value: string | readonly string[]): FactValue {
  * A quest file's facts-list rows, in DESIGN.md's order (Role, When, then
  * Team, Scale, Users or Stack as the quest has them), for present fields
  * only: an absent optional field yields no row, so nothing renders empty
- * (contrib-engineering §3).
+ * (contrib-engineering §3). botmivivi's usage figures are its stat readout
+ * instead (`usageReadout`).
  */
 export function projectFacts(project: FullProject): FactRow[] {
   const { facts } = project;
@@ -60,23 +55,6 @@ export function projectFacts(project: FullProject): FactRow[] {
     rows.push({ term: factTerms.scale, value: text(facts.scale) });
   if (facts.users !== undefined)
     rows.push({ term: factTerms.users, value: text(facts.users) });
-  if (facts.usage !== undefined) {
-    const { users, customers, orders, window, impact } = facts.usage;
-    rows.push(
-      { term: factTerms.users, value: text(formatNumber(users)) },
-      {
-        term: factTerms.customers,
-        value: text(formatNumber(customers)),
-        qualifier: window,
-      },
-      {
-        term: factTerms.orders,
-        value: text(formatNumber(orders)),
-        qualifier: window,
-      },
-      { term: factTerms.impact, value: text(impact) },
-    );
-  }
   if (facts.stack !== undefined) {
     rows.push({
       term: factTerms.stack,
@@ -84,6 +62,45 @@ export function projectFacts(project: FullProject): FactRow[] {
     });
   }
   return rows;
+}
+
+/** One figure of a stat readout: its term, its value and how it shows. */
+export interface Stat {
+  readonly term: string;
+  readonly value: number;
+  /** The value in en-US grouping, e.g. "2,951". */
+  readonly display: string;
+}
+
+/**
+ * botmivivi's stat readout (DESIGN.md → Stat readout), exactly the approved
+ * botmivivi.facts: Users, Customers and Orders as figures, the qualifier
+ * "in the first 2 months" (which qualifies customers and orders), then
+ * Impact as a text line.
+ */
+export interface UsageReadout {
+  readonly stats: readonly Stat[];
+  readonly qualifier: string;
+  readonly impact: { readonly term: string; readonly text: string };
+}
+
+export function usageReadout(
+  usage: NonNullable<FullProject["facts"]["usage"]>,
+): UsageReadout {
+  const stat = (term: string, value: number): Stat => ({
+    term,
+    value,
+    display: formatNumber(value),
+  });
+  return {
+    stats: [
+      stat(factTerms.users, usage.users),
+      stat(factTerms.customers, usage.customers),
+      stat(factTerms.orders, usage.orders),
+    ],
+    qualifier: usage.window,
+    impact: { term: factTerms.impact, text: usage.impact },
+  };
 }
 
 /**

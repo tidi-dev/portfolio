@@ -4,6 +4,7 @@ import { HologramId } from "./holograms";
 import {
   HttpsUrl,
   Period,
+  structuralEnum,
   structuralId,
   structuralLiteral,
   Term,
@@ -46,7 +47,16 @@ const Facts = z
     path: ["users"],
   });
 
-/** What I built as bullets, or the owner's "Name — description" strings as terms. */
+/** An achievement badge's icon (DESIGN.md → Achievement badge: wall, stopwatch, key, tool). */
+const AchievementIcon = structuralEnum(
+  ["wall", "stopwatch", "key", "tool"],
+  "an achievement badge's Tabler icon",
+);
+
+/**
+ * What I built as bullets, the owner's "Name — description" strings as
+ * terms, or Quest's achievements: terms with a badge icon each.
+ */
 const Body = z.discriminatedUnion("kind", [
   z.strictObject({
     kind: structuralLiteral("bullets", "body variant"),
@@ -57,6 +67,13 @@ const Body = z.discriminatedUnion("kind", [
     kind: structuralLiteral("terms", "body variant"),
     heading: Text,
     items: z.array(Term).nonempty(),
+  }),
+  z.strictObject({
+    kind: structuralLiteral("achievements", "body variant"),
+    heading: Text,
+    items: z
+      .array(z.strictObject({ ...Term.shape, icon: AchievementIcon }))
+      .nonempty(),
   }),
 ]);
 
@@ -131,6 +148,7 @@ export const FactTerms = z.strictObject({
   stack: Text,
 });
 
+export type AchievementIcon = z.output<typeof AchievementIcon>;
 export type FullProject = Content<typeof FullProject>;
 export type CompactProject = Content<typeof CompactProject>;
 export type Project = FullProject | CompactProject;

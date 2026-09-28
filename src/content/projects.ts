@@ -118,26 +118,31 @@ export const projects = defineContent("projects", Projects, [
       description:
         "architecture calls, code reviews, cross-team work, agile timelines, and mentoring freshers and juniors.",
     },
+    // DESIGN.md → Achievement badge: wall, stopwatch, key, tool, in order.
     body: {
-      kind: "terms",
+      kind: "achievements",
       heading: copy.ui.achievementsUnlocked,
       items: [
         {
           term: "Clean Slate",
           description:
             "v2 codebase and architecture from scratch with NestJS + Prisma",
+          icon: "wall",
         },
         {
           term: "Five-Minute Window",
           description: "DynamoDB → MySQL migration with ~5 min of downtime",
+          icon: "stopwatch",
         },
         {
           term: "Front Door",
           description: "Google SSO built in, fewer third-party dependencies",
+          icon: "key",
         },
         {
           term: "No More ClickOps",
           description: "Terraform for infrastructure, New Relic for monitoring",
+          icon: "tool",
         },
       ],
     },
