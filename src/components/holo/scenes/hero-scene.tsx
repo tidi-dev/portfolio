@@ -4,27 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import type { PointLight } from "three";
 import type { HeroSceneProps } from "@/components/holo/hero-scene-props";
 import { readMotionTimings } from "@/lib/motion/tokens";
+import { DPR, GL } from "./canvas-config";
 import { buildHeroRig, type HeroRig } from "./hero-rig";
 import { poseHero } from "./hero-pose";
 import { scenePalette } from "./palette";
+import { useContextLoss } from "./use-context-loss";
 
-// DESIGN.md → 3D Scenes: DPR capped at 1.75; camera FOV 34.
-const DPR: [number, number] = [1, 1.75];
-const GL = {
-  antialias: true,
-  alpha: true,
-  powerPreference: "high-performance",
-} as const;
+// DESIGN.md → 3D Scenes → Hero projector: camera FOV 34.
 const CAMERA = {
   fov: 34,
   near: 0.1,
   far: 200,
   position: [0, 3.6, 11.6],
 } as const;
-
-// A context lost for longer than this falls back to the poster
-// (contrib-engineering §5.2).
-const CONTEXT_RESTORE_WAIT = 2000;
 
 /**
  * The hero projector's world (DESIGN.md → 3D Scenes → Hero projector;
@@ -102,25 +94,7 @@ function HeroWorld({
   }, [handshake, motion, frameloop, invalidate]);
 
   // Context loss: allow a restore; if none comes in time, the poster.
-  useEffect(() => {
-    const canvas = gl.domElement;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const lost = (event: Event) => {
-      event.preventDefault();
-      timer = setTimeout(onLost, CONTEXT_RESTORE_WAIT);
-    };
-    const restored = () => {
-      clearTimeout(timer);
-      invalidate();
-    };
-    canvas.addEventListener("webglcontextlost", lost);
-    canvas.addEventListener("webglcontextrestored", restored);
-    return () => {
-      clearTimeout(timer);
-      canvas.removeEventListener("webglcontextlost", lost);
-      canvas.removeEventListener("webglcontextrestored", restored);
-    };
-  }, [gl, onLost, invalidate]);
+  useContextLoss(gl, onLost, invalidate);
 
   // A horizontal drag spins the chip; the canvas keeps touch-action: pan-y,
   // so a vertical swipe still scrolls the page.

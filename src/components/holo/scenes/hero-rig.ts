@@ -3,14 +3,12 @@ import {
   BufferAttribute,
   BufferGeometry,
   CircleGeometry,
-  Color,
   CylinderGeometry,
   DoubleSide,
   EdgesGeometry,
   Group,
   IcosahedronGeometry,
   InstancedMesh,
-  type IUniform,
   Line,
   LineBasicMaterial,
   LineSegments,
@@ -20,18 +18,16 @@ import {
   MeshStandardMaterial,
   Object3D,
   OctahedronGeometry,
-  PlaneGeometry,
   Points,
   PointsMaterial,
   QuadraticBezierCurve3,
   RingGeometry,
-  ShaderMaterial,
   SphereGeometry,
-  type Texture,
   TubeGeometry,
   Vector3,
 } from "three";
-import { createDieTexture } from "./die-texture";
+import { buildChip } from "./chip";
+import { type ConeUniforms, createConeMaterial } from "./cone-material";
 import type { ScenePalette } from "./palette";
 
 /**
@@ -65,14 +61,7 @@ export interface HeroRig {
   readonly applyPalette: (palette: ScenePalette) => void;
 }
 
-interface ConeUniforms {
-  readonly [uniform: string]: IUniform;
-  readonly uColor: IUniform<Color>;
-  readonly uOpacity: IUniform<number>;
-}
-
 const TICK_COUNT = 90;
-const PIN_COUNT_PER_SIDE = 10;
 const MOTE_COUNT = 150;
 /** Where the motes rise, in the cone (DESIGN.md: 150 motes). */
 export const MOTE_CEILING = 3.6;
@@ -89,24 +78,9 @@ function seeded(seed: number): () => number {
   };
 }
 
-// The cone's vertical alpha fade (DESIGN.md → Cone).
-const CONE_VERTEX = `varying float vY;
-void main() {
-  vY = position.y;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}`;
-const CONE_FRAGMENT = `uniform vec3 uColor;
-uniform float uOpacity;
-varying float vY;
-void main() {
-  float a = clamp(0.5 - vY / 3.4, 0.0, 1.0);
-  gl_FragColor = vec4(uColor, a * a * uOpacity);
-}`;
-
 export function buildHeroRig(palette: ScenePalette): HeroRig {
   const geometries: BufferGeometry[] = [];
   const materials: Material[] = [];
-  const textures: Texture[] = [];
   const track = <T extends BufferGeometry>(geometry: T): T => {
     geometries.push(geometry);
     return geometry;
@@ -120,14 +94,13 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
   const holoMaterials: (
     MeshBasicMaterial | LineBasicMaterial | PointsMaterial
   )[] = [];
-  const holoSurface = (opacity: number, map?: Texture) => {
+  const holoSurface = (opacity: number) => {
     const material = own(
       new MeshBasicMaterial({
         transparent: true,
         opacity,
         depthWrite: false,
         side: DoubleSide,
-        ...(map === undefined ? {} : { map }),
       }),
     );
     holoMaterials.push(material);
@@ -190,20 +163,12 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
   rig.add(ticks);
 
   // Cone: an open cylinder r 1.9 (top) → 1.0, h 3.4, fading upward.
-  const coneUniforms: ConeUniforms = {
-    uColor: { value: palette.holo.clone() },
-    uOpacity: { value: palette.coneOpacity },
-  };
-  const coneMaterial = own(
-    new ShaderMaterial({
-      uniforms: coneUniforms,
-      transparent: true,
-      depthWrite: false,
-      side: DoubleSide,
-      vertexShader: CONE_VERTEX,
-      fragmentShader: CONE_FRAGMENT,
-    }),
+  const { material: coneMaterial, uniforms: coneUniforms } = createConeMaterial(
+    3.4,
+    palette.holo,
+    palette.coneOpacity,
   );
+  own(coneMaterial);
   const cone = new Mesh(
     track(new CylinderGeometry(1.9, 1.0, 3.4, 48, 1, true)),
     coneMaterial,
@@ -211,50 +176,12 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
   cone.position.y = 1.8;
   rig.add(cone);
 
-  // Chip: a 2.1 × 0.26 × 2.1 body with holo edges, 40 pins and the die.
-  const chip = new Group();
+  // Chip: a 2.1 × 0.26 × 2.1 body with holo edges, 40 pins and the die
+  // (chip.ts, shared with the CyberRock quest hologram).
+  const chipModel = buildChip(palette);
+  const chip = chipModel.group;
   chip.position.y = 2.3;
   rig.add(chip);
-  const body = track(new BoxGeometry(2.1, 0.26, 2.1));
-  const chipMaterial = own(
-    new MeshStandardMaterial({ metalness: 0.55, roughness: 0.32 }),
-  );
-  chip.add(new Mesh(body, chipMaterial));
-  const edgeMaterial = holoLine(1);
-  chip.add(new LineSegments(track(new EdgesGeometry(body)), edgeMaterial));
-  const pinMaterial = own(
-    new MeshStandardMaterial({ metalness: 0.9, roughness: 0.25 }),
-  );
-  const pins = new InstancedMesh(
-    track(new BoxGeometry(0.09, 0.05, 0.3)),
-    pinMaterial,
-    PIN_COUNT_PER_SIDE * 4,
-  );
-  for (let side = 0, pin = 0; side < 4; side++) {
-    for (let index = 0; index < PIN_COUNT_PER_SIDE; index++, pin++) {
-      const along = -0.81 + index * 0.18;
-      const angle = (side * Math.PI) / 2;
-      placer.position.set(
-        Math.cos(angle) * 1.18 + Math.sin(angle) * along,
-        -0.05,
-        Math.sin(angle) * 1.18 - Math.cos(angle) * along,
-      );
-      placer.rotation.set(0, -angle + Math.PI / 2, 0);
-      placer.scale.set(1, 1, 1);
-      placer.updateMatrix();
-      pins.setMatrixAt(pin, placer.matrix);
-    }
-  }
-  chip.add(pins);
-  const dieTexture = createDieTexture(`#${palette.light.getHexString()}`);
-  textures.push(dieTexture);
-  const dieMaterial = holoSurface(1, dieTexture);
-  const die = new Mesh(
-    track(new PlaneGeometry(1.7, 1.7)).rotateX(-Math.PI / 2),
-    dieMaterial,
-  );
-  die.position.y = 0.135;
-  chip.add(die);
 
   // Scan ring (r 1.5) and its faint disc; they sweep y 1.5 ↔ 3.2.
   const scan = new Mesh(
@@ -373,8 +300,7 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
     coneMaterial.blending = next.blending;
     coneMaterial.needsUpdate = true;
     baseMaterial.color.copy(next.metal);
-    chipMaterial.color.copy(next.chip);
-    pinMaterial.color.copy(next.pin);
+    chipModel.applyPalette(next);
     hostEdgeMaterial.color.copy(next.hostEdge);
     hostCoreMaterial.color.copy(next.hostCore);
   };
@@ -395,14 +321,13 @@ export function buildHeroRig(palette: ScenePalette): HeroRig {
     packets,
     pulse,
     motes,
-    verdictMaterials: [edgeMaterial, dieMaterial],
+    verdictMaterials: [chipModel.edgeMaterial, chipModel.dieMaterial],
     applyPalette,
     dispose: () => {
       for (const geometry of geometries) geometry.dispose();
       for (const material of materials) material.dispose();
-      for (const texture of textures) texture.dispose();
+      chipModel.dispose();
       ticks.dispose();
-      pins.dispose();
     },
   };
 }
