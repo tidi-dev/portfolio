@@ -11,6 +11,8 @@
 @import "../styles/tokens.generated.css" theme(static);
 @import "../styles/theme.css";
 @import "../styles/shell.css";
+@import "../styles/hero.css";
+@import "../styles/holo.css";
 
 @layer base {
   /* Typography → Principles. */

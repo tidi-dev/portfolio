@@ -1,0 +1,177 @@
+/*
+ * The hologram stage (DESIGN.md → 3D Scenes; contrib-engineering §5.2):
+ * HoloPoster, the CSS-only still that holds the stage before the scene
+ * loads and whenever WebGL is missing or lost; the canvas layer, which
+ * cross-fades in on its first frame; and the scene tags. The stage carries
+ * `data-holo-state="poster|live"`. Poster geometry is in stage units
+ * (container query units), placed like the projector in the scene camera:
+ * the base low, the cone rising to the chip right of centre, the host
+ * top left. All colours are tokens, so both themes follow the swap.
+ */
+
+@utility holo-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-index-canvas);
+}
+
+/* The canvas cross-fades in over the poster (boot); at once in the calm
+   mode. touch-action: pan-y keeps vertical scrolling on touch screens
+   while a horizontal drag spins the chip. */
+@utility holo-canvas {
+  opacity: 0;
+  /* Deck's Bloom halo spreads over the transparent canvas; the edges
+     feather out (--canvas-feather, 0 in Lab) so no seam shows. */
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      black var(--canvas-feather),
+      black calc(100% - var(--canvas-feather)),
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      black var(--canvas-feather),
+      black calc(100% - var(--canvas-feather)),
+      transparent
+    );
+  mask-composite: intersect;
+
+  [data-holo-state="live"] > & {
+    opacity: 1;
+  }
+
+  :root[data-motion="on"] & {
+    transition: opacity var(--transition-duration-boot) var(--ease-out);
+  }
+
+  & canvas {
+    touch-action: pan-y;
+  }
+}
+
+@utility holo-poster {
+  pointer-events: none;
+
+  [data-holo-state="live"] > & {
+    opacity: 0;
+  }
+
+  :root[data-motion="on"] & {
+    transition: opacity var(--transition-duration-boot) var(--ease-out);
+  }
+}
+
+/* The cone: wider at the top, fading upward; stronger in Deck. */
+@utility poster-cone {
+  position: absolute;
+  left: 62%;
+  bottom: 20%;
+  width: 56cqmin;
+  height: 50cqh;
+  transform: translateX(-50%);
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 24% 100%);
+  background-image: linear-gradient(
+    to top,
+    color-mix(
+      in srgb,
+      var(--color-holo) calc(var(--backdrop-holo) * 2),
+      transparent
+    ),
+    transparent
+  );
+}
+
+/* The projector base: a metal ellipse with the three holo rings. */
+@utility poster-base {
+  position: absolute;
+  left: 62%;
+  bottom: 13%;
+  width: 72cqmin;
+  height: 16cqmin;
+  transform: translateX(-50%);
+  background-image: radial-gradient(
+    closest-side,
+    transparent 38%,
+    var(--color-holo) 39% 41%,
+    transparent 42% 64%,
+    color-mix(in srgb, var(--color-holo) 55%, transparent) 65% 66%,
+    transparent 67% 85%,
+    var(--color-holo) 86% 88%,
+    var(--color-scene-metal) 89% 99%,
+    transparent 100%
+  );
+}
+
+/* The chip: the package seen from above at an angle, with holo edges and
+   a die of circuit traces. */
+@utility poster-chip {
+  position: absolute;
+  left: 62%;
+  top: 38%;
+  width: 26cqmin;
+  height: 26cqmin;
+  transform: translate(-50%, -50%) scaleY(0.5) rotate(45deg);
+  border: 2px solid var(--color-holo);
+  background-color: var(--color-scene-chip);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 22%;
+    border: 2px solid var(--color-holo);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 18%,
+        color-mix(in srgb, var(--color-holo) 45%, transparent) 18% 22%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 26%,
+        color-mix(in srgb, var(--color-holo) 30%, transparent) 26% 30%
+      );
+  }
+}
+
+/* The host node: a gold diamond, top left (Lab edge accent-ink). */
+@utility poster-host {
+  position: absolute;
+  left: 12%;
+  top: 24%;
+  width: 7cqmin;
+  height: 7cqmin;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 2px solid var(--color-accent-ink);
+  background-image: radial-gradient(
+    closest-side,
+    var(--color-accent) 45%,
+    transparent 50%
+  );
+}
+
+/* Scene tags ("host", "chip"): glass chips the scene pins to its anchors
+   each frame; hidden until the scene is live. The chip inside takes the
+   6 px padding (scene-tag) and the chamfer. */
+@utility scene-tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--z-index-content);
+  color: var(--color-holo);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(calc(var(--tag-x, 0) * 1px), calc(var(--tag-y, 0) * 1px))
+    translate(-50%, -50%);
+  will-change: transform;
+
+  [data-holo-state="live"] > & {
+    opacity: 1;
+  }
+}
+
+@utility p-scene-tag {
+  padding: 6px;
+}

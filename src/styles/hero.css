@@ -1,0 +1,212 @@
+/*
+ * The hero (DESIGN.md → Components: Hero intro, Handshake log; Layout;
+ * Responsive Behavior → Hero; Elevation → Glow; Motion). Below lg: the
+ * canvas band first (aria-hidden, never focusable), then the intro, then
+ * the console, in both DOM and visual order. From lg: a 5 / 7 split with the
+ * console over the stage's bottom edge. Load motion runs only under
+ * `data-motion="on"`.
+ */
+
+@keyframes line-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* The hero frame: clears the fixed 60 px strip; the full viewport from lg.
+   The backdrop is the radial holo and accent glow over surface, at half
+   strength in Lab (the strengths are theme.css's --backdrop-*). */
+@utility hero-frame {
+  position: relative;
+  overflow: clip;
+  padding-top: calc(var(--spacing-hud) + var(--spacing-lg));
+  padding-bottom: var(--spacing-2xl);
+  background-image:
+    radial-gradient(
+      40% 40% at 10% 90%,
+      color-mix(
+        in srgb,
+        var(--color-accent) var(--backdrop-accent),
+        transparent
+      ),
+      transparent
+    ),
+    radial-gradient(
+      60% 70% at 72% 50%,
+      color-mix(in srgb, var(--color-holo) var(--backdrop-holo), transparent),
+      transparent 70%
+    );
+  background-color: var(--color-surface);
+
+  @variant lg {
+    display: grid;
+    align-items: center;
+    min-height: 100dvh;
+  }
+}
+
+@utility hero-grid {
+  display: grid;
+  grid-template-areas: "stage" "intro" "console";
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--spacing-lg);
+
+  @variant lg {
+    grid-template-areas: "intro stage";
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--spacing-lg);
+    align-items: center;
+  }
+}
+
+@utility hero-intro {
+  grid-area: intro;
+  position: relative;
+  z-index: var(--z-index-content);
+
+  /* Hero intro lines: a clip-path wipe, left → right (wipe, stagger
+     line, ease-power). `backwards` fill: once done, no clip-path is left
+     to cut a focus ring or the brand's glow. */
+  :root[data-motion="on"] & > * {
+    animation: line-wipe var(--transition-duration-wipe) var(--ease-power)
+      backwards;
+  }
+
+  :root[data-motion="on"] & > :nth-child(2) {
+    animation-delay: var(--stagger-line);
+  }
+
+  :root[data-motion="on"] & > :nth-child(3) {
+    animation-delay: calc(var(--stagger-line) * 2);
+  }
+
+  :root[data-motion="on"] & > :nth-child(4) {
+    animation-delay: calc(var(--stagger-line) * 3);
+  }
+
+  :root[data-motion="on"] & > :nth-child(5) {
+    animation-delay: calc(var(--stagger-line) * 4);
+  }
+}
+
+/* The stage: a band of min(48svh, 400px) below lg; from lg
+   min(74svh, 700px), at least 440 px. A size container, so the poster
+   scales with it. */
+@utility hero-stage {
+  grid-area: stage;
+  position: relative;
+  height: min(48svh, 400px);
+  container-type: size;
+
+  @variant lg {
+    height: min(74svh, 700px);
+    min-height: 440px;
+    /* The stage bleeds right to the viewport edge (the hero clips it), so
+       the projector's camera gets its width and the host clears the
+       stage's left edge; the console stays in the container. */
+    margin-inline-end: calc(
+      -1 *
+        max(
+          clamp(var(--spacing-edge), 3.4vw, var(--spacing-edge-lg)),
+          (100vw - var(--spacing-container)) / 2
+        )
+    );
+  }
+}
+
+/* The console: controls in a row, then the log, below lg; from lg it sits
+   over the stage's bottom edge, the log at most 360 px wide. */
+@utility hero-console {
+  grid-area: console;
+  position: relative;
+  z-index: var(--z-index-console);
+  display: grid;
+  gap: var(--spacing-md);
+
+  @variant lg {
+    grid-area: stage;
+    align-self: end;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+  }
+}
+
+@utility hero-log {
+  @variant lg {
+    justify-self: end;
+    width: min(360px, 100%);
+  }
+}
+
+/* brand-name: Deck adds the holo text shadow, 0 0 32 px at 45 %; Lab has
+   none (--brand-glow is 0 %). */
+@utility brand-glow {
+  text-shadow: 0 0 32px
+    color-mix(in srgb, var(--color-holo) var(--brand-glow), transparent);
+}
+
+/* role-line: a 28 × 2 px holo lead line before the role. The section
+   heading's lead line is the same mark. */
+@utility lead-line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+
+  &::before {
+    content: "";
+    flex: none;
+    width: 28px;
+    height: 2px;
+    background-color: var(--color-holo);
+  }
+}
+
+/* Handshake log lines (step-log, step-on, step-numeral-on): pending in
+   text-muted; lit in primary with the numeral on-holo on holo; skipped
+   (counterfeit) in text-muted with a line-through (the <del>), no opacity. */
+@utility step-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  color: var(--color-text-muted);
+  transition-property: color;
+  transition-duration: var(--transition-duration-verdict);
+
+  &[data-state="lit"] {
+    color: var(--color-primary);
+  }
+}
+
+@utility step-numeral {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-line);
+  transition-property: background-color, color, border-color;
+  transition-duration: var(--transition-duration-verdict);
+
+  [data-state="lit"] > & {
+    border-color: var(--color-holo);
+    background-color: var(--color-holo);
+    color: var(--color-on-holo);
+  }
+}
+
+/* verdict-genuine / verdict-rejected: uppercase `button` type. */
+@utility verdict-output {
+  text-transform: uppercase;
+
+  &[data-verdict="genuine"] {
+    color: var(--color-success);
+  }
+
+  &[data-verdict="rejected"] {
+    color: var(--color-danger);
+  }
+}
