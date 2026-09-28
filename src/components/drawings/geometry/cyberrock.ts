@@ -1,4 +1,4 @@
-import type { Point } from "./grammar";
+import type { Box, Point, TextSpot } from "./grammar";
 
 /**
  * The CyberRock drawing (DESIGN.md → Drawing grammar, CyberRock row; Approved
@@ -11,19 +11,6 @@ import type { Point } from "./grammar";
  * Node widths are the measured label plus at least 12 units a side, on the
  * 8-unit grid (tests/unit/drawings.test.ts checks the label boxes).
  */
-
-export interface Box {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-}
-
-export interface TextSpot {
-  readonly x: number;
-  /** The baseline (the first one, for wrapped text). */
-  readonly y: number;
-  readonly anchor: "start" | "middle" | "end";
-}
 
 export interface CyberRockLayout {
   readonly width: number;

@@ -33,6 +33,32 @@ export interface Point {
 
 export type Direction = "right" | "left" | "down" | "up";
 
+/** A node's box: top-left corner and width (every node is 40 units tall). */
+export interface Box {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+}
+
+/** A boundary's region: top-left corner and size. */
+export interface Region extends Box {
+  readonly height: number;
+}
+
+/** Where a free label sits. */
+export interface TextSpot {
+  readonly x: number;
+  /** The baseline (the first one, for wrapped text). */
+  readonly y: number;
+  readonly anchor: "start" | "middle" | "end";
+}
+
+/** A line and the way its arrowhead points. */
+export interface Arrow {
+  readonly points: readonly Point[];
+  readonly arrow: Direction;
+}
+
 const UNIT: Readonly<Record<Direction, Point>> = {
   right: { x: 1, y: 0 },
   left: { x: -1, y: 0 },

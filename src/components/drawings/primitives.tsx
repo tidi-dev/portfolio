@@ -204,6 +204,68 @@ export function Node({ x, y, width, label, tone = "ink" }: NodeProps) {
   );
 }
 
+/** A replaced node (`drawing-node-replaced`): a construction outline, its label in `text-muted`. */
+export function ReplacedNode({ x, y, width, label }: Omit<NodeProps, "tone">) {
+  return (
+    <>
+      <NodeFrame x={x} y={y} width={width} tone="construction" />
+      <NodeLabel x={x} y={y} width={width} label={label} tone="muted" />
+    </>
+  );
+}
+
+interface BoundaryProps {
+  /** Top-left corner. */
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+  readonly tone: LineTone;
+}
+
+/**
+ * A boundary (DESIGN.md → Drawing grammar): a radius-6 region around nodes,
+ * drawn as ink, construction or proof, with no fill. Its label is a
+ * separate `Label` in the matching tone.
+ */
+export function Boundary({ x, y, width, height, tone }: BoundaryProps) {
+  switch (tone) {
+    case "ink":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          rx={NODE_RADIUS}
+          className="fill-none stroke-current stroke-ink text-primary"
+        />
+      );
+    case "proof":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          rx={NODE_RADIUS}
+          className="fill-none stroke-current stroke-proof text-accent"
+        />
+      );
+    case "construction":
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          rx={NODE_RADIUS}
+          className="fill-none stroke-current stroke-ink text-trace dash-construction"
+        />
+      );
+  }
+}
+
 function Stroke({ d, tone }: { readonly d: string; readonly tone: LineTone }) {
   switch (tone) {
     case "ink":
