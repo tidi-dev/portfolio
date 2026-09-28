@@ -46,13 +46,13 @@ Source of truth for workflow state. It survives context resets: trust this file 
 | 1 Foundation | **complete** (2026-09-28) | `docs/reports/phase-01-engineering.md`; main-session gate re-run green; QA PASS WITH MINOR (`docs/reviews/phase-01-code-review.md`). Minors routed: M1 and M2 to Phase 2, M5 to Phase 3, M3 and M4 to Phase 4 |
 | 2 Tokens and fonts | QA **FAIL** (I1 token lint gaps, I2 stroke tokens in the wrong namespace); fix round 1 folded into the Phase 3 implementer's run (one implementer at a time); re-verified with the Phase 3 review | `docs/reports/phase-02-engineering.md`; main-session gate re-run green (`phase2-gate.log`) |
 | 3 Content layer | built (2026-09-28); final verification in Phase 12 | `docs/reports/phase-03-engineering.md` (includes the Phase 2 fix round) |
-| 4 Shell and hero | in progress (2026-09-28, with Phase 5) | |
-| 5 Sheet anatomy and CyberRock, then Checkpoint 1 | pending | |
-| 6 Handshake | pending | |
-| 7 Remaining sheets and video | pending | |
-| 8 Remaining drawings | pending | |
-| 9 Remaining sections | pending | |
-| 10 Résumé PDF | pending | |
+| 4 Shell and hero | built (2026-09-28, with Phase 5); verified at the end | commits `6e3c244`..`6903f1d`; no report (the agent was stopped once the build was committed) |
+| 5 Sheet anatomy and CyberRock | built (2026-09-28); Checkpoint 1 folded into the final design check | same commits as Phase 4 |
+| 6 Handshake | built (2026-09-28) | `docs/reports/phase-06-engineering.md` |
+| 7 Remaining sheets and video | built (2026-09-28) | `docs/reports/phase-07-08-engineering.md` |
+| 8 Remaining drawings | built (2026-09-28) | same report as Phase 7 |
+| 9 Remaining sections | built (2026-09-28) | `docs/reports/phase-09-engineering.md` |
+| 10 Résumé PDF | built (2026-09-28) | `docs/reports/phase-10-engineering.md`; `public/tidi-resume.pdf` (2 pages, 74 KB) |
 | 11 SEO, metadata, 404 | pending | |
 | 12 Pre-release hardening, then the release audit and Checkpoint 2 | pending | |
 | 13 Deployment | on hold (O1, O2) | |
@@ -126,6 +126,20 @@ Format: `Ruling: what — why — cost if wrong`
   - **Git identity:** `tidi.dev1321@gmail.com`, repo-local (set 2026-09-28; the global setting is unchanged). The earlier commits get their author email rewritten once Phase 2's agent stops. Old hashes in reports are mapped after the rewrite.
   - **Privacy scan:** turned off. Removed from the local gate and CI; the script is kept. Phase 3 gets no separate privacy test; exclusion is structural.
 - Was pending: which git identity commits use (now answered above).
+
+### Stop point (owner, 2026-09-28): REACHED after Phase 10
+Open for the final checks (awaiting the owner's go):
+- **Test suite:** write the lean suite.
+- **Checks and reviews:** the full gate; the QA review (including the Phase 2 fix round); content verification; the design check (Checkpoints 1 and 2).
+- **Design calls to rule on:**
+  - Phase 6: seven small calls
+  - Phases 7–8: the botmivivi boundary; the "first 2 months" placement; the Quest label colour
+  - Phase 9: the "Quest @ NFQ Asia" label; the avatar's WebP sizes
+  - Phase 10: the PDF headings and the rejoined dashes
+  - the About bio repetition
+- **Before any push:** the CI privacy-scan step.
+
+"stop after finishing phase 10": run Phases 6, 7+8, 9 and 10 back to back, then stop and report. The lean test suite, the final checks and fixes wait for the owner's go.
 
 ### Build-mode change (2026-09-28)
 - **Owner instruction:** "no need to run every check after each phase. finish all phases and run all checks".

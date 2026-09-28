@@ -209,6 +209,7 @@ Local gate, in order:
 Other commands:
 - `pnpm tokens` and `pnpm fonts`: regenerate the token and font files after a `DESIGN.md` or font change. The `:check` variants verify them.
 - `pnpm design:lint`: the DESIGN.md linter with the warning policy.
+- `pnpm resume:pdf`: regenerates `public/tidi-resume.pdf` and its lock. `pnpm resume:check` (part of `pnpm check`) fails if the content changed without regenerating.
 - `pnpm format`: Prettier write.
 
 Agents stop only the processes they started, by PID. Never kill by name or pattern (`pkill`, `killall`).
