@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import { HudStrip } from "@/components/shell/hud-strip";
+import { SiteFooter } from "@/components/shell/site-footer";
+import { SkipLink } from "@/components/shell/skip-link";
+import { HeadScript } from "@/components/theme/head-script";
+import { NoscriptStyle } from "@/components/theme/noscript-style";
 import { copy } from "@/content/copy";
 import { site } from "@/content/site";
 import "./globals.css";
@@ -61,11 +66,23 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
+    // The head script sets data-theme and data-motion on <html> before
+    // hydration, so its attributes differ from the server's by design.
     <html
       lang={site.lang}
       className={`${chakraPetch.variable} ${portfolioSans.variable}`}
+      suppressHydrationWarning
     >
-      <body className="bg-surface type-body text-primary">{children}</body>
+      <head>
+        <HeadScript />
+        <NoscriptStyle />
+      </head>
+      <body className="bg-surface type-body text-primary">
+        <SkipLink />
+        <HudStrip />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }

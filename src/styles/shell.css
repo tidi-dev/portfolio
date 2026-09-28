@@ -1,0 +1,318 @@
+/*
+ * The shell's component styles (DESIGN.md → Components: HUD bar, menu
+ * sheet, corner brackets, buttons, switch), for what utilities can't say:
+ * pseudo-element layers, segment gradients and the load motion. Colours,
+ * sizes and timings are DESIGN.md tokens; the few fixed dimensions are the
+ * component entries' own (xp-track, switch, focus-ring). Load motion runs
+ * only under `data-motion="on"` (DESIGN.md → Motion), so without
+ * JavaScript, or in the calm mode, everything rests in its final state.
+ */
+
+@keyframes hud-enter {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes xp-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes bracket-draw {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* HUD bar: the fixed strip slides down on load (hud, ease-out). */
+@utility hud-enter {
+  :root[data-motion="on"] & {
+    animation: hud-enter var(--transition-duration-hud) var(--ease-out)
+      backwards;
+  }
+}
+
+/* xp-track: 10 segments split by 2 px `surface` gaps, 56 px below md,
+   120 px from md, 170 px (the component's width) from 2xl. */
+@utility xp-track {
+  position: relative;
+  flex: none;
+  height: 10px;
+  width: 56px;
+  overflow: hidden;
+  background-color: var(--color-rule);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0 calc(10% - 2px),
+      var(--color-surface) calc(10% - 2px) 10%
+    );
+  }
+
+  @variant md {
+    width: 120px;
+  }
+
+  @variant 2xl {
+    width: 170px;
+  }
+}
+
+/* xp-fill: accent → success, fixed at 70 %, never a number. On load it
+   fills from 0 (xp, delay xp, ease-out). */
+@utility xp-fill {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-accent),
+    var(--color-success)
+  );
+  transform-origin: left;
+  transform: scaleX(0.7);
+
+  :root[data-motion="on"] & {
+    animation: xp-fill var(--transition-duration-xp) var(--ease-out)
+      var(--delay-xp) backwards;
+  }
+}
+
+/* Corner brackets: four 30 px L-marks, 2 px holo at 70 %, framing the hero
+   viewport below the strip; each draws from its corner (brackets). */
+@utility corner-bracket {
+  position: absolute;
+  width: var(--spacing-bracket);
+  height: var(--spacing-bracket);
+  border: 0 solid color-mix(in srgb, var(--color-holo) 70%, transparent);
+  pointer-events: none;
+
+  :root[data-motion="on"] & {
+    animation: bracket-draw var(--transition-duration-brackets) var(--ease-out)
+      backwards;
+  }
+}
+
+@utility bracket-tl {
+  top: calc(var(--spacing-hud) + var(--spacing-xs));
+  left: var(--spacing-sm);
+  border-top-width: 2px;
+  border-left-width: 2px;
+  transform-origin: top left;
+}
+
+@utility bracket-tr {
+  top: calc(var(--spacing-hud) + var(--spacing-xs));
+  right: var(--spacing-sm);
+  border-top-width: 2px;
+  border-right-width: 2px;
+  transform-origin: top right;
+}
+
+@utility bracket-bl {
+  bottom: var(--spacing-sm);
+  left: var(--spacing-sm);
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  transform-origin: bottom left;
+}
+
+@utility bracket-br {
+  bottom: var(--spacing-sm);
+  right: var(--spacing-sm);
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  transform-origin: bottom right;
+}
+
+/* Buttons (button-primary, button-ghost, button-holo): chamfered through
+   the `chamfer` layers, 48 px high; active presses 1 px. */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-height: var(--spacing-control);
+  padding-inline: var(--spacing-lg);
+  text-decoration: none;
+  cursor: pointer;
+  transition-property: color;
+  transition-duration: var(--transition-duration-feedback);
+
+  &::before,
+  &::after {
+    transition-property: background-color;
+    transition-duration: var(--transition-duration-feedback);
+  }
+
+  &:active:not([aria-disabled="true"]) {
+    transform: translateY(1px);
+  }
+}
+
+/* button-primary: gold; hover accent-hover plus the light sweep. */
+@utility btn-primary {
+  --chamfer-edge: var(--color-accent);
+  --chamfer-fill: var(--color-accent);
+  color: var(--color-on-accent);
+
+  &:hover {
+    --chamfer-edge: var(--color-accent-hover);
+    --chamfer-fill: var(--color-accent-hover);
+  }
+}
+
+/* button-ghost: a 1.5 px text-muted edge on surface; holo on hover. */
+@utility btn-ghost {
+  --chamfer-edge: var(--color-text-muted);
+  --chamfer-fill: var(--color-surface);
+  --chamfer-edge-width: 1.5px;
+  color: var(--color-primary);
+
+  &:hover {
+    --chamfer-edge: var(--color-holo);
+  }
+}
+
+/* button-holo: "Run the handshake" only; 20 px padding; 55 % while a
+   visitor's run plays. */
+@utility btn-holo {
+  --chamfer-edge: var(--color-holo);
+  --chamfer-fill: var(--color-holo);
+  padding-inline: 20px;
+  color: var(--color-on-holo);
+
+  &[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: default;
+  }
+}
+
+/* The light sweep on button-primary: a band crosses the cut face on hover
+   (sweep); colour only in the calm mode (DESIGN.md → Motion → Buttons). */
+@utility btn-sweep {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--spacing-chamfer)) 0,
+    100% var(--spacing-chamfer),
+    100% 100%,
+    var(--spacing-chamfer) 100%,
+    0 calc(100% - var(--spacing-chamfer))
+  );
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      100deg,
+      transparent 35%,
+      color-mix(in srgb, var(--color-on-scrim) 60%, transparent) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+  }
+
+  :root[data-motion="on"] :hover > &::before {
+    transform: translateX(120%);
+    transition: transform var(--transition-duration-sweep) var(--ease-out);
+  }
+}
+
+/* The switch ("Counterfeit chip"): a 34 × 18 px track with a text-muted
+   border; the 12 px thumb slides 16 px and turns danger when pressed, so
+   the state shows by position, not colour alone. */
+@utility switch-track {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 18px;
+  border: 1px solid var(--color-text-muted);
+}
+
+@utility switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-text-muted);
+
+  [aria-pressed="true"] & {
+    transform: translateX(16px);
+    background-color: var(--color-danger);
+  }
+
+  :root[data-motion="on"] & {
+    transition-property: transform, background-color;
+    transition-duration: var(--transition-duration-feedback);
+  }
+}
+
+/* Menu sheet: a full-height glass popover under the strip. The native
+   popover opens and closes without JavaScript; these rules replace the
+   UA's centred box. It enters with opacity and an 8 px drop (feedback),
+   opacity only in the calm mode. */
+@utility menu-sheet {
+  position: fixed;
+  inset: var(--spacing-hud) 0 0 0;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  overflow-y: auto;
+  color: var(--color-primary);
+  background-color: color-mix(
+    in srgb,
+    var(--color-surface-raised) var(--glass-opacity),
+    transparent
+  );
+  backdrop-filter: blur(var(--glass-blur));
+
+  &:popover-open {
+    animation: menu-fade var(--transition-duration-feedback) var(--ease-out);
+  }
+
+  :root[data-motion="on"] &:popover-open {
+    animation-name: menu-enter;
+  }
+}
+
+/* Menu sheet rows: 56 px, split by `rule` hairlines. */
+@utility menu-row {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+/* The switch as a control: 44 px high, 14 px side padding. */
+@utility switch {
+  min-height: var(--spacing-target);
+  padding-inline: 14px;
+  cursor: pointer;
+}

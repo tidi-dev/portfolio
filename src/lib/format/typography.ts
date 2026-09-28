@@ -26,3 +26,26 @@ export function typography(text: string): string {
     )
     .replace(NUMBER_AND_UNIT, "$1\u00A0$2");
 }
+
+/** The owner's middot separator ("2 active · 1 cleared", banner.svg). */
+const MIDDOT = " · ";
+
+/** Parts shown as one middot line, as the owner writes his lists. */
+export function joinMiddot(parts: readonly string[]): string {
+  return parts.join(MIDDOT);
+}
+
+/**
+ * A HUD line split into its key and value at the first space, as the
+ * owner's banner sets them ("LVL still leveling" → "LVL", "still
+ * leveling"). The text itself is unchanged.
+ */
+export function hudKeyValue(text: string): {
+  readonly key: string;
+  readonly value: string;
+} {
+  const space = text.indexOf(" ");
+  return space === -1
+    ? { key: text, value: "" }
+    : { key: text.slice(0, space), value: text.slice(space + 1) };
+}

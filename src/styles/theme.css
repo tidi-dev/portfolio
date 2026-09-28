@@ -99,6 +99,13 @@
     /* Elevation → Glass: surface-raised at 92 % with an 8 px blur. */
     --glass-opacity: 92%;
     --glass-blur: 8px;
+
+    /* Elevation → Glow: "Lab keeps the backdrop at half strength with no
+       glow"; Deck's values are in the dark swap below. */
+    --backdrop-holo: 8%;
+    --backdrop-accent: 4%;
+    --brand-glow: 0%;
+    --canvas-feather: 0%;
   }
 
   /* Consistency locks 1: the dark theme (Deck) swaps every colour that
@@ -122,6 +129,12 @@
     --color-rule: var(--color-rule-dark);
     --color-focus: var(--color-focus-dark);
     --color-scene-metal: var(--color-scene-metal-dark);
+    /* Elevation → Glow (Deck only): the hero backdrop at full strength,
+       the brand's holo text shadow at 45 %. */
+    --backdrop-holo: 16%;
+    --backdrop-accent: 8%;
+    --brand-glow: 45%;
+    --canvas-feather: 8%;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -143,6 +156,12 @@
       --color-rule: var(--color-rule-dark);
       --color-focus: var(--color-focus-dark);
       --color-scene-metal: var(--color-scene-metal-dark);
+      /* Elevation → Glow (Deck only): the hero backdrop at full strength,
+       the brand's holo text shadow at 45 %. */
+      --backdrop-holo: 16%;
+      --backdrop-accent: 8%;
+      --brand-glow: 45%;
+      --canvas-feather: 8%;
     }
   }
 
@@ -396,11 +415,66 @@
   }
 
   &::after {
-    inset: 1px;
+    inset: var(--chamfer-edge-width, 1px);
     background-color: var(--chamfer-fill, var(--color-surface-raised));
   }
 }
 
 @utility chamfer-sm {
   --chamfer-cut: var(--spacing-chamfer-sm);
+}
+
+/* Elevation → Glass on a chamfered block: the fill is the 92 % glass and
+   the blur sits on the cut fill layer, so it follows the chamfer. */
+@utility chamfer-glass {
+  --chamfer-fill: color-mix(
+    in srgb,
+    var(--color-surface-raised) var(--glass-opacity),
+    transparent
+  );
+
+  &::after {
+    backdrop-filter: blur(var(--glass-blur));
+  }
+}
+
+/* Content shown in one theme only (the theme toggle's moon and sun). Same
+   selectors as the dark swap above: a stored choice, else the system. */
+@utility show-in-deck {
+  :root[data-theme="light"] & {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) & {
+      display: none;
+    }
+  }
+}
+
+@utility show-in-lab {
+  :root[data-theme="dark"] & {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) & {
+      display: none;
+    }
+  }
+}
+
+/* Content shown in one motion mode only (the motion toggle's pause and
+   play). data-motion comes from the head script; without JavaScript the
+   toggle is hidden. */
+@utility show-motion-on {
+  :root:not([data-motion="on"]) & {
+    display: none;
+  }
+}
+
+@utility show-motion-off {
+  :root[data-motion="on"] & {
+    display: none;
+  }
 }
