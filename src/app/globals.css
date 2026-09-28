@@ -1,0 +1,27 @@
+/* Tailwind scans src/ only, so prose in docs/ and DESIGN.md never becomes
+   CSS; the token files and font assets hold no class names. Order
+   (contrib-engineering §4): Tailwind, the reset that removes its default
+   theme, the tokens exported from DESIGN.md (static, so the dark swap's
+   -dark variables always exist), then the thin hand-mapped layer. */
+@import "tailwindcss" source("..");
+@source not "../styles";
+@source not "../assets";
+@import "../styles/reset.css";
+@import "../styles/tokens.generated.css" theme(static);
+@import "../styles/theme.css";
+
+@layer base {
+  /* Typography → Principles. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+}
