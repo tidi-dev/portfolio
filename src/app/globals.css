@@ -84,6 +84,14 @@
   }
 }
 
+/* About from lg (DESIGN.md → About avatar): the bio takes the first row at
+   its own height and the rest of the text the second, while the avatar
+   spans both. The flexible second row takes any extra height the avatar
+   needs, so no gap opens between the bio and Education & certifications. */
+@utility rows-about {
+  grid-template-rows: auto 1fr;
+}
+
 /* Drawing labels (DESIGN.md → Typography, `label` row; Drawing grammar):
    the label roles at a fixed 14 units, so they scale only with their SVG. */
 @utility type-drawing-label {

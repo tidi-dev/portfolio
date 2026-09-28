@@ -117,6 +117,10 @@
   --max-width-bench-wide: 648px;
   --max-width-drawing-tall: 360px;
   --max-width-drawing-wide: 1144px;
+
+  /* About avatar and Responsive Behavior (About row): below lg the avatar
+     is at most 320 px wide, as `max-w-avatar`. */
+  --max-width-avatar: 320px;
 }
 
 /* Drawing grammar: the construction dash. */
