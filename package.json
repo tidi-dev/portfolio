@@ -17,7 +17,9 @@
     "design:lint": "tsx scripts/design/lint.ts",
     "fonts": "tsx scripts/fonts/build.ts",
     "fonts:check": "tsx scripts/fonts/check.ts",
-    "check": "pnpm design:lint && pnpm fonts:check && pnpm lint && pnpm typecheck"
+    "resume:pdf": "tsx scripts/resume/build.ts",
+    "resume:check": "tsx scripts/resume/check.ts",
+    "check": "pnpm design:lint && pnpm fonts:check && pnpm resume:check && pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "@tabler/icons-react": "3.48.0",
@@ -41,6 +43,7 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-better-tailwindcss": "4.7.0",
     "eslint-plugin-jsx-a11y": "6.10.2",
+    "postcss": "8.5.28",
     "prettier": "3.9.9",
     "prettier-plugin-tailwindcss": "0.8.1",
     "subset-font": "2.9.0",

@@ -36,6 +36,7 @@ jobs:
       - run: pnpm design:lint
       - run: pnpm tokens:check
       - run: pnpm fonts:check
+      - run: pnpm resume:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

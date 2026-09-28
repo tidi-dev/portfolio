@@ -1,0 +1,49 @@
+/*
+ * The résumé PDF's stylesheet (contrib-engineering §7.1), compiled by
+ * `pnpm resume:pdf` (scripts/resume/build.ts), never by Next. It shares the
+ * site's token chain (globals.css, same order) and scans only the résumé
+ * components. The build prepends one @font-face per static Archivo instance
+ * (src/assets/og), as data URLs, under the family name set below.
+ */
+@import "tailwindcss" source(none);
+@source "../components/resume";
+@import "./theme-reset.css";
+@import "./tokens.generated.css";
+@import "./theme.generated.css";
+@import "./theme.supplement.css";
+@import "./bullet-list.css";
+
+/* A4, with the 2xl step (48 px) above and below every page and the xl
+   step (32 px) at the sides. */
+@page {
+  size: A4;
+  margin: var(--spacing-2xl) var(--spacing-xl);
+}
+
+@layer base {
+  /* The type-* utilities read --font-archivo, which next/font sets on the
+     site. Here it names the static instances' family. */
+  :root {
+    --font-archivo: "Archivo";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  /* Keep a heading with what follows it across the page break. */
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
+}

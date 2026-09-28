@@ -7,7 +7,13 @@ import { formatNumber } from "@/lib/format/number";
 export type FactValue =
   | { readonly kind: "text"; readonly text: string }
   | { readonly kind: "list"; readonly items: readonly string[] }
-  | { readonly kind: "link"; readonly text: string; readonly href: string };
+  | { readonly kind: "link"; readonly text: string; readonly href: string }
+  | {
+      /** A file to download: the Résumé PDF (DESIGN.md → Links). */
+      readonly kind: "download";
+      readonly text: string;
+      readonly href: string;
+    };
 
 export interface FactRow {
   readonly term: string;
@@ -85,12 +91,19 @@ export function compactFacts(project: CompactProject): FactRow[] {
   ];
 }
 
+/** The Résumé row's parts, present only once the PDF exists (Phase 10). */
+export interface ResumeRow {
+  readonly term: string;
+  readonly text: string;
+  readonly href: string;
+}
+
 /**
  * The Contact facts list (DESIGN.md → Contact): each opted-in channel as a
- * link, then the location as plain text. The Résumé row joins before the
- * location once the PDF exists (Phase 10).
+ * link, the Résumé row when the PDF exists, then the location as plain
+ * text, last.
  */
-export function contactFacts(contact: Contact): FactRow[] {
+export function contactFacts(contact: Contact, resume?: ResumeRow): FactRow[] {
   const { email, telegram, github, location } = contact;
   return [
     {
@@ -109,6 +122,18 @@ export function contactFacts(contact: Contact): FactRow[] {
       term: github.label,
       value: { kind: "link", text: github.text, href: github.url },
     },
+    ...(resume === undefined
+      ? []
+      : [
+          {
+            term: resume.term,
+            value: {
+              kind: "download",
+              text: resume.text,
+              href: resume.href,
+            } as const,
+          },
+        ]),
     { term: location.label, value: text(location.text) },
   ];
 }

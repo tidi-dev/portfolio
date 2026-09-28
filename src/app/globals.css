@@ -2,8 +2,9 @@
    CSS; the token files and font assets hold no class names, so they are not
    scanned either. Order (contrib-engineering §4.1): Tailwind, the reset that
    removes its default theme, the tokens exported from DESIGN.md, the theme
-   generated from DESIGN.md, then the hand-mapped supplement. The bench's
-   states and keyframes follow, keyed off its data attributes. */
+   generated from DESIGN.md, then the hand-mapped supplement. The bullet
+   utility, shared with the résumé's print.css, and the bench's states and
+   keyframes follow, keyed off its data attributes. */
 @import "tailwindcss" source("..");
 @source not "../styles";
 @source not "../assets";
@@ -11,6 +12,7 @@
 @import "../styles/tokens.generated.css";
 @import "../styles/theme.generated.css";
 @import "../styles/theme.supplement.css";
+@import "../styles/bullet-list.css";
 @import "../components/handshake-bench/bench.css";
 
 /* Base rules and compositions. Every value below is a token (var(--…)) or a
@@ -62,25 +64,6 @@
   }
   & > li:not(:last-child)::after {
     content: ", ";
-  }
-}
-
-/* Bullets (DESIGN.md → Sheets → Lists): an 8 × 1.5 px primary dash and a
-   16 px indent. vertical-align: middle centres the dash on the x-height of
-   the first line. */
-@utility bullet-list {
-  & > li {
-    padding-inline-start: var(--spacing-md);
-  }
-  & > li::before {
-    content: "";
-    display: inline-block;
-    inline-size: var(--spacing-xs);
-    block-size: var(--height-bullet-dash);
-    margin-inline-start: calc(var(--spacing-md) * -1);
-    margin-inline-end: calc(var(--spacing-md) - var(--spacing-xs));
-    vertical-align: middle;
-    background-color: var(--color-primary);
   }
 }
 
