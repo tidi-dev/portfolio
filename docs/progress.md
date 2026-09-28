@@ -257,3 +257,9 @@ Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their a
   - Major: F1 the hero is blank for about 2 s plus a 1.2 s fade after context loss; F2 below 1280 px, focus escapes behind the open menu sheet; F3 the Mission log links "CyberRock" and "Quest" are 18 px high (target 44 px).
   - The verdict `<output>` and the PDF dashes are not defects.
   - The fix round (QA majors and minors plus design V1–V10 plus the owner's 3 bugs) waits for the owner's font pick.
+- Ruling: start F fix round 1 now instead of waiting for the font pick. Why: the fixes don't depend on the font, and the font preview only touches `docs/design/font-options*`. Cost if wrong: small; the font swap is a separate follow-up task. Fix round 1 was dispatched (report `docs/reports/v2-fix-1.md`).
+- **Owner selected font option A · Cartridge (2026-09-28):** Galmuri11 2.403 (OFL, retro pixel, one weight) for the wordmark, brand, headings, HUD, labels, stats, role, buttons, nav and speaker tag. Portfolio Sans stays for body text and names. Options: `docs/design/font-options.md` and `.html`.
+  - Ruling: use the designer's 12 px pixel grid for buttons and nav (crisp multiples of 12). Why: it reads well at 1× and 2× in the screenshots. The owner can ask for a 24 px CTA later. Cost if wrong: one token change.
+  - Ruling: the Galmuri subset is renamed internally (OFL Reserved Font Name "Galmuri"), as with Mona Sans.
+  - For QA: "Customers" may overflow its stat cell at 320 px (flagged by `design-lead`).
+  - Sequencing: after fix round 1, `design-lead` updates `DESIGN.md` for A, then `frontend-engineer` swaps the font; then QA and a design recheck.

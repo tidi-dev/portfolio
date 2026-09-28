@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Font options: RPG type for the Holo Deck</title>
+<!-- Preview only. The site self-hosts its fonts; these remote loads never ship.
+     Google Fonts families load as the complete source files from the google/fonts repository
+     (via jsDelivr), not through the Google Fonts CSS API: the API's unicode-range subsets drop
+     U+2192 "→", which would make every family look as if it lacked the arrow.
+     Galmuri is not on Google Fonts: its own OFL npm package, galmuri@2.40.3, via jsDelivr. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
+<style>
+@font-face { font-family:"Mona Sans"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/monasans/MonaSans%5Bwdth,wght%5D.ttf") format("truetype"); font-weight:200 900; font-stretch:75% 125%; font-display:block; }
+@font-face { font-family:"Science Gothic"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/sciencegothic/ScienceGothic%5BCTRS,slnt,wdth,wght%5D.ttf") format("truetype"); font-weight:100 900; font-stretch:50% 200%; font-display:block; }
+@font-face { font-family:"Spectral SC"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/spectralsc/SpectralSC-SemiBold.ttf") format("truetype"); font-weight:600; font-display:block; }
+@font-face { font-family:"Spectral SC"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/spectralsc/SpectralSC-Bold.ttf") format("truetype"); font-weight:700; font-display:block; }
+@font-face { font-family:"Spectral SC"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/spectralsc/SpectralSC-ExtraBold.ttf") format("truetype"); font-weight:800; font-display:block; }
+@font-face { font-family:"Chakra Petch"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/chakrapetch/ChakraPetch-SemiBold.ttf") format("truetype"); font-weight:600; font-display:block; }
+@font-face { font-family:"Chakra Petch"; src:url("https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/chakrapetch/ChakraPetch-Bold.ttf") format("truetype"); font-weight:700; font-display:block; }
+</style>
+<style>
+/* DESIGN.md colour tokens, unchanged. Lab = light, Deck = dark. */
+.lab  { --surface:#EEF2F6; --raised:#FFFFFF; --primary:#0D1117; --muted:#57606A; --accent:#E3B341; --on-accent:#0D1117; --ink:#7D5A00; --holo:#0B7285; --line:#0B728547; --rule:#0D111714; --success:#1A7F37; --glow:none; --pix-shadow:#0B728533; }
+.deck { --surface:#070B14; --raised:#0F1726; --primary:#E6EDF3; --muted:#8B949E; --accent:#E3B341; --on-accent:#070B14; --ink:#E3B341; --holo:#4FD8E8; --line:#4FD8E838; --rule:#E6EDF314; --success:#3FB950; --glow:0 0 32px #4FD8E873; --pix-shadow:#4FD8E859; }
+
+* { box-sizing:border-box; margin:0; }
+html { background:#05080f; }
+body { font-family:"Mona Sans", system-ui, sans-serif; color:#E6EDF3; background:#05080f; line-height:1.6; }
+.intro { max-width:1240px; margin:0 auto; padding:48px clamp(16px,3.4vw,56px) 24px; }
+.intro h1 { font:600 1.75rem/1.2 "Mona Sans"; font-stretch:112%; }
+.intro p { color:#8B949E; max-width:68ch; margin-top:8px; }
+.intro nav { display:flex; flex-wrap:wrap; gap:8px 20px; margin-top:16px; }
+.intro a { color:#E3B341; }
+
+.option { max-width:1240px; margin:0 auto; padding:32px clamp(16px,3.4vw,56px); }
+.option > header { border-top:1px solid #4FD8E838; padding-top:24px; margin-bottom:20px; }
+.option > header h2 { font:600 1.375rem/1.25 "Mona Sans"; font-stretch:112%; color:#E6EDF3; }
+.option > header p { color:#8B949E; max-width:80ch; }
+.boards { display:grid; gap:24px; }
+/* Single-board mode (?opt=&theme=), used for the screenshots: the board is the full viewport width. */
+.single .intro, .single .option > header { display:none; }
+.single .option { max-width:none; padding:0; }
+
+/* ---------- Board: a slice of the real site ---------- */
+.board { background:var(--surface); color:var(--primary); position:relative; overflow:hidden;
+  background-image:radial-gradient(circle at 72% 50%, color-mix(in srgb, var(--holo) 16%, transparent), transparent 55%),
+                   radial-gradient(circle at 10% 90%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 50%); }
+.lab.board { background-image:radial-gradient(circle at 72% 50%, color-mix(in srgb, var(--holo) 8%, transparent), transparent 55%); }
+.theme-tag { display:block; padding:6px clamp(16px,3.4vw,56px); font:500 0.8125rem/1.4 "Mona Sans"; color:var(--muted); border-bottom:1px solid var(--rule); }
+
+.hud { display:flex; flex-wrap:wrap; align-items:center; gap:10px 24px; min-height:60px; padding:10px clamp(16px,3.4vw,56px);
+  background:color-mix(in srgb, var(--raised) 92%, transparent); border-bottom:1px solid var(--line); }
+.hud .grow { flex:1; }
+.readout { display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px; color:var(--muted); }
+.readout .key { color:var(--ink); }
+.xp { display:inline-flex; gap:2px; width:120px; height:10px; }
+.xp i { flex:1; background:var(--rule); }
+.xp i.on { background:linear-gradient(90deg,var(--accent),var(--success)); background-size:1000% 100%; }
+.caret { display:inline-block; width:0; height:0; border-left:6px solid currentColor; border-top:4.5px solid transparent; border-bottom:4.5px solid transparent; margin-right:6px; vertical-align:middle; }
+
+.stage { padding:clamp(32px,5vw,64px) clamp(16px,3.4vw,56px); display:grid; gap:40px; }
+@media (min-width:1024px) { .stage { grid-template-columns:5fr 7fr; align-items:start; } }
+.player { color:var(--ink); }
+.brand { margin:10px 0 6px; text-shadow:var(--glow); }
+.names { display:flex; flex-wrap:wrap; gap:4px 18px; color:var(--muted); font:500 1.125rem/1.25 "Mona Sans"; font-stretch:112%; }
+.role { display:flex; align-items:center; gap:12px; color:var(--holo); margin:18px 0 14px; }
+.role::before { content:""; width:28px; height:2px; background:var(--holo); flex:none; }
+.sentence { max-width:52ch; font-size:clamp(1rem,0.95rem + 0.2vw,1.0625rem); }
+.ctas { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
+.btn { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:0 24px; border:0; cursor:pointer;
+  clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+.btn.primary { background:var(--accent); color:var(--on-accent); }
+.btn.ghost { color:var(--primary); box-shadow:inset 0 0 0 1.5px var(--muted);
+  background:linear-gradient(to bottom left, transparent calc(50% - 1px), var(--muted) calc(50% - 1px), var(--muted) calc(50% + 1px), transparent calc(50% + 1px)) top right / 14px 14px no-repeat,
+             linear-gradient(to top right, transparent calc(50% - 1px), var(--muted) calc(50% - 1px), var(--muted) calc(50% + 1px), transparent calc(50% + 1px)) bottom left / 14px 14px no-repeat; }
+@media (max-width:639px) { .ctas .btn { width:100%; } }
+
+.panel { background:color-mix(in srgb, var(--raised) 92%, transparent); padding:24px; position:relative;
+  clip-path:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  box-shadow:inset 0 0 0 1px var(--line);
+  background-image:linear-gradient(to bottom left, transparent calc(50% - 0.7px), var(--line) calc(50% - 0.7px), var(--line) calc(50% + 0.7px), transparent calc(50% + 0.7px)),
+                   linear-gradient(to top right, transparent calc(50% - 0.7px), var(--line) calc(50% - 0.7px), var(--line) calc(50% + 0.7px), transparent calc(50% + 0.7px));
+  background-size:14px 14px; background-position:top right, bottom left; background-repeat:no-repeat; }
+@media (max-width:767px) { .panel { padding:16px; } }
+.panel-h { display:flex; align-items:center; gap:12px; color:var(--ink); margin-bottom:16px; }
+.panel-h::after { content:""; flex:1; height:1px; background:var(--rule); }
+.quest-top { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin-bottom:6px; }
+.chip { display:inline-flex; align-items:center; min-height:24px; padding:0 8px; color:var(--success); box-shadow:inset 0 0 0 1px var(--success);
+  clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
+.stats { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin:18px 0 10px; }
+.stats dt { color:var(--ink); }
+.stats dd { margin-top:6px; }
+.qual, .impact { color:var(--muted); font-size:0.9375rem; line-height:1.5; }
+.impact b { color:var(--primary); font-weight:600; }
+
+.sections { padding:0 clamp(16px,3.4vw,56px) 40px; display:grid; gap:18px 40px; }
+@media (min-width:768px) { .sections { grid-template-columns:1fr 1fr; } }
+.sh { display:flex; align-items:center; gap:14px; }
+.sh::before { content:""; width:28px; height:2px; background:var(--holo); flex:none; }
+
+.lower { padding:0 clamp(16px,3.4vw,56px) 48px; display:grid; gap:24px; }
+@media (min-width:1024px) { .lower { grid-template-columns:7fr 5fr; align-items:start; } }
+.speaker { display:inline-block; background:var(--accent); color:var(--on-accent); padding:4px 12px; margin-bottom:14px;
+  clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
+.bio { max-width:68ch; }
+.press { margin-top:18px; }
+.glyphs dt { color:var(--muted); font:500 0.8125rem/1.4 "Mona Sans"; margin-top:12px; }
+.glyphs dt:first-child { margin-top:0; }
+.glyphs dd { margin-top:4px; overflow-wrap:anywhere; }
+
+/* ---------- Type roles: body family is shared ---------- */
+.body, .sentence, .bio { font-family:"Mona Sans"; font-weight:400; line-height:1.6; }
+
+/* Baseline: Chakra Petch (current DESIGN.md) */
+.opt-base { --g:"Chakra Petch"; }
+.opt-base .t-display { font:700 clamp(3.5rem,7vw,6.5rem)/0.9 var(--g); letter-spacing:-0.01em; }
+.opt-base .t-section { font:700 clamp(2rem,1.6rem + 1.7vw,2.75rem)/1.1 var(--g); }
+.opt-base .t-quest { font:700 clamp(1.5rem,1.4rem + 0.4vw,1.75rem)/1.15 var(--g); }
+.opt-base .t-panel { font:700 0.8125rem/1.2 var(--g); letter-spacing:0.18em; text-transform:uppercase; }
+.opt-base .t-label { font:600 0.75rem/1.5 var(--g); letter-spacing:0.12em; text-transform:uppercase; }
+.opt-base .t-stat { font:700 clamp(1.75rem,1.6rem + 0.5vw,2rem)/1 var(--g); }
+.opt-base .t-wordmark { font:700 1.25rem/1 var(--g); letter-spacing:0.02em; }
+.opt-base .t-role { font:600 0.9375rem/1.2 var(--g); letter-spacing:0.06em; text-transform:uppercase; }
+.opt-base .t-button { font:700 0.9375rem/1 var(--g); letter-spacing:0.04em; }
+.opt-base .t-nav { font:600 0.875rem/1.3 var(--g); letter-spacing:0.02em; }
+
+/* A · Cartridge: Galmuri11 (pixel). One weight; sizes on its 12 px grid (1200 upm, 100 units per pixel). */
+.opt-a { --g:"Galmuri11"; }
+.opt-a [class*="t-"] { font-weight:400; font-synthesis:none; }
+.opt-a .t-display { font:400 60px/1.05 var(--g); letter-spacing:0; text-shadow:0.0833em 0.0833em 0 var(--pix-shadow); }
+.opt-a .t-section { font:400 36px/1.3 var(--g); }
+.opt-a .t-quest { font:400 24px/1.3 var(--g); }
+.opt-a .t-panel { font:400 12px/1.5 var(--g); letter-spacing:1px; text-transform:uppercase; }
+.opt-a .t-label { font:400 12px/1.5 var(--g); letter-spacing:1px; text-transform:uppercase; }
+.opt-a .t-stat { font:400 24px/1 var(--g); font-variant-numeric:tabular-nums; }
+.opt-a .t-wordmark { font:400 24px/1 var(--g); }
+.opt-a .t-role { font:400 12px/1.5 var(--g); letter-spacing:1px; text-transform:uppercase; }
+.opt-a .t-button { font:400 12px/1 var(--g); letter-spacing:1px; }
+.opt-a .t-nav { font:400 12px/1.5 var(--g); letter-spacing:1px; }
+@media (min-width:768px) { .opt-a .t-section { font-size:48px; } .opt-a .t-stat { font-size:36px; } }
+@media (min-width:1024px) { .opt-a .t-display { font-size:96px; } }
+
+/* B · Guild hall: Spectral SC (fantasy small caps) */
+.opt-b { --g:"Spectral SC"; }
+/* Spectral SC defaults to old-style figures ("1" reads as "I"): force lining everywhere. */
+.opt-b.board [class*="t-"] { font-variant-numeric:lining-nums; }
+/* Small caps would erase the casing of names like "botmivivi": project titles use Mona Sans. */
+.opt-b .t-quest.name-title { font-family:"Mona Sans"; font-weight:600; font-stretch:112%; letter-spacing:0; }
+.opt-b .t-display { font:800 clamp(3.5rem,7vw,6.5rem)/0.95 var(--g); letter-spacing:0.01em; }
+.opt-b .t-section { font:700 clamp(2rem,1.6rem + 1.7vw,2.75rem)/1.15 var(--g); letter-spacing:0.02em; }
+.opt-b .t-quest { font:700 clamp(1.5rem,1.4rem + 0.4vw,1.75rem)/1.2 var(--g); letter-spacing:0.02em; }
+.opt-b .t-panel { font:700 0.8125rem/1.3 var(--g); letter-spacing:0.14em; text-transform:uppercase; }
+.opt-b .t-label { font:700 0.75rem/1.5 var(--g); letter-spacing:0.12em; text-transform:uppercase; }
+.opt-b .t-stat { font:800 clamp(1.75rem,1.6rem + 0.5vw,2rem)/1 var(--g); font-variant-numeric:lining-nums tabular-nums; }
+.opt-b .t-wordmark { font:800 1.25rem/1 var(--g); letter-spacing:0.03em; }
+.opt-b .t-role { font:600 1rem/1.2 var(--g); letter-spacing:0.08em; }
+.opt-b .t-button { font:700 1rem/1 var(--g); letter-spacing:0.04em; }
+.opt-b .t-nav { font:600 0.9375rem/1.3 var(--g); letter-spacing:0.03em; }
+
+/* C · Arcade HUD: Science Gothic (variable wght 100-900, wdth 50-200, CTRS 0-85, slnt). CTRS stays 0. */
+.opt-c { --g:"Science Gothic"; }
+.opt-c .t-display { font:900 clamp(3.5rem,7vw,6.5rem)/0.95 var(--g); font-stretch:120%; letter-spacing:0; }
+.opt-c .t-section { font:800 clamp(1.75rem,1.4rem + 1.5vw,2.5rem)/1.15 var(--g); font-stretch:100%; }
+.opt-c .t-quest { font:700 clamp(1.375rem,1.3rem + 0.3vw,1.5rem)/1.2 var(--g); font-stretch:100%; }
+.opt-c .t-panel { font:700 0.8125rem/1.3 var(--g); font-stretch:112%; letter-spacing:0.14em; text-transform:uppercase; }
+.opt-c .t-label { font:700 0.75rem/1.5 var(--g); font-stretch:112%; letter-spacing:0.1em; text-transform:uppercase; }
+.opt-c .t-stat { font:800 clamp(1.75rem,1.6rem + 0.5vw,2rem)/1 var(--g); font-stretch:112%; font-variant-numeric:tabular-nums; }
+.opt-c .t-wordmark { font:900 1.25rem/1 var(--g); font-stretch:120%; letter-spacing:0.02em; }
+.opt-c .t-role { font:700 0.9375rem/1.2 var(--g); font-stretch:112%; letter-spacing:0.06em; text-transform:uppercase; }
+.opt-c .t-button { font:700 0.9375rem/1 var(--g); font-stretch:100%; letter-spacing:0.02em; }
+.opt-c .t-nav { font:600 0.875rem/1.3 var(--g); font-stretch:100%; letter-spacing:0.02em; }
+@media (max-width:767px) { .opt-c .t-label, .opt-c .t-stat, .opt-c .t-panel { font-stretch:85%; letter-spacing:0.05em; } .opt-c .t-stat { letter-spacing:0; font-size:1.5rem; font-stretch:75%; } }
+@media (min-width:768px) { .opt-c .t-section { font-stretch:112%; } }
+</style>
+</head>
+<body>
+<header class="intro">
+  <h1>Font options: RPG type for the Holo Deck</h1>
+  <p>Three game typefaces on the real site strings, in Deck (dark) and Lab (light), with the current Chakra Petch last for comparison. Body text, names and captions stay in Mona Sans (served on the site as Portfolio Sans). Colours, layout and spacing are unchanged; only the game family and its type tokens differ.</p>
+  <nav aria-label="Options"><a href="#opt-a">A · Cartridge (pixel)</a><a href="#opt-b">B · Guild hall (fantasy)</a><a href="#opt-c">C · Arcade HUD (sci-fi)</a><a href="#opt-base">Baseline · Chakra Petch</a></nav>
+</header>
+<main id="options"></main>
+
+<template id="board">
+  <div class="board">
+    <span class="theme-tag"></span>
+    <div class="hud">
+      <span class="t-wordmark" data-check="game">TiDi</span>
+      <span class="grow"></span>
+      <span class="readout t-label" data-check="game">
+        <span class="key"><span class="caret" aria-hidden="true"></span>PLAYER 1</span>
+        <span class="xp" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>
+        <span>XP · SYSTEM DESIGN</span><span><span class="key">LVL</span> still leveling</span><span><span class="key">MAX</span> not a thing</span>
+      </span>
+    </div>
+    <div class="stage">
+      <div>
+        <p class="player t-label" data-check="game"><span class="caret" aria-hidden="true"></span>PLAYER 1</p>
+        <p class="brand t-display" data-check="game">TiDi</p>
+        <p class="names" data-check="body"><span lang="vi">Hồ Trọng Đại</span><span>Dai Ho Trong</span></p>
+        <p class="role t-role" data-check="game">Full-stack developer</p>
+        <p class="sentence" data-check="body">Officially a full-stack developer, though I spend most of my time on the backend: designing APIs, modeling data, connecting services, and making sure the infrastructure underneath them stays reliable.</p>
+        <div class="ctas"><span class="btn primary t-button" data-check="game">Bring me a pain point</span><span class="btn ghost t-button" data-check="game">Résumé</span></div>
+      </div>
+      <div class="panel">
+        <p class="panel-h t-panel" data-check="game">Quest journal</p>
+        <div class="quest-top"><span class="chip t-label" data-check="game">Side</span><span class="t-quest name-title" data-check="game">botmivivi</span></div>
+        <dl class="stats">
+          <div><dt class="t-label" data-check="game">Users</dt><dd class="t-stat" data-check="game">10</dd></div>
+          <div><dt class="t-label" data-check="game">Customers</dt><dd class="t-stat" data-check="game">646</dd></div>
+          <div><dt class="t-label" data-check="game">Orders</dt><dd class="t-stat" data-check="game">2,951</dd></div>
+        </dl>
+        <p class="qual" data-check="body">in the first 2 months</p>
+        <p class="impact" data-check="body"><b>Impact:</b> 90% less time, 80% fewer errors</p>
+      </div>
+    </div>
+    <div class="sections">
+      <p class="sh t-section" data-check="game">Quest journal</p>
+      <p class="sh t-section" data-check="game">Mission log</p>
+      <p class="sh t-section" data-check="game">House rules</p>
+      <p class="sh t-section" data-check="game">Inventory</p>
+      <p class="sh t-section" data-check="game">Join party</p>
+    </div>
+    <div class="lower">
+      <div class="panel">
+        <span class="speaker t-nav" data-check="game">TiDi</span>
+        <p class="bio" data-check="body">My journey has taken me from building Laravel applications, to AWS serverless systems, and eventually to event-driven microservices with NestJS. Somewhere along the way, I even built a career-path platform inspired by RPG quest mechanics — which probably explains a lot about the rest of this page.</p>
+        <p class="press"><span class="btn ghost t-button" data-check="game">Press A to continue</span></p>
+      </div>
+      <div class="panel">
+        <p class="panel-h t-panel" data-check="game">Glyph test</p>
+        <dl class="glyphs">
+          <dt>Game family, heading size (test string, not site copy)</dt>
+          <dd class="t-quest" data-check="game" lang="vi">Hồ Trọng Đại · Đà Nẵng · ố ự ẫ ị →</dd>
+          <dt>Game family, label size</dt>
+          <dd class="t-nav" data-check="game" lang="vi">Hồ Trọng Đại · Đà Nẵng · ố ự ẫ ị → Résumé “…”</dd>
+          <dt>Body family</dt>
+          <dd class="body" data-check="body" lang="vi">Hồ Trọng Đại · Đà Nẵng · ố ự ẫ ị → Résumé “…”</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+const OPTIONS = [
+  { id: "a", cls: "opt-a", family: "Galmuri11", title: "A · Cartridge: Galmuri11 + Mona Sans", note: "Retro pixel, 16-bit JRPG menu. The pixel face takes the wordmark, the brand, headings, HUD, labels, stats and buttons, always on its 12 px grid (12, 24, 36, 48, 60, 96 px). Reading text and the names stay in Mona Sans." },
+  { id: "b", cls: "opt-b", family: "Spectral SC", title: "B · Guild hall: Spectral SC + Mona Sans", note: "Fantasy RPG, the carved-title feel of a quest log, drawn with sharp, screen-first small caps instead of parchment. Lining, tabular figures for the stats." },
+  { id: "c", cls: "opt-c", family: "Tektur", title: "C · Arcade HUD: Science Gothic + Mona Sans", note: "Modern sci-fi game HUD. Extended, squared capitals in the tradition of spaceship and racing-game interfaces: wide for the brand, labels and stats, normal width for headings and buttons. One variable file (weight 100 to 900, width 50 to 200)." },
+  { id: "base", cls: "opt-base", family: "Chakra Petch", title: "Baseline · Chakra Petch + Mona Sans (current)", note: "The type the site ships today, for comparison." },
+];
+const params = new URLSearchParams(location.search);
+const only = params.get("opt"), onlyTheme = params.get("theme");
+const main = document.getElementById("options");
+if (only && onlyTheme) document.body.classList.add("single");
+const tpl = document.getElementById("board");
+for (const o of OPTIONS) {
+  if (only && only !== o.id) continue;
+  const sec = document.createElement("section");
+  sec.className = "option"; sec.id = "opt-" + o.id; sec.dataset.family = o.family;
+  sec.innerHTML = `<header><h2>${o.title}</h2><p>${o.note}</p></header><div class="boards"></div>`;
+  for (const theme of ["deck", "lab"]) {
+    if (onlyTheme && onlyTheme !== (theme === "deck" ? "dark" : "light")) continue;
+    const b = tpl.content.firstElementChild.cloneNode(true);
+    b.classList.add(theme, o.cls); b.id = `${o.id}-${theme}`;
+    b.querySelector(".theme-tag").textContent = theme === "deck" ? "Deck (dark)" : "Lab (light)";
+    sec.querySelector(".boards").append(b);
+  }
+  main.append(sec);
+}
+</script>
+</body>
+</html>
