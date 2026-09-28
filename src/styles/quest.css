@@ -246,14 +246,16 @@
 
   @variant lg {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: start;
+    align-items: stretch;
   }
 }
 
+/* From lg the stage slot runs the full height of the tabpanel column
+   (owner, 2026-09-28), and the stage fills it. */
 @utility quest-stage-slot {
   @variant lg {
-    position: sticky;
-    top: calc(var(--spacing-hud) + var(--spacing-md));
+    display: flex;
+    flex-direction: column;
     grid-column: span 5 / span 5;
   }
 }
@@ -286,7 +288,9 @@
   container-type: size;
 
   @variant lg {
-    aspect-ratio: 4 / 3;
+    flex: 1;
+    aspect-ratio: auto;
+    min-height: 0;
     max-height: none;
   }
 }

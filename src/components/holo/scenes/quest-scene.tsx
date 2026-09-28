@@ -21,6 +21,12 @@ const CAMERA = {
   position: [0, 3.0, 7.0],
 } as const;
 const LOOK_AT = new Vector3(0, 1.2, 0);
+// The framing is authored at 4:3. On a taller stage (the full-height stage
+// from lg) the camera backs off along its line of sight by 4:3 ÷ aspect, so
+// the horizontal view stays the 4:3 one: the model keeps its width and
+// gains room above and below.
+const FRAME_ASPECT = 4 / 3;
+const OFFSET = new Vector3(...CAMERA.position).sub(LOOK_AT);
 
 // Quest select (DESIGN.md → Motion), over `swap`: the stage cuts to the new
 // model, which projects in (scale 0.6 → 1, ease-back) with one scan-disc
@@ -111,14 +117,23 @@ function QuestWorld({
     invalidate();
   }, [palette, invalidate]);
 
+  const size = useThree((state) => state.size);
+
   useEffect(() => {
+    const aspect = size.height > 0 ? size.width / size.height : FRAME_ASPECT;
+    const back = Math.max(1, FRAME_ASPECT / aspect);
+    camera.position.set(
+      LOOK_AT.x + OFFSET.x * back,
+      LOOK_AT.y + OFFSET.y * back,
+      LOOK_AT.z + OFFSET.z * back,
+    );
     camera.lookAt(LOOK_AT);
     camera.updateProjectionMatrix();
     // Current before the next frame callback projects the tags (see the
     // hero scene): in the calm mode that frame is the only one.
     camera.updateMatrixWorld();
     invalidate();
-  }, [camera, invalidate]);
+  }, [camera, invalidate, size]);
 
   useEffect(() => {
     motionRef.current = motion;
