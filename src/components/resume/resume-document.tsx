@@ -12,7 +12,8 @@ import type {
  * The résumé PDF's A4 layout (plan → Phase 5; contrib-engineering §7):
  * pure React with no next/* imports, rendered to static markup by
  * scripts/resume/render.ts and printed by Chromium. The Lab (light) tokens
- * only: Chakra Petch headings and labels, Mona Sans text, `primary` text,
+ * only, and Portfolio Sans for all text (owner, 2026-09-28; print.css maps
+ * the pixel roles to it): `primary` text,
  * `text-muted` names, dates and notes, holo `line` under each section
  * heading, `accent-ink` for the owner's labels and links, `holo` for the
  * role and statuses. No 3D, glow, chamfer or avatar.
@@ -79,7 +80,7 @@ function Facts({
           <dt className="w-stat-key shrink-0 type-nav text-accent-ink">
             {row.term}
           </dt>
-          <dd className="min-w-0 flex-1 type-caption text-primary tabular-nums">
+          <dd className="min-w-0 flex-1 type-print-caption text-primary tabular-nums">
             <Value value={row.value} />
           </dd>
         </div>
@@ -97,7 +98,7 @@ function Terms({ items }: { readonly items: readonly Term[] }) {
   return (
     <dl className="flex flex-col gap-2xs">
       {items.map((item) => (
-        <div key={item.term} className="type-caption text-primary">
+        <div key={item.term} className="type-print-caption text-primary">
           <dt className="inline type-nav">{typography(item.term)}</dt>
           <dd className="inline">
             {OWNER_DASH}
@@ -111,7 +112,7 @@ function Terms({ items }: { readonly items: readonly Term[] }) {
 
 function Bullets({ items }: { readonly items: readonly string[] }) {
   return (
-    <ul className="flex list-disc flex-col gap-2xs ps-md type-caption text-primary">
+    <ul className="flex list-disc flex-col gap-2xs ps-md type-print-caption text-primary">
       {items.map((item) => (
         <li key={item}>{typography(item)}</li>
       ))}
@@ -164,11 +165,11 @@ function EntryHead({
   return (
     <div className="flex items-baseline justify-between gap-md">
       <div className="flex items-baseline gap-sm">
-        <h3 className="type-body-strong text-primary">{name}</h3>
+        <h3 className="type-print-body-strong text-primary">{name}</h3>
         {note === undefined ? null : note}
       </div>
       {aside === undefined ? null : (
-        <p className="shrink-0 type-caption text-text-muted">{aside}</p>
+        <p className="shrink-0 type-print-caption text-text-muted">{aside}</p>
       )}
     </div>
   );
@@ -183,14 +184,16 @@ function FullProject({ project }: { readonly project: ResumeFullProject }) {
           note={<p className="type-nav text-holo">{project.status}</p>}
           aside={project.period}
         />
-        <p className="type-caption text-primary">{typography(project.lede)}</p>
+        <p className="type-print-caption text-primary">
+          {typography(project.lede)}
+        </p>
       </div>
       <div>
         <Facts rows={project.facts} />
         {project.usage === undefined ? null : (
           <>
             <Facts rows={project.usage.figures} />
-            <p className="type-caption text-text-muted">
+            <p className="type-print-caption text-text-muted">
               {typography(project.usage.window)}
             </p>
             <Facts rows={[project.usage.impact]} />
@@ -222,13 +225,13 @@ function CompactProject({
     <article className="flex break-inside-avoid flex-col gap-xs">
       <div>
         <EntryHead name={project.name} aside={joinMiddot(project.meta)} />
-        <p className="type-caption text-primary">
+        <p className="type-print-caption text-primary">
           {typography(project.oneLiner)}
         </p>
       </div>
       <Facts rows={project.facts} />
       {project.link === undefined ? null : (
-        <p className="type-caption">
+        <p className="type-print-caption">
           <PdfLink href={project.link.url}>{project.link.text}</PdfLink>
         </p>
       )}
@@ -243,7 +246,7 @@ function CompactProject({
  */
 export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
   return (
-    <body className="bg-surface-raised type-caption text-primary">
+    <body className="bg-surface-raised type-print-caption text-primary">
       <main className="flex flex-col gap-md">
         <header className="flex flex-col gap-xs">
           {/* One line. Each space sits inside its span, and pre-wrap keeps
@@ -255,17 +258,19 @@ export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
             </span>
             <span
               lang={model.nativeName.lang}
-              className="me-xs type-name text-text-muted"
+              className="me-xs type-print-name text-text-muted"
             >
               {model.nativeName.text}{" "}
             </span>
-            <span className="type-name text-text-muted">{model.name}</span>
+            <span className="type-print-name text-text-muted">
+              {model.name}
+            </span>
           </h1>
-          <p className="type-body-strong text-holo">{model.role}</p>
+          <p className="type-print-body-strong text-holo">{model.role}</p>
         </header>
 
         <ResumeSection id="profile" heading={model.profile.heading}>
-          <p className="max-w-measure type-body-sm text-primary">
+          <p className="max-w-measure type-print-body-sm text-primary">
             {typography(model.profile.summary)}
           </p>
         </ResumeSection>
@@ -277,11 +282,13 @@ export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
                 <EntryHead
                   name={entry.employer}
                   note={
-                    <p className="type-caption text-primary">{entry.title}</p>
+                    <p className="type-print-caption text-primary">
+                      {entry.title}
+                    </p>
                   }
                   aside={entry.period}
                 />
-                <p className="type-caption text-text-muted">
+                <p className="type-print-caption text-text-muted">
                   {joined(entry.projects)}
                 </p>
               </article>
@@ -308,13 +315,13 @@ export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
                 <dt className="w-stat-key shrink-0 type-nav text-accent-ink">
                   {group.name}
                 </dt>
-                <dd className="min-w-0 flex-1 type-caption text-primary">
+                <dd className="min-w-0 flex-1 type-print-caption text-primary">
                   {joined(group.items)}
                 </dd>
               </div>
             ))}
           </dl>
-          <p className="type-caption text-primary">
+          <p className="type-print-caption text-primary">
             {joined(model.skills.more)}
           </p>
         </ResumeSection>
@@ -326,17 +333,19 @@ export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
                 key={entry.degree}
                 name={entry.degree}
                 note={
-                  <p className="type-caption text-primary">{entry.school}</p>
+                  <p className="type-print-caption text-primary">
+                    {entry.school}
+                  </p>
                 }
                 aside={entry.years}
               />
             ))}
             {model.education.certifications.map((entry) => (
               <article key={entry.subject}>
-                <h3 className="type-body-strong text-primary">
+                <h3 className="type-print-body-strong text-primary">
                   {entry.subject}
                 </h3>
-                <p className="type-caption text-primary">
+                <p className="type-print-caption text-primary">
                   {joinMiddot(entry.credentials)}
                 </p>
               </article>
@@ -349,7 +358,7 @@ export function ResumeDocument({ model }: { readonly model: ResumeModel }) {
             {model.languages.items.map((item) => (
               <li
                 key={item.language}
-                className="flex items-baseline gap-sm type-caption"
+                className="flex items-baseline gap-sm type-print-caption"
               >
                 <span className="type-nav text-primary">{item.language}</span>
                 {item.credentials.length === 0 ? null : (

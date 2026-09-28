@@ -15,6 +15,13 @@ export const PDF_PATH = `public/${copy.resume.file}`;
 export const LOCK_PATH = "resume.lock.json";
 export const PRINT_CSS_PATH = "src/styles/print.css";
 
+/**
+ * The families the PDF embeds. Owner (2026-09-28): the résumé uses
+ * Portfolio Sans for all text, no pixel type (print.css maps the pixel
+ * roles to it).
+ */
+const PDF_FAMILIES: readonly string[] = ["Portfolio Sans"];
+
 /** A font subset embedded in the PDF (pnpm fonts), as the page declares it. */
 export interface EmbeddedFont {
   readonly file: string;
@@ -26,18 +33,20 @@ export interface EmbeddedFont {
   readonly stretch: string;
 }
 
-export const FONTS: readonly EmbeddedFont[] = manifest.fonts.map((font) => ({
-  file: font.file,
-  family: "servedAs" in font ? font.servedAs : font.family,
-  weight:
-    "axes" in font
-      ? `${String(font.axes.wght[0])} ${String(font.axes.wght[1])}`
-      : String(font.weight),
-  stretch:
-    "axes" in font
-      ? `${String(font.axes.wdth[0])}% ${String(font.axes.wdth[1])}%`
-      : "100%",
-}));
+export const FONTS: readonly EmbeddedFont[] = manifest.fonts
+  .map((font) => ({
+    file: font.file,
+    family: font.servedAs,
+    weight:
+      "axes" in font
+        ? `${String(font.axes.wght[0])} ${String(font.axes.wght[1])}`
+        : String(font.weight),
+    stretch:
+      "axes" in font
+        ? `${String(font.axes.wdth[0])}% ${String(font.axes.wdth[1])}%`
+        : "100%",
+  }))
+  .filter((font) => PDF_FAMILIES.includes(font.family));
 
 const COMPONENT_DIRECTORY = "src/components/resume";
 

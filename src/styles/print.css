@@ -2,9 +2,10 @@
  * The résumé PDF's stylesheet (contrib-engineering §7), compiled by
  * `pnpm resume:pdf` (scripts/resume/render.ts), never by Next. It shares
  * the site's token chain (globals.css, same order) and scans only the
- * résumé components. The script prepends one @font-face per subset in
- * src/assets/fonts, as data URLs, under the family names set below. The
- * page is the Lab (light) theme only: render.ts sets data-theme="light".
+ * résumé components. The script prepends an @font-face for the Portfolio
+ * Sans subset in src/assets/fonts, as a data URL, under the family name set
+ * below. The page is the Lab (light) theme only: render.ts sets
+ * data-theme="light".
  */
 @import "tailwindcss" source(none);
 @source "../components/resume";
@@ -21,10 +22,23 @@
 
 @layer base {
   /* The type-* utilities read the variables next/font sets on the site.
-     Here they name the embedded subsets' families. */
+     Owner (2026-09-28): the résumé stays plain, all text in Portfolio
+     Sans, so both variables name the one embedded subset. The résumé's
+     text uses the print-* roles; its few pixel roles (the brand, section
+     headings, terms) take their hierarchy from print-body-strong's weight,
+     as the pixel face can't, untracked, with the headings at print-name's
+     1.25 line height (the pixel grid's whole-pixel lengths don't apply to
+     Sans). The summary keeps the 68ch measure. */
   :root {
-    --font-chakra-petch: "Chakra Petch";
+    --font-portfolio-pixel: "Portfolio Sans";
     --font-portfolio-sans: "Portfolio Sans";
+    --font-weight-heading-section: var(--font-weight-print-body-strong);
+    --font-weight-heading-quest: var(--font-weight-print-body-strong);
+    --font-weight-nav: var(--font-weight-print-body-strong);
+    --tracking-nav: normal;
+    --leading-heading-section: 1.25;
+    --leading-heading-quest: 1.25;
+    --container-measure: 68ch;
   }
 
   h1,
