@@ -1,3 +1,4 @@
+import { SpikeStage } from "@/components/holo/spike-stage.client";
 import { about } from "@/content/about";
 import { copy } from "@/content/copy";
 import { holograms } from "@/content/holograms";
@@ -40,6 +41,8 @@ export default function HomePage() {
         <p className="type-role text-holo">{identity.role}</p>
         <p className="max-w-measure-hero">{typography(copy.hero.sentence)}</p>
       </div>
+
+      <SpikeStage />
 
       <div className="grid gap-gutter lg:grid-cols-2">
         <div className="chamfer flex flex-col gap-sm p-lg">
