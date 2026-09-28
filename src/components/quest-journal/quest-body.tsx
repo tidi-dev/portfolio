@@ -73,7 +73,7 @@ export function QuestBody({ body }: { readonly body: Body }) {
   switch (body.kind) {
     case "bullets":
       return (
-        <ul className="quest-bullets flex max-w-measure flex-col gap-2xs type-body">
+        <ul className="quest-bullets flex flex-col gap-2xs type-body">
           {body.items.map((item) => (
             <li key={item}>{typography(item)}</li>
           ))}

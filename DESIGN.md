@@ -429,7 +429,7 @@ Safety: nothing flashes more than once per verdict and never above 3 Hz; the sha
 |---|---|---|---|
 | HUD bar | TiDi · ▸ PLAYER 1 (≥ 375) · XP 56 px · motion · theme · menu | + "LVL still leveling", XP 120 px | nav from `xl`; XP key and MAX from `2xl` |
 | Hero | Canvas band `min(48svh, 400px)` first (non-focusable, so it may lead), then intro, then console (log full width). Below `sm` the CTA pair and the console controls stack at full width; from `sm` each pair sits in a row | same | 5 / 7 split, `min-height: 100dvh`; stage `min(74svh, 700px)`, ≥ 440 px; console over the stage's bottom edge, log ≤ 360 px |
-| Quest journal | Files stacked; each file opens with its hologram band (16:10, ≤ 320 px); no mission list. Stat readout: 3 columns from `xs`, 1 column below ("CUSTOMERS" in `label` is 84 px; a column at 320 px is 77 px) | same | Left 5: sticky viewport (4:3) + mission list; right 7: stacked files |
+| Quest journal | Files stacked; each file opens with its hologram band (16:10, ≤ 320 px); no mission list. Stat readout: 3 columns from `xs`, 1 column below ("CUSTOMERS" in `label` is 84 px; a column at 320 px is 77 px) | same | Left 4: sticky viewport (4:3) + mission list; right 8: stacked files (bullets and terms on one line at 1440 px; owner, 2026-09-28) |
 | Mission log | Line at the left; node bodies in one column | node body in 2 columns (role and period, projects) | same, in 8 columns, offset 2 |
 | House rules | 1 column | 2 × 2 | 2 × 2 |
 | Inventory | Stacked; Leveling up 1 column, 2 × 2 from `sm` | same | Inventory 8 + Leveling up 4 (stacked cards) |
