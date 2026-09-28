@@ -9,7 +9,9 @@
  * - challenge → response → genuine; with the counterfeit chip,
  *   challenge → rejected (the fake fails after the challenge).
  * - idle: a run cancelled by the switch; nothing lit, no verdict.
- * - instant (the calm motion mode): a run lands on its verdict at once.
+ * - instant (the calm motion mode): a run lands on its verdict at once,
+ *   with the `<output>` held empty for one frame (`held`), so the verdict
+ *   is announced even when its text is the one already shown.
  */
 export type HandshakeStep =
   "rest" | "idle" | "challenge" | "response" | "genuine" | "rejected";
@@ -25,6 +27,11 @@ export interface HandshakeState {
   readonly autoplay: boolean;
   /** The autoplay has happened (or can no longer happen) on this page load. */
   readonly autoplayed: boolean;
+  /**
+   * An instant run's verdict waits for `reveal`: the `<output>` empties for
+   * a frame, then fills, so the polite live region always announces it.
+   */
+  readonly held: boolean;
   /** When the current step began, in `performance.now()` milliseconds. */
   readonly since: number;
 }
@@ -42,7 +49,9 @@ export type HandshakeEvent =
       readonly at: number;
     }
   /** Motion was switched off mid-run: land on the end state at once. */
-  | { readonly type: "settle"; readonly at: number };
+  | { readonly type: "settle"; readonly at: number }
+  /** The frame after an instant run: its verdict shows (and is announced). */
+  | { readonly type: "reveal"; readonly run: number };
 
 export const INITIAL_HANDSHAKE: HandshakeState = {
   step: "rest",
@@ -51,6 +60,7 @@ export const INITIAL_HANDSHAKE: HandshakeState = {
   instant: false,
   autoplay: false,
   autoplayed: false,
+  held: false,
   since: 0,
 };
 
@@ -75,6 +85,7 @@ export function handshakeReducer(
         instant: event.instant,
         autoplay: false,
         autoplayed: true,
+        held: event.instant,
         step: event.instant ? verdict(state.counterfeit) : "challenge",
         since: event.at,
       };
@@ -86,6 +97,7 @@ export function handshakeReducer(
         counterfeit: !state.counterfeit,
         autoplay: false,
         autoplayed: true,
+        held: false,
         ...(isRunning(state.step)
           ? { step: "idle", instant: false, since: event.at }
           : {}),
@@ -98,6 +110,7 @@ export function handshakeReducer(
         instant: false,
         autoplay: true,
         autoplayed: true,
+        held: false,
         step: "challenge",
         since: event.at,
       };
@@ -126,6 +139,9 @@ export function handshakeReducer(
         instant: true,
         since: event.at,
       };
+    case "reveal":
+      if (event.run !== state.run || !state.held) return state;
+      return { ...state, held: false };
   }
 }
 
@@ -173,11 +189,13 @@ export function currentStepIndex(step: HandshakeStep): number | undefined {
 /**
  * The verdict the `<output>` holds (DESIGN.md → Motion → Safety): the
  * autoplay keeps it at "genuine", so nothing is announced; a visitor's run
- * clears it, then sets it, so the verdict alone is announced.
+ * clears it, then sets it, so the verdict alone is announced. An instant
+ * run clears it for one frame (`held`) for the same reason.
  */
 export function shownVerdict(
   state: HandshakeState,
 ): "genuine" | "rejected" | undefined {
+  if (state.held) return undefined;
   if (state.step === "rest" || state.autoplay) return "genuine";
   if (state.step === "genuine" || state.step === "rejected") return state.step;
   return undefined;

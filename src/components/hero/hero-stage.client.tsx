@@ -153,6 +153,23 @@ export function HeroStage({
     };
   }, [autoplayReady]);
 
+  // An instant run holds its verdict back for one painted frame, then
+  // reveals it, so the <output> changes and the verdict is announced even
+  // when it is the one already shown (QA F8). Two frames: the first runs
+  // before the empty output is painted.
+  useEffect(() => {
+    if (!state.held) return;
+    const runId = state.run;
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        dispatch({ type: "reveal", run: runId });
+      });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [state.held, state.run]);
+
   // Motion switched off mid-run: the final state at once.
   useEffect(() => {
     if (!motion && isRunning(state.step)) {
