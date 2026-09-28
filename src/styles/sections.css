@@ -389,6 +389,12 @@
   border: 1px solid var(--color-rule);
 }
 
+/* An AFK icon: a box, so it can rise in with its panel (reveal.css). */
+@utility afk-icon {
+  display: inline-flex;
+  flex: none;
+}
+
 /* ── Join party ──────────────────────────────────────────────────────── */
 
 /* Stacked below lg; from lg the sign-off 5 and the rows 7, the sign-off

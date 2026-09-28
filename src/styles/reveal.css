@@ -1,6 +1,7 @@
 /*
  * Scroll motion (DESIGN.md → Motion: Panel power-on, Stat rows, Avatar
- * scan, Mission log line, House rules, Level up; contrib-engineering
+ * scan, Mission log line, House rules, Level up, AFK, Join party
+ * brackets; contrib-engineering
  * §6.1). HTML-first: every rule that hides something before its reveal
  * sits under `:root[data-motion="on"][data-reveal-ready]`, and only
  * reveal-observer.client.tsx sets `data-reveal-ready`, while it runs. So
@@ -150,6 +151,27 @@
   :root[data-motion="on"][data-reveal-ready]
     [data-reveal="panel"][data-revealed]
     .training-marker {
+    transition-property: opacity, transform;
+    transition-duration: var(--transition-duration-row);
+    transition-timing-function: var(--ease-out);
+    transition-delay: calc(
+      var(--reveal-order, 0) * var(--stagger-panel) + var(--delay-rows) +
+        var(--i, 0) * var(--stagger-row)
+    );
+  }
+
+  /* AFK: with its panel, each icon rises 4 px and fades in, once, over
+     row, from delay rows, one stagger row apart (--i). */
+  :root[data-motion="on"][data-reveal-ready]
+    [data-reveal="panel"]:not([data-revealed])
+    .afk-icon {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  :root[data-motion="on"][data-reveal-ready]
+    [data-reveal="panel"][data-revealed]
+    .afk-icon {
     transition-property: opacity, transform;
     transition-duration: var(--transition-duration-row);
     transition-timing-function: var(--ease-out);
