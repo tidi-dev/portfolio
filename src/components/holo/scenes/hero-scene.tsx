@@ -98,6 +98,11 @@ function HeroWorld({
     camera.position.set(x, 3.6, Math.max(narrow ? 17 : 11.6, fit));
     camera.lookAt(x, 2, 0);
     camera.updateProjectionMatrix();
+    // The tags project through the camera in the frame callback, which runs
+    // before the render refreshes the camera's world matrix. In the calm
+    // mode that next frame is the only one, so refresh it here, or the tags
+    // pin to the previous framing.
+    camera.updateMatrixWorld();
     if (rigRef.current !== null) {
       rigRef.current.rig.position.x = rigX;
     }

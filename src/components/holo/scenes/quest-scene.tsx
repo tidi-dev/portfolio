@@ -119,6 +119,9 @@ function QuestWorld({
   useEffect(() => {
     camera.lookAt(LOOK_AT);
     camera.updateProjectionMatrix();
+    // Current before the next frame callback projects the tags (see the
+    // hero scene): in the calm mode that frame is the only one.
+    camera.updateMatrixWorld();
     invalidate();
   }, [camera, invalidate]);
 
