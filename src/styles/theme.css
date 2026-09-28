@@ -275,7 +275,7 @@
 }
 
 @utility type-name {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-name);
   line-height: 1.25;
   letter-spacing: normal;
@@ -286,7 +286,7 @@
 }
 
 @utility type-body {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-body);
   line-height: 1.6;
   letter-spacing: normal;
@@ -297,7 +297,7 @@
 }
 
 @utility type-body-strong {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-body-strong);
   line-height: 1.6;
   letter-spacing: normal;
@@ -308,7 +308,7 @@
 }
 
 @utility type-body-sm {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-body-sm);
   line-height: 1.5;
   letter-spacing: normal;
@@ -319,7 +319,7 @@
 }
 
 @utility type-slot {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-slot);
   line-height: 1.2;
   letter-spacing: normal;
@@ -330,7 +330,7 @@
 }
 
 @utility type-caption {
-  font-family: var(--font-mona-sans);
+  font-family: var(--font-portfolio-sans);
   font-size: var(--text-caption);
   line-height: 1.4;
   letter-spacing: normal;

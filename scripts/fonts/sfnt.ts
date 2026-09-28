@@ -311,3 +311,98 @@ export function fromRanges(ranges: readonly string[]): number[] {
   }
   return codes;
 }
+
+function encodeName(platformId: number, text: string): Buffer {
+  if (platformId === 1) return Buffer.from(text, "latin1");
+  return Buffer.from(text, "utf16le").swap16();
+}
+
+/** A naming table (format 0) holding `records`, in their given order. */
+function buildNameTable(records: readonly NameRecord[]): Buffer {
+  const encoded = records.map((record) =>
+    encodeName(record.platformId, record.text),
+  );
+  const header = Buffer.alloc(6 + records.length * 12);
+  header.writeUInt16BE(0, 0);
+  header.writeUInt16BE(records.length, 2);
+  header.writeUInt16BE(header.length, 4);
+  let offset = 0;
+  records.forEach((record, index) => {
+    const at = 6 + index * 12;
+    const bytes = encoded[index] ?? Buffer.alloc(0);
+    header.writeUInt16BE(record.platformId, at);
+    header.writeUInt16BE(record.encodingId, at + 2);
+    header.writeUInt16BE(record.languageId, at + 4);
+    header.writeUInt16BE(record.nameId, at + 6);
+    header.writeUInt16BE(bytes.length, at + 8);
+    header.writeUInt16BE(offset, at + 10);
+    offset += bytes.length;
+  });
+  return Buffer.concat([header, ...encoded]);
+}
+
+function tableChecksum(data: Buffer): number {
+  const padded = Buffer.concat([
+    data,
+    Buffer.alloc((4 - (data.length % 4)) % 4),
+  ]);
+  let sum = 0;
+  for (let offset = 0; offset < padded.length; offset += 4) {
+    sum = (sum + padded.readUInt32BE(offset)) >>> 0;
+  }
+  return sum;
+}
+
+/**
+ * A copy of a TTF/OTF font whose naming table is `rename` applied to each
+ * record; everything else is byte for byte. Table checksums and the head
+ * checksum adjustment are recomputed (OpenType, "Table Directory").
+ */
+export function withRenamedRecords(
+  font: Buffer,
+  rename: (record: NameRecord) => string,
+): Buffer {
+  if (!SFNT_VERSIONS.has(font.readUInt32BE(0))) {
+    throw new Error("withRenamedRecords: needs a TTF or OTF font");
+  }
+  const tables = readSfntTables(font);
+  const name = table(tables, "name");
+  if (name.readUInt16BE(0) !== 0) {
+    throw new Error("withRenamedRecords: only naming table format 0");
+  }
+  const records = nameRecords(tables).map((record) => ({
+    ...record,
+    text: rename(record),
+  }));
+  const replaced = new Map(tables);
+  replaced.set("name", buildNameTable(records));
+
+  const count = font.readUInt16BE(4);
+  const tags = Array.from({ length: count }, (_, index) =>
+    tagAt(font, 12 + index * 16),
+  );
+  const directory = Buffer.from(font.subarray(0, 12 + count * 16));
+  const bodies: Buffer[] = [];
+  let offset = directory.length;
+  let headOffset: number | undefined;
+  tags.forEach((tag, index) => {
+    const data = Buffer.from(replaced.get(tag) ?? Buffer.alloc(0));
+    if (tag === "head") {
+      data.writeUInt32BE(0, 8);
+      headOffset = offset;
+    }
+    const record = 12 + index * 16;
+    directory.writeUInt32BE(tableChecksum(data), record + 4);
+    directory.writeUInt32BE(offset, record + 8);
+    directory.writeUInt32BE(data.length, record + 12);
+    const padding = Buffer.alloc((4 - (data.length % 4)) % 4);
+    bodies.push(data, padding);
+    offset += data.length + padding.length;
+  });
+  const result = Buffer.concat([directory, ...bodies]);
+  if (headOffset !== undefined) {
+    const adjustment = (0xb1b0afba - tableChecksum(result)) >>> 0;
+    result.writeUInt32BE(adjustment, headOffset + 8);
+  }
+  return result;
+}

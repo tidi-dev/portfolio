@@ -121,8 +121,10 @@
       }
     },
     {
-      "file": "src/assets/fonts/mona-sans.woff2",
+      "file": "src/assets/fonts/portfolio-sans.woff2",
       "family": "Mona Sans",
+      "servedAs": "Portfolio Sans",
+      "reservedFontName": "Mona",
       "axes": {
         "wdth": [
           100,
@@ -136,8 +138,8 @@
       "missingFeatures": [],
       "source": "ofl/monasans/MonaSans[wdth,wght].ttf",
       "sourceSha256": "fd6e79634b5ae804a45aac7e2e3c2a325b41291fba59034f4732b0135b8475b3",
-      "bytes": 57228,
-      "sha256": "042134aff1a30a8b8c7df9d456551d0be357a146fc03de8cb5a95726eff053d8",
+      "bytes": 57172,
+      "sha256": "711c17959293ae72b15d10b54bea00f55d7e27fbd257d56637f0246b1f6af6d8",
       "codePoints": {
         "count": 325,
         "ranges": [

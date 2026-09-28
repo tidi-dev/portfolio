@@ -30,12 +30,30 @@ export interface StaticFamily {
   readonly licence: PinnedFile;
 }
 
+/**
+ * The OFL's Reserved Font Name clause: a Modified Version (a subset is one)
+ * may not use the reserved name. The subset is served under `to`; the
+ * copyright and licence records, which name the original, stay as they are.
+ * Ruling (main session, 2026-09-28): rename the Mona Sans subset.
+ */
+export interface ReservedNameRename {
+  /** The Reserved Font Name in the copyright notice (OFL.txt, name ID 0). */
+  readonly reserved: string;
+  readonly from: { readonly family: string; readonly postscript: string };
+  readonly to: {
+    readonly family: string;
+    readonly postscript: string;
+    readonly slug: string;
+  };
+}
+
 export interface VariableFamily {
   readonly kind: "variable";
   readonly family: string;
   readonly slug: string;
   readonly source: PinnedFile;
   readonly licence: PinnedFile;
+  readonly rename?: ReservedNameRename;
 }
 
 export type FontFamily = StaticFamily | VariableFamily;
@@ -90,6 +108,15 @@ export const FAMILIES: readonly FontFamily[] = [
       sha256:
         "9261dcb61fb5e3c587d50d7a9fdae12bc7422d8822d7ac06b8f34550479575de",
     },
+    rename: {
+      reserved: "Mona",
+      from: { family: "Mona Sans", postscript: "MonaSans" },
+      to: {
+        family: "Portfolio Sans",
+        postscript: "PortfolioSans",
+        slug: "portfolio-sans",
+      },
+    },
   },
 ];
 
@@ -131,6 +158,13 @@ export const DEFAULT_FEATURES = [
  * URL. HarfBuzz keeps IDs 0–6 by default and drops 13 and 14.
  */
 export const LICENCE_NAME_IDS = [0, 13, 14] as const;
+
+/**
+ * The naming-table records that carry the family name: 1 family, 3 unique
+ * ID, 4 full name, 6 PostScript name, 16 typographic family, 25 variations
+ * PostScript name prefix. A ReservedNameRename rewrites exactly these.
+ */
+export const FAMILY_NAME_IDS = [1, 3, 4, 6, 16, 25] as const;
 
 /** The wdth a Mona Sans token uses when DESIGN.md sets no fontVariation. */
 export const DEFAULT_WIDTH = 100;

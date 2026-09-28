@@ -23,7 +23,10 @@ export const viewport: Viewport = {
 // literals, so the weights and axis ranges below repeat the manifest
 // (src/assets/fonts/fonts.manifest.json): Chakra Petch 600 and 700; Mona
 // Sans wght 400–600 and wdth 100–112, which the declared font-stretch range
-// selects through `font-stretch`.
+// selects through `font-stretch`. The Mona Sans subset is served as
+// "Portfolio Sans": the OFL reserves the name "Mona" for the original
+// (ruling, 2026-09-28), so the family name next/font derives from this
+// const avoids it too.
 const chakraPetch = localFont({
   src: [
     {
@@ -43,9 +46,9 @@ const chakraPetch = localFont({
   adjustFontFallback: "Arial",
 });
 
-const monaSans = localFont({
-  src: "../assets/fonts/mona-sans.woff2",
-  variable: "--font-mona-sans",
+const portfolioSans = localFont({
+  src: "../assets/fonts/portfolio-sans.woff2",
+  variable: "--font-portfolio-sans",
   display: "swap",
   weight: "400 600",
   style: "normal",
@@ -60,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang={site.lang}
-      className={`${chakraPetch.variable} ${monaSans.variable}`}
+      className={`${chakraPetch.variable} ${portfolioSans.variable}`}
     >
       <body className="bg-surface type-body text-primary">{children}</body>
     </html>

@@ -10,12 +10,14 @@ import {
   DEFAULT_FEATURES,
   DEFAULT_WIDTH,
   FAMILIES,
+  FAMILY_NAME_IDS,
   KNOWN_FEATURE_GAPS,
   LICENCE_NAME_IDS,
   licenceFile,
   MANIFEST,
   type PinnedFile,
   REPOSITORY,
+  type ReservedNameRename,
   staticFile,
   UNICODE_RANGES,
   variableFile,
@@ -25,9 +27,11 @@ import {
   codePoints,
   featureTags,
   fromRanges,
+  nameRecords,
   nameString,
   readTables,
   toRanges,
+  withRenamedRecords,
   type FontTables,
 } from "./sfnt";
 
@@ -183,6 +187,45 @@ function verifySubset(
 }
 
 /**
+ * The source with its family-name records renamed (OFL Reserved Font Name;
+ * config.ts → ReservedNameRename). The copyright and licence records keep
+ * naming the original.
+ */
+function renamed(source: Buffer, rename: ReservedNameRename): Buffer {
+  const familyIds: readonly number[] = FAMILY_NAME_IDS;
+  return withRenamedRecords(source, (record) =>
+    familyIds.includes(record.nameId)
+      ? record.text
+          .replaceAll(rename.from.family, rename.to.family)
+          .replaceAll(rename.from.postscript, rename.to.postscript)
+      : record.text,
+  );
+}
+
+/** Fails if any record but the copyright and licence ones holds the reserved name. */
+function verifyRenamed(
+  label: string,
+  subset: FontTables,
+  rename: ReservedNameRename,
+): void {
+  const licenceIds: readonly number[] = LICENCE_NAME_IDS;
+  const reserved = rename.reserved.toLowerCase();
+  const leaks = nameRecords(subset).filter(
+    (record) =>
+      !licenceIds.includes(record.nameId) &&
+      record.text.toLowerCase().includes(reserved),
+  );
+  if (leaks.length > 0) {
+    throw new Error(
+      `${label}: name IDs ${leaks.map((record) => String(record.nameId)).join(", ")} still use the Reserved Font Name "${rename.reserved}"`,
+    );
+  }
+  if (nameString(subset, 1)?.startsWith(rename.to.family) !== true) {
+    throw new Error(`${label}: the family name is not "${rename.to.family}"`);
+  }
+}
+
+/**
  * The features DESIGN.md's typography switches on that the source lacks.
  * A gap not listed in KNOWN_FEATURE_GAPS fails.
  */
@@ -298,8 +341,12 @@ export async function generateFontFiles(
       continue;
     }
 
-    const source = readPinned(config.source);
-    const sourceTables = readTables(source);
+    const pinnedSource = readPinned(config.source);
+    const source =
+      config.rename === undefined
+        ? pinnedSource
+        : renamed(pinnedSource, config.rename);
+    const sourceTables = readTables(pinnedSource);
     const missingFeatures = verifyFeatures(
       config.family,
       config.family,
@@ -323,6 +370,9 @@ export async function generateFontFiles(
       sourceTables,
       requested,
     );
+    if (config.rename !== undefined) {
+      verifyRenamed(config.family, tables, config.rename);
+    }
     const found = Object.fromEntries(
       axes(tables).map((axis) => [axis.tag, [axis.min, axis.max]]),
     );
@@ -339,7 +389,7 @@ export async function generateFontFiles(
         `${config.family}: the woff2's axes ${JSON.stringify(found)} are not ${JSON.stringify(wanted)}`,
       );
     }
-    const file = variableFile(config.slug);
+    const file = variableFile(config.rename?.to.slug ?? config.slug);
     files.set(file, woff2);
     fonts.push({
       file,
@@ -350,6 +400,12 @@ export async function generateFontFiles(
     manifestFonts.push({
       file,
       family: config.family,
+      ...(config.rename === undefined
+        ? {}
+        : {
+            servedAs: config.rename.to.family,
+            reservedFontName: config.rename.reserved,
+          }),
       axes: found,
       missingFeatures,
       source: config.source.path,
