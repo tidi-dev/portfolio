@@ -11,13 +11,15 @@ import {
   DEFAULT_WIDTH,
   FAMILIES,
   FAMILY_NAME_IDS,
+  type FontFamily,
   KNOWN_FEATURE_GAPS,
   LICENCE_NAME_IDS,
   licenceFile,
   MANIFEST,
   type PinnedFile,
-  REPOSITORY,
+  POSTSCRIPT_NAME_IDS,
   type ReservedNameRename,
+  type SourceOrigin,
   staticFile,
   UNICODE_RANGES,
   variableFile,
@@ -65,11 +67,17 @@ function sha256(bytes: Uint8Array): string {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
-function readPinned(pinned: PinnedFile): Buffer {
+function describe(origin: SourceOrigin): string {
+  return origin.kind === "google-fonts"
+    ? `${origin.url} ${origin.commit}`
+    : `${origin.tarball} (sha1 ${origin.shasum})`;
+}
+
+function readPinned(pinned: PinnedFile, origin: SourceOrigin): Buffer {
   const bytes = readFileSync(join(REPO_ROOT, pinned.file));
   if (bytes.length !== pinned.bytes || sha256(bytes) !== pinned.sha256) {
     throw new Error(
-      `${pinned.file} is not the pinned file (${REPOSITORY.url} ${REPOSITORY.commit} ${pinned.path}): expected ${String(pinned.bytes)} B, SHA-256 ${pinned.sha256}`,
+      `${pinned.file} is not the pinned file (${describe(origin)} ${pinned.path}): expected ${String(pinned.bytes)} B, SHA-256 ${pinned.sha256}`,
     );
   }
   return bytes;
@@ -137,11 +145,17 @@ export function familyUses(designMd: string): ReadonlyMap<string, FamilyUse> {
   );
 }
 
-/** Every code point in the configured unicode ranges, once, in order. */
-export function requestedCodePoints(): number[] {
-  const all = Object.values(UNICODE_RANGES).flatMap((ranges) =>
-    fromRanges(ranges.split(",")),
-  );
+/**
+ * Every code point in the configured unicode ranges, plus a family's own
+ * extra ranges, once, in order.
+ */
+export function requestedCodePoints(
+  extraRanges: Readonly<Record<string, string>> = {},
+): number[] {
+  const all = [
+    ...Object.values(UNICODE_RANGES),
+    ...Object.values(extraRanges),
+  ].flatMap((ranges) => fromRanges(ranges.split(",")));
   return [...new Set(all)].sort((a, b) => a - b);
 }
 
@@ -193,13 +207,23 @@ function verifySubset(
  */
 function renamed(source: Buffer, rename: ReservedNameRename): Buffer {
   const familyIds: readonly number[] = FAMILY_NAME_IDS;
-  return withRenamedRecords(source, (record) =>
-    familyIds.includes(record.nameId)
-      ? record.text
-          .replaceAll(rename.from.family, rename.to.family)
-          .replaceAll(rename.from.postscript, rename.to.postscript)
-      : record.text,
-  );
+  const postscriptIds: readonly number[] = POSTSCRIPT_NAME_IDS;
+  return withRenamedRecords(source, (record) => {
+    if (!familyIds.includes(record.nameId)) return record.text;
+    return postscriptIds.includes(record.nameId)
+      ? record.text.replaceAll(rename.from.postscript, rename.to.postscript)
+      : record.text.replaceAll(rename.from.family, rename.to.family);
+  });
+}
+
+/** The served-name fields a renamed family adds to its manifest entry. */
+function servedAs(config: FontFamily): object {
+  return config.rename === undefined
+    ? {}
+    : {
+        servedAs: config.rename.to.family,
+        reservedFontName: config.rename.reserved,
+      };
 }
 
 /** Fails if any record but the copyright and licence ones holds the reserved name. */
@@ -251,17 +275,17 @@ function verifyFeatures(
 }
 
 /**
- * `pnpm fonts` (contrib-engineering §1.3): a woff2 per Chakra Petch weight
- * and one variable Mona Sans woff2 with its axes cut to the ranges
+ * `pnpm fonts` (contrib-engineering §1.3): a woff2 per static weight
+ * (the pixel face at 400, served as Portfolio Pixel) and one variable Mona Sans
+ * woff2 (served as Portfolio Sans) with its axes cut to the ranges
  * DESIGN.md uses, each covering Google's latin and vietnamese ranges plus
- * U+2190–2193; the OFL beside them; and a manifest read back from the files.
+ * U+2190–2193 and the family's own extra ranges; the OFL beside them; and
+ * a manifest read back from the files.
  */
 export async function generateFontFiles(
   designMd: string,
 ): Promise<FontGeneration> {
   const uses = familyUses(designMd);
-  const requested = requestedCodePoints();
-  const text = String.fromCodePoint(...requested);
   const files = new Map<string, Uint8Array | string>();
   const fonts: FontOutput[] = [];
   const manifestFonts: unknown[] = [];
@@ -282,10 +306,22 @@ export async function generateFontFiles(
         `${config.family} has a source but no DESIGN.md typography token uses it`,
       );
     }
+    const requested = requestedCodePoints(config.extraRanges);
+    const text = String.fromCodePoint(...requested);
     const keepFeatures = [
       ...new Set([...DEFAULT_FEATURES, ...use.features]),
     ].sort();
-    files.set(licenceFile(config.slug), readPinned(config.licence));
+    const slug = config.rename?.to.slug ?? config.slug;
+    const common = {
+      origin: config.origin,
+      ...(config.extraRanges === undefined
+        ? {}
+        : { extraRanges: config.extraRanges }),
+    };
+    files.set(
+      licenceFile(config.slug),
+      readPinned(config.licence, config.origin),
+    );
 
     if (config.kind === "static") {
       if (!sameList(use.widths, [DEFAULT_WIDTH])) {
@@ -298,8 +334,12 @@ export async function generateFontFiles(
             `DESIGN.md uses ${config.family} ${String(weight)}, which has no pinned source`,
           );
         }
-        const source = readPinned(pinned);
-        const sourceTables = readTables(source);
+        const pinnedSource = readPinned(pinned, config.origin);
+        const source =
+          config.rename === undefined
+            ? pinnedSource
+            : renamed(pinnedSource, config.rename);
+        const sourceTables = readTables(pinnedSource);
         const label = `${config.family} ${String(weight)}`;
         const missingFeatures = verifyFeatures(
           config.family,
@@ -312,13 +352,12 @@ export async function generateFontFiles(
           keepFeatures,
           preserveNameIds: LICENCE_NAME_IDS,
         });
-        const covered = verifySubset(
-          label,
-          readTables(woff2),
-          sourceTables,
-          requested,
-        );
-        const file = staticFile(config.slug, weight);
+        const tables = readTables(woff2);
+        const covered = verifySubset(label, tables, sourceTables, requested);
+        if (config.rename !== undefined) {
+          verifyRenamed(label, tables, config.rename);
+        }
+        const file = staticFile(slug, weight);
         files.set(file, woff2);
         fonts.push({
           file,
@@ -329,8 +368,10 @@ export async function generateFontFiles(
         manifestFonts.push({
           file,
           family: config.family,
+          ...servedAs(config),
           weight,
           missingFeatures,
+          ...common,
           source: pinned.path,
           sourceSha256: pinned.sha256,
           bytes: woff2.length,
@@ -341,7 +382,7 @@ export async function generateFontFiles(
       continue;
     }
 
-    const pinnedSource = readPinned(config.source);
+    const pinnedSource = readPinned(config.source, config.origin);
     const source =
       config.rename === undefined
         ? pinnedSource
@@ -389,7 +430,7 @@ export async function generateFontFiles(
         `${config.family}: the woff2's axes ${JSON.stringify(found)} are not ${JSON.stringify(wanted)}`,
       );
     }
-    const file = variableFile(config.rename?.to.slug ?? config.slug);
+    const file = variableFile(slug);
     files.set(file, woff2);
     fonts.push({
       file,
@@ -400,14 +441,10 @@ export async function generateFontFiles(
     manifestFonts.push({
       file,
       family: config.family,
-      ...(config.rename === undefined
-        ? {}
-        : {
-            servedAs: config.rename.to.family,
-            reservedFontName: config.rename.reserved,
-          }),
+      ...servedAs(config),
       axes: found,
       missingFeatures,
+      ...common,
       source: config.source.path,
       sourceSha256: config.source.sha256,
       bytes: woff2.length,
@@ -418,7 +455,6 @@ export async function generateFontFiles(
 
   const manifest = {
     generator: `pnpm fonts (subset-font ${subsetFontVersion()}, HarfBuzz)`,
-    repository: REPOSITORY,
     unicodeRanges: UNICODE_RANGES,
     fonts: manifestFonts,
   };

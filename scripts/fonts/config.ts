@@ -1,6 +1,7 @@
 /**
  * The font pipeline's fixed inputs (contrib-engineering §1.3; DESIGN.md →
- * Typography; plan ruling R1: subsets built from google/fonts sources).
+ * Typography; plan ruling R1: subsets built from pinned sources, google/fonts
+ * for Mona Sans and the galmuri npm tarball for Galmuri11).
  * Weights and axis ranges are not listed here: they are derived from
  * DESIGN.md's typography tokens.
  */
@@ -8,36 +9,50 @@
 export interface PinnedFile {
   /** Path from the repo root. */
   readonly file: string;
-  /** Path in the google/fonts repository. */
+  /** Path inside the family's origin (the repository or the tarball). */
   readonly path: string;
   readonly bytes: number;
   readonly sha256: string;
 }
 
 /** google/fonts at the pinned commit (2026-09-24). */
-export const REPOSITORY = {
+export interface GoogleFontsOrigin {
+  readonly kind: "google-fonts";
+  readonly url: string;
+  readonly commit: string;
+}
+
+/** A published npm tarball, pinned by its registry checksums. */
+export interface NpmTarballOrigin {
+  readonly kind: "npm-tarball";
+  readonly package: string;
+  readonly version: string;
+  readonly tarball: string;
+  readonly shasum: string;
+  readonly integrity: string;
+  /** The package's licence field. */
+  readonly licence: string;
+  readonly repository: string;
+}
+
+export type SourceOrigin = GoogleFontsOrigin | NpmTarballOrigin;
+
+export const GOOGLE_FONTS: GoogleFontsOrigin = {
+  kind: "google-fonts",
   url: "https://github.com/google/fonts",
   commit: "23e54b51ddffbc7713c583748e3bd86f62b1fa4a",
-} as const;
-
-export interface StaticFamily {
-  readonly kind: "static";
-  /** The family name DESIGN.md's typography tokens use. */
-  readonly family: string;
-  readonly slug: string;
-  /** One static source per weight. */
-  readonly weights: Readonly<Record<number, PinnedFile>>;
-  readonly licence: PinnedFile;
-}
+};
 
 /**
  * The OFL's Reserved Font Name clause: a Modified Version (a subset is one)
  * may not use the reserved name. The subset is served under `to`; the
  * copyright and licence records, which name the original, stay as they are.
- * Ruling (main session, 2026-09-28): rename the Mona Sans subset.
+ * Rulings (main session, 2026-09-28): rename the Mona Sans and Galmuri11
+ * subsets. `postscript` is replaced in the PostScript-style records (IDs 3,
+ * 6, 25), `family` in the others.
  */
 export interface ReservedNameRename {
-  /** The Reserved Font Name in the copyright notice (OFL.txt, name ID 0). */
+  /** The Reserved Font Name in the copyright notice or licence header. */
   readonly reserved: string;
   readonly from: { readonly family: string; readonly postscript: string };
   readonly to: {
@@ -47,53 +62,92 @@ export interface ReservedNameRename {
   };
 }
 
-export interface VariableFamily {
-  readonly kind: "variable";
+interface FamilyBase {
+  /** The family name DESIGN.md's typography tokens use. */
   readonly family: string;
+  /** Names the licence copy (and the woff2 when there is no rename). */
   readonly slug: string;
-  readonly source: PinnedFile;
+  readonly origin: SourceOrigin;
   readonly licence: PinnedFile;
   readonly rename?: ReservedNameRename;
+  /** Unicode ranges this family adds to UNICODE_RANGES. */
+  readonly extraRanges?: Readonly<Record<string, string>>;
+  /** Where the subset is used (DESIGN.md → Typography), for fonts:check. */
+  readonly use: "site" | "résumé only";
+}
+
+export interface StaticFamily extends FamilyBase {
+  readonly kind: "static";
+  /** One static source per weight. */
+  readonly weights: Readonly<Record<number, PinnedFile>>;
+}
+
+export interface VariableFamily extends FamilyBase {
+  readonly kind: "variable";
+  readonly source: PinnedFile;
 }
 
 export type FontFamily = StaticFamily | VariableFamily;
 
-const CHAKRA_PETCH = "assets/fonts/source/chakra-petch";
+const GALMURI11 = "assets/fonts/source/galmuri11";
 const MONA_SANS = "assets/fonts/source/mona-sans";
+
+/** The game glyphs ▲ ▸ ▼ (DESIGN.md → Shapes → Icons), pixel face only. */
+const SHAPES = "U+25B2, U+25B8, U+25BC";
 
 export const FAMILIES: readonly FontFamily[] = [
   {
+    // DESIGN.md → Typography: Portfolio Pixel. Regular only: the Bold,
+    // Condensed, Galmuri14 and *Bitmap-* files in the tarball are not used.
     kind: "static",
-    family: "Chakra Petch",
-    slug: "chakra-petch",
+    family: "Galmuri11",
+    slug: "portfolio-pixel",
+    origin: {
+      kind: "npm-tarball",
+      package: "galmuri",
+      version: "2.40.3",
+      tarball: "https://registry.npmjs.org/galmuri/-/galmuri-2.40.3.tgz",
+      shasum: "8eaa5ee9761d19030807254c5cf357a08958c05e",
+      integrity:
+        "sha512-eXflXih1AWy2J+jWeT5sGVj4PUCb1bMK7lnwKDKMzEd3lx+F6myuxqp6c0eZlD7EMXOicUYaM+FH7DAoQ7mWbw==",
+      licence: "OFL-1.1",
+      repository: "https://github.com/quiple/galmuri",
+    },
     weights: {
-      600: {
-        file: `${CHAKRA_PETCH}/ChakraPetch-SemiBold.ttf`,
-        path: "ofl/chakrapetch/ChakraPetch-SemiBold.ttf",
-        bytes: 78_604,
+      400: {
+        file: `${GALMURI11}/Galmuri11.ttf`,
+        path: "package/dist/Galmuri11.ttf",
+        bytes: 5_376_428,
         sha256:
-          "45264de3204ddbd5fb3e14a2402acd5c630d16650ae5fc221d2c52da46a6734b",
-      },
-      700: {
-        file: `${CHAKRA_PETCH}/ChakraPetch-Bold.ttf`,
-        path: "ofl/chakrapetch/ChakraPetch-Bold.ttf",
-        bytes: 78_384,
-        sha256:
-          "65fbf76d95651697275e19db4d717c0e95a789ddd3476478b05292104db278a0",
+          "2c709890595668f7bdb6df408420fda957dde0288e95b31a1cc17a2ab98b4b4f",
       },
     },
     licence: {
-      file: `${CHAKRA_PETCH}/OFL.txt`,
-      path: "ofl/chakrapetch/OFL.txt",
-      bytes: 4_396,
+      file: `${GALMURI11}/ofl.md`,
+      path: "package/ofl.md",
+      bytes: 4_266,
       sha256:
-        "13831d02389d917d22fcfa6c79f98f8acbf61d230add0e73a4d4dc5f3bfb9e56",
+        "9a9e5a342c430c3fcf01a408b680f4405d5bf4ac659c931be35f8a1b27ea69c9",
     },
+    // The Reserved Font Name is declared in package/dist/galmuri.css
+    // (lines 1 to 5): 'with Reserved Font Name "Galmuri"'.
+    rename: {
+      reserved: "Galmuri",
+      from: { family: "Galmuri11", postscript: "Galmuri11" },
+      to: {
+        family: "Portfolio Pixel",
+        postscript: "PortfolioPixel",
+        slug: "portfolio-pixel",
+      },
+    },
+    extraRanges: { shapes: SHAPES },
+    use: "site",
   },
   {
     kind: "variable",
     family: "Mona Sans",
     slug: "mona-sans",
+    origin: GOOGLE_FONTS,
     source: {
       file: `${MONA_SANS}/MonaSans[wdth,wght].ttf`,
       path: "ofl/monasans/MonaSans[wdth,wght].ttf",
@@ -117,6 +171,9 @@ export const FAMILIES: readonly FontFamily[] = [
         slug: "portfolio-sans",
       },
     },
+    // Owner, 2026-09-28: the site loads only Portfolio Pixel; this subset
+    // is embedded by `pnpm resume:pdf`.
+    use: "résumé only",
   },
 ];
 
@@ -161,10 +218,14 @@ export const LICENCE_NAME_IDS = [0, 13, 14] as const;
 
 /**
  * The naming-table records that carry the family name: 1 family, 3 unique
- * ID, 4 full name, 6 PostScript name, 16 typographic family, 25 variations
- * PostScript name prefix. A ReservedNameRename rewrites exactly these.
+ * ID, 4 full name, 6 PostScript name, 16 typographic family, 21 WWS family,
+ * 25 variations PostScript name prefix. A ReservedNameRename rewrites
+ * exactly these.
  */
-export const FAMILY_NAME_IDS = [1, 3, 4, 6, 16, 25] as const;
+export const FAMILY_NAME_IDS = [1, 3, 4, 6, 16, 21, 25] as const;
+
+/** The records among FAMILY_NAME_IDS that hold a PostScript-style name. */
+export const POSTSCRIPT_NAME_IDS = [3, 6, 25] as const;
 
 /** The wdth a Mona Sans token uses when DESIGN.md sets no fontVariation. */
 export const DEFAULT_WIDTH = 100;
@@ -185,23 +246,22 @@ export function licenceFile(slug: string): string {
 }
 
 /**
- * Characters the fonts don't have, rendered another way (plan → Rulings →
- * Glyphs: "▸", "▲" and "▼" render as Tabler filled icons, because neither
- * font has them). The glyph-coverage check skips exactly these.
+ * The game glyphs (DESIGN.md → Shapes → Icons): "▸", "▲" and "▼" render as
+ * Portfolio Pixel glyphs, each in an aria-hidden span. Portfolio Sans lacks
+ * them, so the all-fonts coverage check skips exactly these, and checks
+ * instead that the pixel subset (the family with the `shapes` range) maps
+ * all three.
  */
 export const ICON_GLYPHS: Readonly<Record<string, string>> = {
-  "▸": "caret-right (filled), before PLAYER 1",
-  "▲": "triangle (filled), the training markers",
-  "▼": "caret-down (filled), after Press A to continue",
+  "▸": "caret, before PLAYER 1",
+  "▲": "triangle, the training markers",
+  "▼": "caret, after Press A to continue",
 };
 
 /**
  * Features DESIGN.md switches on that a source doesn't have, accepted
  * until DESIGN.md changes (any other missing feature fails `pnpm fonts`).
- * Chakra Petch has proportional figures and no tnum, so `stat-value`'s
- * "'tnum' 1" can't apply; raised to the main session in the Phase 1 report
- * (docs/reports/v2-phase-1.md).
+ * None today: Galmuri11 has the tnum that `stat-value` asks for.
  */
-export const KNOWN_FEATURE_GAPS: Readonly<Record<string, readonly string[]>> = {
-  "Chakra Petch": ["tnum"],
-};
+export const KNOWN_FEATURE_GAPS: Readonly<Record<string, readonly string[]>> =
+  {};

@@ -1,5 +1,6 @@
 /**
- * pnpm fonts: the pinned google/fonts sources → src/assets/fonts/
+ * pnpm fonts: the pinned sources (google/fonts, an npm tarball) →
+ * src/assets/fonts/
  * (contrib-engineering §1.3): the woff2 subsets, the OFL copies and the
  * manifest.
  */
