@@ -96,15 +96,20 @@
   }
 }
 
-/* Corner brackets: four 30 px L-marks, 2 px holo at 70 %, framing the hero
-   viewport below the strip; each draws from its corner (brackets). */
+/* Corner brackets: four 30 px L-marks, 2 px holo at 70 %. Their frame
+   places them (--bracket-top, --bracket-side, --bracket-bottom): the hero
+   viewport below the strip (hero.css) and the Join party grid
+   (sections.css). The hero's draw from their corners on load (brackets);
+   Join party's with its sign-off panel (reveal.css). */
 @utility corner-bracket {
   position: absolute;
   width: var(--spacing-bracket);
   height: var(--spacing-bracket);
   border: 0 solid color-mix(in srgb, var(--color-holo) 70%, transparent);
   pointer-events: none;
+}
 
+@utility bracket-load {
   :root[data-motion="on"] & {
     animation: bracket-draw var(--transition-duration-brackets) var(--ease-out)
       backwards;
@@ -112,32 +117,32 @@
 }
 
 @utility bracket-tl {
-  top: calc(var(--spacing-hud) + var(--spacing-xs));
-  left: var(--spacing-sm);
+  top: var(--bracket-top);
+  left: var(--bracket-side);
   border-top-width: 2px;
   border-left-width: 2px;
   transform-origin: top left;
 }
 
 @utility bracket-tr {
-  top: calc(var(--spacing-hud) + var(--spacing-xs));
-  right: var(--spacing-sm);
+  top: var(--bracket-top);
+  right: var(--bracket-side);
   border-top-width: 2px;
   border-right-width: 2px;
   transform-origin: top right;
 }
 
 @utility bracket-bl {
-  bottom: var(--spacing-sm);
-  left: var(--spacing-sm);
+  bottom: var(--bracket-bottom);
+  left: var(--bracket-side);
   border-bottom-width: 2px;
   border-left-width: 2px;
   transform-origin: bottom left;
 }
 
 @utility bracket-br {
-  bottom: var(--spacing-sm);
-  right: var(--spacing-sm);
+  bottom: var(--bracket-bottom);
+  right: var(--bracket-side);
   border-bottom-width: 2px;
   border-right-width: 2px;
   transform-origin: bottom right;

@@ -3,6 +3,7 @@ import {
   GhostButtonLink,
   PrimaryButtonLink,
 } from "@/components/ui/button-link";
+import { PartyBrackets } from "@/components/shell/corner-brackets";
 import { Icon } from "@/components/ui/icon";
 import { Panel } from "@/components/ui/panel";
 import { SectionFrame } from "@/components/ui/section-frame";
@@ -87,12 +88,15 @@ const ROWS: readonly ContactRow[] = [
 /**
  * Join party (DESIGN.md → Contact row; Responsive Behavior → Join party):
  * the owner's sign-off, then the contact rows. Stacked below lg; from lg
- * the sign-off takes 5 columns and the rows 7.
+ * the sign-off takes 5 columns, stretched to the rows' height, and the
+ * rows 7. The hero's corner brackets frame the pair, drawn on as the
+ * sign-off panel powers on.
  */
 export function JoinParty({ section }: { readonly section: Section }) {
   return (
     <SectionFrame section={section}>
       <div className="contact-grid">
+        <PartyBrackets />
         <Panel className="contact-signoff">
           <p className="max-w-measure type-heading-quest text-primary">
             {typography(about.signOff)}

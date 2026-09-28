@@ -21,6 +21,10 @@
    The backdrop is the radial holo and accent glow over surface, at half
    strength in Lab (the strengths are theme.css's --backdrop-*). */
 @utility hero-frame {
+  /* The corner brackets frame the viewport below the strip (shell.css). */
+  --bracket-top: calc(var(--spacing-hud) + var(--spacing-xs));
+  --bracket-side: var(--spacing-sm);
+  --bracket-bottom: var(--spacing-sm);
   position: relative;
   overflow: clip;
   padding-top: calc(var(--spacing-hud) + var(--spacing-lg));

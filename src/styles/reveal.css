@@ -159,6 +159,21 @@
     );
   }
 
+  /* Join party brackets: they draw from their corners (brackets,
+     ease-out) when the sign-off panel powers on; present at once in the
+     calm mode. */
+  :root[data-motion="on"][data-reveal-ready]
+    .contact-grid:not(:has(> .contact-signoff[data-revealed]))
+    > .bracket-reveal {
+    transform: scale(0);
+  }
+
+  :root[data-motion="on"][data-reveal-ready]
+    .contact-grid:has(> .contact-signoff[data-revealed])
+    > .bracket-reveal {
+    transition: transform var(--transition-duration-brackets) var(--ease-out);
+  }
+
   /* Mission log line: scaleY(0 → 1) along the log's view timeline
      (sections.css) over entry 10 % → cover 45 %, so it is complete just
      before the log's middle passes the viewport's middle. Where scroll

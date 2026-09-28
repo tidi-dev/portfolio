@@ -1,4 +1,4 @@
-import { CornerBrackets } from "@/components/shell/corner-brackets";
+import { HeroBrackets } from "@/components/shell/corner-brackets";
 import { copy } from "@/content/copy";
 import { holograms } from "@/content/holograms";
 import { HERO_TITLE_ID, HeroLockup } from "./hero-lockup";
@@ -43,7 +43,7 @@ const LOG = benchLog();
 export function Hero() {
   return (
     <section id="top" aria-labelledby={HERO_TITLE_ID} className="hero-frame">
-      <CornerBrackets />
+      <HeroBrackets />
       <div className="w-full page-x">
         <div className="mx-auto hero-grid max-w-container">
           <HeroStage
