@@ -225,8 +225,9 @@
   text-transform: uppercase;
 }
 
-/* 'tnum' 1: Chakra Petch has no tnum feature, so the figures stay
-   proportional (raised in the Phase 1 report). */
+/* Proportional figures (DESIGN.md → Typography → stat-value): each readout
+   stands alone, and the count-up overlays the final text, which holds the
+   width. */
 @utility type-stat-value {
   font-family: var(--font-chakra-petch);
   font-size: var(--text-stat-value);
@@ -234,7 +235,7 @@
   letter-spacing: normal;
   font-weight: var(--font-weight-stat-value);
   font-stretch: normal;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: normal;
   text-transform: none;
 }
 
