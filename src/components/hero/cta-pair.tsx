@@ -16,7 +16,7 @@ import { RESUME_FILE } from "@/lib/resume/file";
  */
 export function CtaPair() {
   return (
-    <div className="flex flex-col gap-sm sm:flex-row sm:flex-wrap">
+    <div className="flex flex-col gap-sm self-stretch sm:flex-row sm:flex-wrap">
       <PrimaryButtonLink href={sectionHref("contact")}>
         {copy.hero.cta}
       </PrimaryButtonLink>
