@@ -204,3 +204,14 @@ Owner decision: commits use `tidi.dev1321@gmail.com`. All 27 commits had their a
 | f5a56af | 2de7e17 | docs: add the Phase 2 engineering report |
 | 7b4ff2a | f913e77 | docs: record Phase 1-2 rulings, owner decisions and process rules |
 | c54e76d | 96bff80 | docs: add the Phase 1 QA code review |
+
+## Restart (2026-09-28)
+- **Owner:** "page is too ugly and boring, not trendy. not eyecatching, no 3d animations. please do again, remove all code. also remove performance budgets, Lighthouse, SEO and the privacy scan out of this project, update the plan".
+- **Then:** "nên đảm bảo clean, modern, phù hợp phong cách Developer, cần thêm nhiều animations, 3d để làm website sinh động, thu hút, follow RPG game style".
+- **Done:**
+  - all code removed (commit "chore: remove all code…"); `ava.PNG` restored to the root
+  - the `perf-seo-audit` skill deleted
+  - `CLAUDE.md`, the agents and skills updated (the out-of-scope items removed; rich motion and 3D allowed; RPG game style)
+  - `info.md` visual style updated
+  - the old plan and Direction B marked superseded
+- **Next:** `design-lead` proposes new directions with previews, and the owner selects. Then a new `DESIGN.md`, a new plan and the build.

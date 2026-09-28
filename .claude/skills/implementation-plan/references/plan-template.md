@@ -11,7 +11,7 @@
 **Stack:** framework, language, styling, motion, testing, hosting (versions verified YYYY-MM-DD).
 
 ## Global Constraints
-One line each, copied verbatim from CLAUDE.md, DESIGN.md and info.md: budgets, a11y level, content rules, locks, supported widths. Every phase implicitly includes these.
+One line each, copied verbatim from CLAUDE.md, DESIGN.md and info.md: a11y level, content rules, locks, supported widths. Every phase implicitly includes these.
 
 ## File Map
 | Path | Responsibility | Created in phase |
@@ -41,4 +41,4 @@ Five conditions most likely to break the experience that no single phase's tests
 ```
 
 ## Coverage checklist (every item maps to a phase)
-Project initialization · technical stack · information architecture · data/content architecture · design system (tokens pipeline) · page structure · component architecture · responsive behavior · interactions · motion · accessibility · SEO · performance · testing · visual QA · deployment · final verification.
+Project initialization · technical stack · information architecture · data/content architecture · design system (tokens pipeline) · page structure · component architecture · responsive behavior · interactions · motion · accessibility · testing · visual QA · deployment · final verification.

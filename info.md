@@ -220,7 +220,7 @@ Profile "Quest journal": 2 active · 1 cleared.
 - Hosting: **decide later** (owner, 2026-09-28)
 - Code repository: **do not push for now**; local git only (owner, 2026-09-28)
 - Section labels (the owner's own, from profile.md): Quest journal · House rules · Inventory · Leveling up · AFK · statuses Active, Side, Cleared · Party lead · Achievements
-- RPG/quest theme: **subtle, one signature moment.** A professional, fast-to-scan layout, with quest vocabulary in a few labels plus one memorable game-like interaction. (Owner's choice, 2026-09-27.)
+- Visual style (owner, 2026-09-28, replaces the earlier "subtle" choice): "nên đảm bảo clean, modern, phù hợp phong cách Developer, cần thêm nhiều animations, 3d để làm website sinh động, thu hút, follow RPG game style". That is: clean, modern, developer style; many animations and 3D so the site feels lively and eye-catching; follow an RPG game style. Earlier feedback on Direction B: "page is too ugly and boring, not trendy. not eyecatching, no 3d animations".
 - Project diagrams (owner's choice, 2026-09-27): **yes, high-level only.** Drawn solely from the owner's own descriptions, with no client internals, internal service names or real data. Covers CyberRock chip auth and lifecycle, the Quest v1 → v2 migration, and the botmivivi ledger.
 - Résumé download (owner, answer.md): **yes**. "dont reuse … DaiHo Resume.pdf, help me to gen a new one". A new PDF will be generated from `info.md`, without the phone number and the reference.
 

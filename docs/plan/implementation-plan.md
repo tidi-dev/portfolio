@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-09-28).** The owner rejected the Direction B build ("too ugly and boring, not trendy, not eye-catching, no 3D animations"). All code was removed. The new style: "clean, modern, developer style, many animations and 3D, RPG game style". Performance budgets, Lighthouse, SEO and the privacy scan were removed from the project. A new plan follows the new direction and `DESIGN.md`. This file is kept for history.
+
 # Portfolio implementation plan
 
 > **Status: Approved by owner, 2026-09-28** ("continueu", in reply to "Reply 'approved' to start Phase 1, or tell me what to change"). Phases 1–12 are authorised. Phase 13 is on hold (O1, O2).

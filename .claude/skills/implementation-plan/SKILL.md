@@ -27,12 +27,12 @@ Produce a phased plan that the project agents can execute and verify. It is asse
   - project structure and file map
   - content model and schema
   - component architecture
-  - SEO and performance implementation
+  - animation and 3D implementation (libraries, client islands, reduced motion)
   - tooling, CI and deployment
 - **qa-reviewer:** writes `docs/plan/contrib-verification.md`:
   - test layers and tools
   - screenshot and axe matrix
-  - budgets, with acceptance criteria per phase
+  - acceptance criteria per phase
   - audit checkpoints
   - a Review Focus (the five most likely ways a visitor gets a broken experience)
 

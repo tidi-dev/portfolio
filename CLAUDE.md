@@ -7,18 +7,18 @@ Operating guide for Claude on this repository.
 - **Current state:** `docs/progress.md`
 
 # Project Overview
-A personal developer portfolio for the owner described in `info.md`: a fast, accessible, distinctive static site showing who they are, what they have built, and how to reach them.
-- **Status:** the foundation (skills, agents, this file) is done.
-- **Next:** research, discovery interview, `info.md`, directions, plan.
-- **No application code** until the plan is approved.
+A personal developer portfolio for the owner described in `info.md`: a clean, modern, eye-catching site in an RPG game style, alive with animation and 3D, showing who they are, what they have built, and how to reach them.
+- **Status (2026-09-28):** the owner rejected the first build ("too ugly and boring, not trendy, not eye-catching, no 3D animations"). All code was removed; its history remains in git.
+- **Next:** new design directions, the owner's choice, a new `DESIGN.md` and plan, then the build.
+- **No application code** until the new plan is approved.
 
 # Project Goals
 1. **Truthful:** every personal fact comes from `info.md`.
-2. **Distinctive:** it reads as designed for this person, not templated.
-3. **Accessible:** WCAG 2.2 AA in both themes.
-4. **Fast:** Lighthouse mobile ≥ 95 performance, 100 for accessibility, best practices and SEO; Core Web Vitals "good".
-5. **Findable:** complete metadata, social previews, structured data.
-6. **Maintainable:** content is updated in one place.
+2. **Eye-catching:** clean, modern and developer-styled, following an RPG game style, lively with rich animation and 3D.
+3. **Accessible:** WCAG 2.2 AA in both themes, with a reduced-motion experience that still tells the whole story.
+4. **Maintainable:** content is updated in one place.
+
+**Out of scope** (owner, 2026-09-28): performance budgets, Lighthouse, SEO and the privacy scan. Don't add tooling, tests or audits for them.
 
 # Source of Truth
 Precedence, highest first:
@@ -44,37 +44,36 @@ Agent/skill/workflow references (Vercel agent-skills, Superpowers). Already synt
 External portfolios (e.g. https://tiendinh.dev/) are pattern inspiration only, never a source of facts, copy, images or code.
 
 # Design Principles
-- **Ground it in the owner.** Their real work and audience drive every choice, and the hero opens with the most characteristic thing about them.
-- **Decide deliberately.** Each typeface, colour and layout choice has a reason recorded in `DESIGN.md`. Avoid `.claude/skills/design-direction/references/generic-patterns.md`.
-- **Spend boldness once.** One signature moment, everything else quiet.
-- **Consistency locks:** one theme strategy, accent, radius system, icon family, type pairing, and label per intent.
-- **Structure is information.** Number things only when they are a real sequence. No decorative labels, dots or chrome.
-- **DESIGN.md is the contract.** Once approved, tokens reach code only via `npx @google/design.md export`.
+- **Ground it in the owner.** Their real work, their RPG and quest voice ("Player 1", quests, XP, inventory, AFK) and their audience drive every choice.
+- **RPG game world, clean execution.** Game style (HUD, quest log, character sheet, inventory, level-ups) rendered with modern, developer-grade polish: crisp type, disciplined spacing, never cluttered or kitsch.
+- **Alive by default.** Animation and 3D are core to the experience, not garnish. Every section has motion; the hero has a 3D scene.
+- **Readable first.** Motion and 3D never block reading, scanning or reaching contact. Content is real HTML over or beside the 3D.
+- **Decide deliberately.** Each typeface, colour and motion choice has a reason recorded in `DESIGN.md`. `generic-patterns.md` still applies, except where it conflicts with the owner's requested RPG and 3D style.
+- **Consistency locks:** one theme strategy, accent system, radius system, icon family, type pairing, and label per intent.
+- **DESIGN.md is the contract** once approved.
 
 # Engineering Principles
 - Plan before code. Make the smallest change that meets the task (YAGNI).
 - Evidence before claims, and root cause before fixes (`verification`).
 - Small files with one responsibility, organised by feature. Static and server-first; JavaScript only for real interactivity.
 - Verify each dependency (existence, version, licence) with `npm view`, and justify it in the plan.
-- Never weaken tests, lint rules or budgets to get green.
+- Never weaken tests or lint rules to get green.
 
 # Architecture Guidelines
-The plan confirms the stack. Default proposal:
-- **Stack:** Next.js App Router with static generation, TypeScript strict, Tailwind CSS v4, pnpm. Hosting is decided later by the owner (Vercel or Cloudflare). Pinned versions live in the approved plan.
-- **Content:** typed modules derived from `info.md` (`src/content/`), schema-validated at build. Components never hardcode personal facts.
-- **Tokens:** generated from `DESIGN.md` into a Tailwind `@theme` file, plus a thin dark-theme mapping. No literal design values elsewhere.
-- **Client code:** small leaves only (theme toggle, mobile menu, motion islands).
-- **Not included** unless the plan justifies it: CMS, database, global state library, backend.
-- **Structure:** `src/app/`, `src/components/<feature>/`, `src/content/`, `src/lib/`, `tests/`.
+The new plan confirms the stack. Default proposal:
+- **Stack:** Next.js App Router, TypeScript strict, Tailwind CSS v4, pnpm.
+- **3D and motion:** React Three Fiber (Three.js) for 3D scenes, and Motion and/or GSAP for UI and scroll animation, with versions verified in the plan.
+- **Content:** typed modules derived from `info.md` (`src/content/`). Components never hardcode personal facts.
+- **Tokens:** from `DESIGN.md`. No literal design values elsewhere.
+- **Client islands:** 3D scenes and animated components are client islands, loaded dynamically. The page stays usable before they load.
+- **Hosting:** decided later by the owner. No CMS, database or backend unless the plan justifies it.
 
 # Frontend Guidelines
 - Semantic HTML first, and ARIA only to fill gaps.
-- Server Components by default, with minimal props to client leaves.
-- Composition over boolean props; no barrel files; heavy client code dynamically imported; third-party scripts deferred or omitted.
-- **Images:** explicit dimensions, and only the LCP image prioritised.
-- **Fonts:** self-hosted and subset (`next/font`), `swap`, at most 2 families.
+- Composition over boolean props; heavy client code (3D, animation libraries) dynamically imported.
+- **Images:** explicit dimensions. **Fonts:** self-hosted, at most 2 families, with Vietnamese support ("Hồ Trọng Đại").
 - **Icons:** one library, chosen in `DESIGN.md`.
-- **Typography:** `…`, curly quotes, `tabular-nums`, balanced headings. Hydration-safe theme with no flash.
+- **3D canvases:** decorative ones are `aria-hidden`; any information they carry also exists as text.
 - Build rules in full: `frontend-build`. Audit checklist: `ui-audit/references/web-interface-checklist.md`.
 
 # Responsive Design Guidelines
@@ -96,27 +95,15 @@ The plan confirms the stack. Default proposal:
 - **Verified by:** axe with 0 violations, a keyboard pass, and an accessibility-tree check.
 
 # Motion Guidelines
-- Every animation must communicate something: hierarchy, feedback, a state change or continuity. If you can't name it in one sentence, cut it.
-- **Budget** (in `DESIGN.md`): one signature moment, feedback micro-interactions and state transitions. No scroll-reveal on every section, no perpetual loops, no scroll hijacking unless `DESIGN.md` approves it.
+- **Rich motion is wanted:** 3D scenes, scroll-driven reveals, game-like transitions (level-up, quest unlocked), hover and cursor reactions, animated HUD elements. `DESIGN.md` defines the motion system and its tokens.
+- **Purpose still matters:** motion guides attention, rewards interaction or tells the RPG story. Avoid random noise.
 - **Technique:**
-  - Movement animates `transform` and `opacity` only.
-  - Control state feedback may transition `color`, `background-color` and `border-color`, at the feedback duration token only.
-  - List transition properties (never `all`); animations are interruptible; durations and easings come from tokens.
-- **Implementation:** CSS first; `motion/react` only in client leaves; no scroll listeners.
-- **Reduced motion:** every animation has a static or opacity-only variant.
-
-# Performance Requirements
-- **Lighthouse** (mobile, production build, median of 3): performance ≥ 95; accessibility, best practices and SEO = 100.
-- **Lab vitals** (mobile): LCP ≤ 2.5 s, CLS ≤ 0.1 (target 0), TBT ≤ 200 ms.
-- **JavaScript:** first-load budget set in the plan.
-- **Loading:** no layout shift from media or fonts; lazy below the fold; no render-blocking third parties.
-
-# SEO Requirements
-- A unique title and description on every page, plus a canonical URL and `lang`.
-- Open Graph and Twitter tags with a 1200×630 image.
-- JSON-LD `Person` (from `info.md` only) and `WebSite`, validated.
-- `sitemap.xml`, `robots.txt` and a real 404. Stable URLs; a replaced site's URLs keep working.
-- One `h1`, content in the server HTML, favicon, app icons, `theme-color`.
+  - DOM movement prefers `transform` and `opacity`; never `transition: all`
+  - animations are interruptible
+  - no scroll-event listeners (use IntersectionObserver, CSS scroll-driven animation, or the library's scroll hooks)
+  - clean up effects and render loops
+- **Safety:** nothing flashes more than 3 times a second (WCAG 2.3.1). Autoplaying motion longer than 5 s has a pause control or honours reduced motion.
+- **Reduced motion:** every animation and 3D scene has a calm variant (static or opacity-only), and the content stays complete.
 
 # Content Rules
 - `info.md` is the only source of personal information. Never invent, embellish or estimate facts, numbers, dates, titles, employers, testimonials or availability.
@@ -134,7 +121,6 @@ The plan confirms the stack. Default proposal:
 | `implementation-plan` | Assemble the phased plan from agent contributions |
 | `frontend-build` | Implement a phase, component or fix |
 | `ui-audit` | Visual, responsive, accessibility, interaction and motion review |
-| `perf-seo-audit` | Measure performance, verify SEO |
 | `code-review` | Two-verdict review (spec compliance, quality) |
 | `verification` | Evidence gate before claims; root-cause debugging |
 
@@ -164,7 +150,7 @@ The **main session** orchestrates. There is no orchestrator, content or architec
 | 6 | Build, per phase | frontend-engineer | phase brief | code + report | Gate green |
 | 7 | Review, per phase | qa-reviewer | report, diff, build | `docs/reviews/<phase>-*.md` | PASS |
 | 8 | Checkpoint | design-lead | screenshot matrix | critique, `DESIGN.md` updates | Owner, if look changes |
-| 9 | Release audit | qa-reviewer | whole site | perf/SEO, UI, content reports | PASS |
+| 9 | Release audit | qa-reviewer | whole site | UI, accessibility, content reports | PASS |
 | 10 | Final verification | main | all reports | final report | **Owner approves production** |
 
 The checkpoint (row 8) runs after the first visual phase and again before release.
@@ -191,34 +177,13 @@ The checkpoint (row 8) runs after the first visual phase and again before releas
 **Git** is initialised in the plan's first phase. Small commits with conventional messages. No push to shared branches or production deploy without the owner's approval.
 
 # Testing & Verification
-Run `nvm use` first. `.nvmrc` is 24, and Corepack supplies pnpm 10.34.5.
-
-**Current mode** (owner, 2026-09-28): tests were removed during the build and a lean suite returns after Phase 10. Until then the gate is static: design lint, tokens, fonts, lint, typecheck, build. The test commands below apply again once the suite is back.
-
-Local gate, in order:
-1. `pnpm install --frozen-lockfile`
-2. `pnpm check`: `design:lint`, `tokens:check`, `fonts:check`, lint (ESLint + Prettier), typecheck, unit tests (Vitest)
-3. `pnpm build`
-4. `pnpm test:e2e`: Playwright + axe; chromium desktop and mobile, webkit mobile, Firefox for layout and keyboard
-
-**Deferred by the owner** (2026-09-28, "skip performance budget, scan, seo for now"), re-enabled before release:
-- `pnpm test:budget` (byte budgets)
-- `pnpm lhci` (Lighthouse, mobile then desktop)
-- `pnpm privacy:scan` (build-output privacy scan; the script is kept)
-
-Other commands:
-- `pnpm tokens` and `pnpm fonts`: regenerate the token and font files after a `DESIGN.md` or font change. The `:check` variants verify them.
-- `pnpm design:lint`: the DESIGN.md linter with the warning policy.
-- `pnpm resume:pdf`: regenerates `public/tidi-resume.pdf` and its lock. `pnpm resume:check` (part of `pnpm check`) fails if the content changed without regenerating.
-- `pnpm format`: Prettier write.
+The new plan defines the tooling and commands; list them here once it's approved.
+- **Gate:** lint, typecheck, build, plus a lean test suite covering key flows and accessibility (axe in both themes, keyboard, reduced motion).
+- **Visual QA:** screenshots at key widths in both themes, including the 3D and animated states (`ui-audit`).
+- **Content:** every visible fact verified against `info.md` before release (`portfolio-content` D).
+- **Out of scope:** performance budgets, Lighthouse, SEO checks, privacy scan.
 
 Agents stop only the processes they started, by PID. Never kill by name or pattern (`pkill`, `killall`).
-
-Test layers:
-- **Unit** (test-first): content schema, utilities, metadata and JSON-LD builders, state logic.
-- **E2E:** every route renders; keyboard path; theme without flash; no overflow at 320 px; axe clean in both themes.
-- **Visual:** 6 widths × 2 themes per UI phase (`ui-audit`).
-- **Audits:** `perf-seo-audit` at milestones and release; content verification before release.
 
 # Definition of Done
 A task or phase is done only when:
@@ -229,7 +194,7 @@ A task or phase is done only when:
 - the checkpoint is signed off, if the phase is one
 - `docs/progress.md` is updated
 
-A release also needs the Lighthouse and vitals budgets met, the SEO checklist passing, clean content verification, and the owner's approval.
+A release also needs clean content verification, the reduced-motion experience checked, and the owner's approval.
 
 # Important Constraints
 - No application code, scaffolding or installs before the owner approves the plan.

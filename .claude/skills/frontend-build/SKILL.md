@@ -71,7 +71,7 @@ For each finding: verify it against the code first. Fix Critical and Important f
   - watch selector specificity so section spacing rules don't cancel each other
 - **Icons** come only from the library named in `DESIGN.md`. No hand-drawn SVG icons.
 - **Typography:** `…`, curly quotes, `&nbsp;` for units and brand names, `tabular-nums` for aligned numbers, `text-wrap: balance` on headings.
-- Never weaken, skip or delete a test, lint rule or budget to get green. Report the conflict instead.
+- Never weaken, skip or delete a test or lint rule to get green. Report the conflict instead.
 - Stay in scope (YAGNI). Put ideas in the report instead of the code. Do not spawn subagents.
 - Servers and processes you start (dev, start, preview, screenshot servers) are stopped by their PID only. Never `pkill`, `killall` or pattern-kill: other projects on the owner's machine may be running.
 

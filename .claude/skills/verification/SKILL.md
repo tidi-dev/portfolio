@@ -24,7 +24,7 @@ No completion claim without fresh evidence, and no fix without a root cause.
 ## Workflow
 
 ### Gate
-1. **Identify** the commands that prove the claim: the standard set, plus any task-specific check (a screenshot, a Lighthouse run, a content verification).
+1. **Identify** the commands that prove the claim: the standard set, plus any task-specific check (a screenshot, a content verification).
 2. **Run** them fresh and in full. Not a subset, and not an earlier run.
 3. **Read** the output: exit codes, failure and warning counts, skipped tests.
 4. **Claim** only what the output shows, and quote the evidence (`command → result line`). Map each acceptance criterion to its evidence.
@@ -41,7 +41,7 @@ No completion claim without fresh evidence, and no fix without a root cause.
 
 ## Rules
 - "Should work", "looks fine" and "probably" are not evidence. Neither is an agent's report: the main session checks the diff and re-runs the gate before marking a phase complete.
-- Never skip, delete, weaken or `.skip` a test, and never disable a lint rule or relax a budget to get green. Escalate instead.
+- Never skip, delete, weaken or `.skip` a test, and never disable a lint rule to get green. Escalate instead.
 - Warnings in test or build output are findings, not noise.
 - Report the real state, even when it is "partially done" or "blocked".
 

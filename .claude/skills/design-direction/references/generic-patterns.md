@@ -1,5 +1,7 @@
 # Generic patterns to avoid
 
+> **Owner override (2026-09-28):** the owner asked for "clean, modern, developer style, many animations and 3D, follow RPG game style". Game-UI patterns (HUD, quest log, character sheet, XP and level motifs), 3D scenes, rich scroll and hover motion, and animated backgrounds tied to the RPG concept are **allowed**. The rest of this list still applies, and executions must stay clean and modern, never kitsch: no pixel-art noise, and no clutter that hurts reading.
+
 Sources:
 - Anthropic frontend-design: calibration clusters and typographic tells.
 - Taste Skill v2: AI tells.

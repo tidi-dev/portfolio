@@ -84,7 +84,7 @@ Per component: purpose · anatomy · states (default / hover / focus-visible / a
 Project-specific rules and the applicable bans from generic-patterns.md.
 
 ## Motion
-Budget (signature moment + feedback + state changes) · tokens (durations, easings) ·
+Motion system (3D scenes, scroll and game-like transitions, feedback, state changes) · tokens (durations, easings) ·
 | Element | Trigger | Property | Duration / easing | Communicates | Reduced-motion variant |
 
 ## Responsive Behavior
