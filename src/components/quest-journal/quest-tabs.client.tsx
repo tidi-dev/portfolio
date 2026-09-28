@@ -110,8 +110,25 @@ export function QuestTabList({
 }) {
   const { quests, select, selected, last } = useQuestJournal();
   useDeepLinks(quests, select, selected, last?.seq ?? 0);
+  const rowRef = useRef<HTMLDivElement>(null);
+  // Below md the row scrolls: open it on the selected (Active) card, which
+  // sits second. Only the row's scrollLeft moves, never the page.
+  useEffect(() => {
+    const row = rowRef.current;
+    if (row === null || row.scrollWidth <= row.clientWidth) return;
+    const card = row.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (card === null) return;
+    const inset =
+      parseFloat(getComputedStyle(row).scrollPaddingInlineStart) || 0;
+    row.scrollLeft +=
+      card.getBoundingClientRect().left -
+      row.getBoundingClientRect().left -
+      inset;
+    // Only on mount: later selections scroll their own card into view.
+  }, []);
   return (
     <div
+      ref={rowRef}
       role="tablist"
       aria-labelledby={labelledBy}
       data-quest-tabs=""

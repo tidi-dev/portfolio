@@ -21,12 +21,25 @@ const QUESTS = projects.filter(
   (project): project is FullProject => project.kind === "full",
 );
 
-const ENTRIES: readonly QuestEntry[] = QUESTS.map((project) => ({
+// The card row reads Cleared, Active, Side: the Active quest in the middle
+// and larger (quest.css), so the keyboard order matches what is seen. The
+// panels keep content order, which is also the stacked no-JS order.
+const CARD_ORDER: Record<FullProject["status"], number> = {
+  Cleared: 0,
+  Active: 1,
+  Side: 2,
+};
+const CARDS = [...QUESTS].sort(
+  (a, b) => CARD_ORDER[a.status] - CARD_ORDER[b.status],
+);
+
+const ENTRIES: readonly QuestEntry[] = CARDS.map((project) => ({
   id: project.id,
   name: project.name,
   anchor: questAnchor(project.id),
   tabId: questTabId(project.id),
   model: project.hologram,
+  active: project.status === "Active",
 }));
 
 /**
@@ -53,7 +66,7 @@ export function QuestJournal({ section }: { readonly section: Section }) {
           toastLabel={copy.toast.questUnlocked}
         >
           <QuestTabList labelledBy={titleId}>
-            {QUESTS.map((project) => (
+            {CARDS.map((project) => (
               <QuestCard key={project.id} project={project} />
             ))}
           </QuestTabList>

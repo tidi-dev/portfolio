@@ -87,7 +87,9 @@
 /* Quest card row (tablist). Below md: a full-bleed row that scrolls
    sideways and snaps each card to its start, the page edge as its padding
    and scroll padding, so the next card peeks; xs above and below, so the
-   focus rings aren't clipped. From md: a 3-column grid, no scroll. */
+   focus rings aren't clipped. From md: a 3-column grid, no scroll, the
+   middle (Active) column 1.2× the side ones (1.4× from lg) and the cards centred, so the
+   Active card stands taller; side cards get md padding, it gets 2xl above and below. */
 @utility quest-row {
   --row-edge-start: max(var(--page-edge), env(safe-area-inset-left));
   --row-edge-end: max(var(--page-edge), env(safe-area-inset-right));
@@ -105,7 +107,12 @@
 
   @variant md {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+
+    @variant lg {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    }
     gap: var(--spacing-gutter);
     margin-inline: 0;
     padding: 0;
@@ -133,10 +140,15 @@
 
   @variant md {
     width: auto;
+    padding: var(--spacing-md);
   }
 
   &[data-status="Active"] {
     --chamfer-edge: var(--color-success);
+
+    @variant md {
+      padding: var(--spacing-2xl) var(--spacing-lg);
+    }
   }
 
   @media (hover: hover) {

@@ -19,6 +19,8 @@ export interface QuestEntry {
   /** The card's (tab's) id (`quest-tab-…`). */
   readonly tabId: string;
   readonly model: QuestModelId;
+  /** The Active quest: selected on load. */
+  readonly active: boolean;
 }
 
 /** The latest visitor selection, for the toast: which quest, and a count. */
@@ -58,14 +60,14 @@ export function useQuestJournal(): QuestJournalValue {
 }
 
 function initialState(quests: readonly QuestEntry[]): JournalState {
-  const first = quests[0]?.id ?? "";
+  const first = (quests.find((quest) => quest.active) ?? quests[0])?.id ?? "";
   return { selected: first, swaps: 0, shows: { [first]: 1 }, last: null };
 }
 
 /**
  * The Quest journal's selection (DESIGN.md → Quest card row, Quest detail
  * panel, Toast; Motion → Quest select, Quest unlocked, Achievements). The
- * first quest in content order (CyberRock) is selected on load, which
+ * Active quest (CyberRock) is selected on load, which
  * counts as its panel's first show but is not a visitor selection, so no
  * toast. Every visitor selection restarts the toast; a change of quest
  * also runs the swap (the cover, the model projecting in) and counts a
