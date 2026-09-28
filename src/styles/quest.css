@@ -353,11 +353,17 @@
   }
 }
 
-/* Stat readout: the three figures side by side. */
+/* Stat readout: stacked below xs (375 px), where a third of the panel is
+   narrower than the "CUSTOMERS" key; the three figures side by side from
+   xs. */
 @utility stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--spacing-sm);
+
+  @variant xs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Count-up: the final value holds the width and stays readable to
@@ -384,21 +390,26 @@
   --chamfer-fill: var(--color-surface);
 }
 
-/* Bullets: a small holo square per item. */
+/* Bullets (Typography → Reading on the grid): a 4 × 4 px text-muted
+   square on whole pixels, sm before the text, not the browser's disc,
+   which renders soft at this size. Centred on the first line's x-height:
+   the baseline sits 0.5lh + 5 px down (half-leading plus the 12 px ascent,
+   hhea 1200 / −200 at 12 px) and the x-height is 8 px, so its middle is
+   0.5lh + 1 px, and the square's top 2 px above that. */
 @utility quest-bullets {
   & > li {
     position: relative;
-    padding-inline-start: var(--spacing-md);
+    padding-inline-start: calc(var(--spacing-2xs) + var(--spacing-sm));
   }
 
   & > li::before {
     content: "";
     position: absolute;
-    top: 0.65em;
+    top: calc(0.5lh - 1px);
     left: 0;
-    width: 6px;
-    height: 6px;
-    background-color: var(--color-holo);
+    width: var(--spacing-2xs);
+    height: var(--spacing-2xs);
+    background-color: var(--color-text-muted);
   }
 }
 

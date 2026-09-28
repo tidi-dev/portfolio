@@ -1,5 +1,7 @@
 /* Tailwind scans src/ only, so prose in docs/ and DESIGN.md never becomes
-   CSS; the token files and font assets hold no class names. Order
+   CSS; the token files and font assets hold no class names. The résumé
+   components belong to print.css (pnpm resume:pdf): their Portfolio Sans
+   roles never reach the site, which loads only Portfolio Pixel. Order
    (contrib-engineering §4): Tailwind, the reset that removes its default
    theme, the tokens exported from DESIGN.md (static, so the dark swap's
    -dark variables always exist), then the thin hand-mapped layer, then
@@ -7,6 +9,7 @@
 @import "tailwindcss" source("..");
 @source not "../styles";
 @source not "../assets";
+@source not "../components/resume";
 @import "../styles/reset.css";
 @import "../styles/tokens.generated.css" theme(static);
 @import "../styles/theme.css";

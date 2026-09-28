@@ -27,7 +27,7 @@ export function QuestToast({ label, name, onDone }: QuestToastProps) {
       className="quest-toast chamfer flex flex-col gap-2xs p-sm chamfer-glass chamfer-sm"
     >
       <span className="type-heading-panel text-accent-ink">{label}</span>
-      <span className="type-body-sm text-primary">{name}</span>
+      <span className="type-body-compact text-primary">{name}</span>
     </div>
   );
 }

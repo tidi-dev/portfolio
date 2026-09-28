@@ -34,7 +34,7 @@ export function HandshakeLog({
 
   return (
     <div className="chamfer hero-log p-md chamfer-glass">
-      <ol className="flex flex-col gap-xs type-body-sm">
+      <ol className="flex flex-col gap-xs type-body-compact">
         {copy.steps.map((text, index) => (
           <li
             key={text}

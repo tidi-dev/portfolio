@@ -1,4 +1,4 @@
-import { Icon } from "@/components/ui/icon";
+import { PixelGlyph } from "@/components/ui/pixel-glyph";
 import { copy } from "@/content/copy";
 import { hudKeyValue } from "@/lib/format/typography";
 import { XpBar } from "./xp-bar";
@@ -16,7 +16,7 @@ export function HudReadout() {
   return (
     <div className="ml-auto flex min-w-0 items-center gap-sm whitespace-nowrap">
       <span className="hidden items-center gap-2xs type-label text-accent-ink xs:inline-flex">
-        <Icon name="caret-right-filled" />
+        <PixelGlyph name="caret-right" />
         {copy.ui.player}
       </span>
       <span className="hidden type-label text-text-muted 2xl:inline">

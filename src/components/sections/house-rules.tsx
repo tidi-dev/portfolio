@@ -31,10 +31,12 @@ export function HouseRules({ section }: { readonly section: Section }) {
       <div className="flex max-w-measure flex-col gap-xs">
         {houseRules.intro.map((line, index) => (
           // The first line is the owner's small print (profile.md sets
-          // it in <sub>): body-sm, text-muted.
+          // it in <sub>): body-compact, text-muted.
           <p
             key={line}
-            className={index === 0 ? "type-body-sm text-text-muted" : undefined}
+            className={
+              index === 0 ? "type-body-compact text-text-muted" : undefined
+            }
           >
             {typography(line)}
           </p>
@@ -53,7 +55,7 @@ export function HouseRules({ section }: { readonly section: Section }) {
                   <span className="relative">{index + 1}</span>
                 </span>
                 <p className="max-w-measure">
-                  <strong className="type-body-strong rule-lead">{lead}</strong>
+                  <strong className="type-body rule-lead">{lead}</strong>
                   {rest}
                 </p>
               </Panel>

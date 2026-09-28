@@ -21,13 +21,13 @@ export function StatReadout({ readout }: { readonly readout: UsageReadout }) {
           </div>
         ))}
       </dl>
-      <p className="type-caption text-text-muted">
+      <p className="type-body-compact text-text-muted">
         {typography(readout.qualifier)}
       </p>
       <dl>
         <div className="facts-row">
           <dt className="type-label text-accent-ink">{readout.impact.term}</dt>
-          <dd className="type-body-sm text-primary">
+          <dd className="type-body-compact text-primary">
             {typography(readout.impact.text)}
           </dd>
         </div>

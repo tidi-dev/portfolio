@@ -10,7 +10,7 @@ interface DialogueContinueProps {
   readonly targetId: string;
   /** Approved copy ui.profile-labels, "Press A to continue". */
   readonly label: string;
-  /** The server-rendered filled caret-down (the "▼"). */
+  /** The server-rendered "▼" pixel glyph (aria-hidden). */
   readonly icon: ReactNode;
 }
 

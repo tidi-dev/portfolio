@@ -27,7 +27,7 @@ export function Afk({ section }: { readonly section: Section }) {
               <span className="afk-icon text-accent-ink">
                 <Icon name={item.icon} size="large" />
               </span>
-              <span className="type-body-sm text-primary">
+              <span className="type-body text-primary">
                 {typography(item.label)}
               </span>
             </li>

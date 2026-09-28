@@ -2,8 +2,6 @@ import {
   IconBallFootball,
   IconBrandGithub,
   IconBrandTelegram,
-  IconCaretDownFilled,
-  IconCaretRightFilled,
   IconCheck,
   IconCoffee,
   IconDeviceFloppy,
@@ -22,23 +20,18 @@ import {
   IconSun,
   IconSwimming,
   IconTool,
-  IconTriangleFilled,
   IconWall,
   IconX,
 } from "@tabler/icons-react";
 
 /**
- * DESIGN.md → Shapes → Icons: Tabler, from the list there. The filled
- * caret-right, caret-down and triangle render the "▸" of "▸ PLAYER 1", the
- * "▼" after "Press A to continue" and the training markers' "▲", which
- * neither font has (plan → Rulings → Glyphs).
+ * DESIGN.md → Shapes → Icons: Tabler, from the list there. The game glyphs
+ * ▸ ▼ ▲ are Portfolio Pixel glyphs, not icons (pixel-glyph.tsx).
  */
 const ICONS = {
   "ball-football": IconBallFootball,
   "brand-github": IconBrandGithub,
   "brand-telegram": IconBrandTelegram,
-  "caret-down-filled": IconCaretDownFilled,
-  "caret-right-filled": IconCaretRightFilled,
   check: IconCheck,
   coffee: IconCoffee,
   "device-floppy": IconDeviceFloppy,
@@ -57,7 +50,6 @@ const ICONS = {
   sun: IconSun,
   swimming: IconSwimming,
   tool: IconTool,
-  "triangle-filled": IconTriangleFilled,
   wall: IconWall,
   x: IconX,
 } as const;
@@ -66,9 +58,9 @@ export type IconName = keyof typeof ICONS;
 
 /**
  * DESIGN.md → Consistency locks 4: 20 px by default, 24 px in Join party
- * and AFK; the training marker is 12 px (components.training-marker).
+ * and AFK.
  */
-const SIZES = { base: 20, large: 24, marker: 12 } as const;
+const SIZES = { base: 20, large: 24 } as const;
 
 // Consistency locks 4: outline, stroke 1.5.
 const STROKE = 1.5;

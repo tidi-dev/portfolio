@@ -67,8 +67,8 @@ export const Copy = z.strictObject({
   toast: z.strictObject({ questUnlocked: Text }),
   /**
    * ui.profile-labels and ui.small-labels, one field per label. "▸" of
-   * "▸ PLAYER 1" is not stored: it renders as a Tabler filled caret-right
-   * beside the words (plan → Rulings → Glyphs).
+   * "▸ PLAYER 1" is not stored: it renders as the Portfolio Pixel glyph in
+   * an aria-hidden span beside the words (DESIGN.md → Shapes → Icons).
    */
   ui: z.strictObject({
     characterStats: Text,

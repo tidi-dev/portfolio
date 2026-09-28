@@ -112,7 +112,7 @@ export function VideoFacadePlayer({
           {name}
         </span>
       </a>
-      <p className="type-caption text-text-muted">{caption}</p>
+      <p className="type-body-compact text-text-muted">{caption}</p>
     </div>
   );
 }

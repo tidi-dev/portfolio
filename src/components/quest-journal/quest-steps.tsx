@@ -8,7 +8,7 @@ import { typography } from "@/lib/format/typography";
 export function QuestSteps({ steps }: { readonly steps: readonly string[] }) {
   return (
     <div className="chamfer p-md quest-log">
-      <ol className="flex flex-col gap-xs type-body-sm">
+      <ol className="flex flex-col gap-xs type-body-compact">
         {steps.map((step, index) => (
           <li key={step} data-state="lit" className="step-line">
             <span aria-hidden="true" className="step-numeral type-label">

@@ -31,8 +31,8 @@ export function PartyLead({ lead }: { readonly lead: Term }) {
 
 /**
  * Quest's achievements (DESIGN.md → Achievement badge): an h4, then the
- * four badges, each its icon, the name in body-strong and the description;
- * a 2 × 2 grid from `sm`. The first time Quest is current each badge wipes
+ * four badges, each its icon, the name (`primary`) and the description
+ * (`text-muted`), both body-compact; a 2 × 2 grid from `sm`. The first time Quest is current each badge wipes
  * on with one glint (quest.css); otherwise, and without JavaScript, they
  * simply show.
  */
@@ -51,10 +51,10 @@ function AchievementBadges({ body }: { readonly body: Achievements }) {
             <span className="relative text-accent-ink">
               <Icon name={item.icon} />
             </span>
-            <span className="relative type-body-strong text-primary">
+            <span className="relative type-body-compact text-primary">
               {typography(item.term)}
             </span>
-            <span className="relative type-body-sm text-primary">
+            <span className="relative type-body-compact text-text-muted">
               {typography(item.description)}
             </span>
           </li>
@@ -73,7 +73,7 @@ export function QuestBody({ body }: { readonly body: Body }) {
   switch (body.kind) {
     case "bullets":
       return (
-        <ul className="quest-bullets flex max-w-measure flex-col gap-sm">
+        <ul className="quest-bullets flex max-w-measure flex-col gap-2xs type-body">
           {body.items.map((item) => (
             <li key={item}>{typography(item)}</li>
           ))}
@@ -84,8 +84,12 @@ export function QuestBody({ body }: { readonly body: Body }) {
         <dl className="flex max-w-measure flex-col gap-md">
           {body.items.map((item) => (
             <div key={item.term}>
-              <dt className="type-body-strong">{typography(item.term)}</dt>
-              <dd className="mt-2xs">{typography(item.description)}</dd>
+              <dt className="type-body text-primary">
+                {typography(item.term)}
+              </dt>
+              <dd className="mt-2xs type-body text-text-muted">
+                {typography(item.description)}
+              </dd>
             </div>
           ))}
         </dl>

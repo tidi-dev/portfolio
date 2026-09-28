@@ -74,7 +74,7 @@
 
   /* Hero intro lines: a clip-path wipe, left → right (wipe, stagger
      line, ease-power). `backwards` fill: once done, no clip-path is left
-     to cut a focus ring or the brand's glow. */
+     to cut a focus ring or the brand's shadow. */
   :root[data-motion="on"] & > * {
     animation: line-wipe var(--transition-duration-wipe) var(--ease-power)
       backwards;
@@ -147,11 +147,12 @@
   }
 }
 
-/* brand-name: Deck adds the holo text shadow, 0 0 32 px at 45 %; Lab has
-   none (--brand-glow is 0 %). */
-@utility brand-glow {
-  text-shadow: 0 0 32px
-    color-mix(in srgb, var(--color-holo) var(--brand-glow), transparent);
+/* brand-shadow (Typography → display; Elevation → Sprite shadow): the
+   brand's hard sprite shadow, one font pixel (1em / 12) right and down, no
+   blur, in shadow-pixel (theme.css swaps in -dark), both themes: 5 px at
+   60 px, 8 px at 96 px. */
+@utility brand-shadow {
+  text-shadow: calc(1em / 12) calc(1em / 12) 0 var(--color-shadow-pixel);
 }
 
 /* role-line: a 28 × 2 px holo lead line before the role. The section

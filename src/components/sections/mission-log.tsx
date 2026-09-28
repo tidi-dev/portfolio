@@ -42,7 +42,7 @@ function period(value: Period): string {
 /** A period line, when the project has one (Scania has none). */
 function PeriodLine({ value }: { readonly value: Period | undefined }) {
   return value === undefined ? null : (
-    <p className="type-body-sm text-text-muted">{period(value)}</p>
+    <p className="type-body-compact text-text-muted">{period(value)}</p>
   );
 }
 
@@ -75,14 +75,12 @@ function CompactEntry({ project }: { readonly project: CompactProject }) {
         <h4 className="type-nav text-primary">{project.name}</h4>
         <PeriodLine value={project.period} />
       </div>
-      <p className="max-w-measure type-body-sm">
-        {typography(project.oneLiner)}
-      </p>
+      <p className="max-w-measure type-body">{typography(project.oneLiner)}</p>
       <QuestFacts rows={compactFacts(project)} />
       {project.link === undefined ? null : (
         <a
           href={project.link.url}
-          className="inline-flex min-h-target items-center gap-2xs self-start type-body-sm text-link"
+          className="inline-flex min-h-target items-center gap-2xs self-start type-body text-link"
         >
           {project.link.text}
           <Icon name="external-link" />
@@ -118,8 +116,8 @@ function MissionNode({ employment }: { readonly employment: Employment }) {
           <h3 className="type-heading-quest text-primary">
             {employment.employer}
           </h3>
-          <p className="type-body-strong text-primary">{employment.title}</p>
-          <p className="type-body-sm text-text-muted">
+          <p className="type-body text-primary">{employment.title}</p>
+          <p className="type-body-compact text-text-muted">
             {period(employment.period)}
           </p>
         </div>

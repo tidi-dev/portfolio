@@ -212,6 +212,17 @@
         "hex": "#b8c4d6"
       }
     },
+    "shadow-pixel": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.043,
+          0.447,
+          0.522
+        ],
+        "hex": "#0b728533"
+      }
+    },
     "primary-dark": {
       "$value": {
         "colorSpace": "srgb",
@@ -375,6 +386,17 @@
           0.141
         ],
         "hex": "#0e1524"
+      }
+    },
+    "shadow-pixel-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.31,
+          0.847,
+          0.91
+        ],
+        "hex": "#4fd8e859"
       }
     },
     "focus": {
@@ -554,142 +576,167 @@
     "display": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 3.5,
+          "value": 3.75,
           "unit": "rem"
         },
-        "fontWeight": 700,
-        "letterSpacing": {
-          "value": -0.01,
-          "unit": "em"
-        }
+        "fontWeight": 400
       }
     },
     "heading-section": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 2,
+          "value": 2.25,
           "unit": "rem"
         },
-        "fontWeight": 700
+        "fontWeight": 400
       }
     },
     "heading-quest": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
           "value": 1.5,
           "unit": "rem"
         },
-        "fontWeight": 700
+        "fontWeight": 400
       }
     },
     "heading-panel": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 0.8125,
+          "value": 0.75,
           "unit": "rem"
         },
-        "fontWeight": 700,
+        "fontWeight": 400,
         "letterSpacing": {
-          "value": 0.18,
-          "unit": "em"
+          "value": 1,
+          "unit": "px"
         }
       }
     },
     "stat-value": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 1.75,
+          "value": 1.5,
           "unit": "rem"
         },
-        "fontWeight": 700
+        "fontWeight": 400
       }
     },
     "wordmark": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 1.25,
+          "value": 1.5,
           "unit": "rem"
         },
-        "fontWeight": 700,
-        "letterSpacing": {
-          "value": 0.02,
-          "unit": "em"
-        }
+        "fontWeight": 400
       }
     },
     "role": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 0.9375,
+          "value": 0.75,
           "unit": "rem"
         },
-        "fontWeight": 600,
+        "fontWeight": 400,
         "letterSpacing": {
-          "value": 0.06,
-          "unit": "em"
+          "value": 1,
+          "unit": "px"
         }
       }
     },
     "button": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 0.9375,
+          "value": 0.75,
           "unit": "rem"
         },
-        "fontWeight": 700,
+        "fontWeight": 400,
         "letterSpacing": {
-          "value": 0.04,
-          "unit": "em"
+          "value": 1,
+          "unit": "px"
         }
       }
     },
     "nav": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
-          "value": 0.875,
+          "value": 0.75,
           "unit": "rem"
         },
-        "fontWeight": 600,
+        "fontWeight": 400,
         "letterSpacing": {
-          "value": 0.02,
-          "unit": "em"
+          "value": 1,
+          "unit": "px"
         }
       }
     },
     "label": {
       "$type": "typography",
       "$value": {
-        "fontFamily": "Chakra Petch",
+        "fontFamily": "Galmuri11",
         "fontSize": {
           "value": 0.75,
           "unit": "rem"
         },
-        "fontWeight": 600,
+        "fontWeight": 400,
         "letterSpacing": {
-          "value": 0.12,
-          "unit": "em"
+          "value": 1,
+          "unit": "px"
         }
       }
     },
     "name": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Galmuri11",
+        "fontSize": {
+          "value": 1.5,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Galmuri11",
+        "fontSize": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    },
+    "body-compact": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "Galmuri11",
+        "fontSize": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "fontWeight": 400
+      }
+    },
+    "print-name": {
       "$type": "typography",
       "$value": {
         "fontFamily": "Mona Sans",
@@ -700,18 +747,7 @@
         "fontWeight": 500
       }
     },
-    "body": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "Mona Sans",
-        "fontSize": {
-          "value": 1,
-          "unit": "rem"
-        },
-        "fontWeight": 400
-      }
-    },
-    "body-strong": {
+    "print-body-strong": {
       "$type": "typography",
       "$value": {
         "fontFamily": "Mona Sans",
@@ -722,7 +758,7 @@
         "fontWeight": 600
       }
     },
-    "body-sm": {
+    "print-body-sm": {
       "$type": "typography",
       "$value": {
         "fontFamily": "Mona Sans",
@@ -733,18 +769,7 @@
         "fontWeight": 400
       }
     },
-    "slot": {
-      "$type": "typography",
-      "$value": {
-        "fontFamily": "Mona Sans",
-        "fontSize": {
-          "value": 0.875,
-          "unit": "rem"
-        },
-        "fontWeight": 500
-      }
-    },
-    "caption": {
+    "print-caption": {
       "$type": "typography",
       "$value": {
         "fontFamily": "Mona Sans",

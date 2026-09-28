@@ -9,11 +9,13 @@
  * underline, which matches the lead lines, stay literal.
  */
 
-/* Link (DESIGN.md → Link): accent-ink, underlined; hover primary. */
+/* Link (DESIGN.md → Link): accent-ink, underlined 1 px (one font pixel
+   at 12 px) and offset 3 px, below the 2 px descenders; hover primary. */
 @utility text-link {
   color: var(--color-accent-ink);
   text-decoration-line: underline;
-  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
   transition-property: color;
   transition-duration: var(--transition-duration-feedback);
 
@@ -133,9 +135,9 @@
   color: var(--color-accent-ink);
 }
 
-/* rule-lead: the lead phrase in body-strong accent-ink, run in: the rest
-   of the owner's sentence follows on the same line, so no line starts with
-   the owner's dash. Its 2 px accent-ink underline is a text decoration,
+/* rule-lead: the lead phrase in body, accent-ink, no weight (Typography
+   → Emphasis), run in: the rest of the owner's sentence follows on the
+   same line, so no line starts with the owner's dash. Its 2 px accent-ink underline is a text decoration,
    offset 4 px, so it wraps with the phrase. */
 @utility rule-lead {
   color: var(--color-accent-ink);
@@ -398,9 +400,9 @@
 /* ── Join party ──────────────────────────────────────────────────────── */
 
 /* Stacked below lg; from lg the sign-off 5 and the rows 7, the sign-off
-   panel stretched to the rows panel's height (its text at the top). The
-   hero's corner brackets frame the grid, just outside its corners, inside
-   the page's side padding. */
+   panel stretched to the rows panel's height (its text at the top). From
+   lg the hero's corner brackets frame the grid, just outside its corners,
+   inside the page's side padding. */
 @utility contact-grid {
   --bracket-top: calc(-1 * var(--spacing-xs));
   --bracket-side: calc(-1 * var(--spacing-xs));

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import avatar from "@/assets/images/ava.png";
-import { Icon } from "@/components/ui/icon";
 import { Panel, PanelHeading } from "@/components/ui/panel";
+import { PixelGlyph } from "@/components/ui/pixel-glyph";
 import { SectionFrame, sectionTitleId } from "@/components/ui/section-frame";
 import { about } from "@/content/about";
 import { copy } from "@/content/copy";
@@ -52,7 +52,7 @@ function AvatarFrame() {
           className="avatar-image"
         />
         <span aria-hidden="true" data-oneshot="" className="avatar-scan" />
-        <figcaption className="avatar-caption type-caption">
+        <figcaption className="avatar-caption type-body-compact">
           {copy.avatar.caption}
         </figcaption>
       </figure>
@@ -71,7 +71,7 @@ function StatRows() {
           className="facts-row"
         >
           <dt className="type-label text-accent-ink">{stat.label}</dt>
-          <dd className="type-body-sm text-primary">
+          <dd className="type-body-compact text-primary">
             {typography(stat.value)}
           </dd>
         </div>
@@ -93,7 +93,7 @@ function DialogueBox() {
         <span className="relative">{identity.brand}</span>
       </span>
       {about.bio.map((paragraph) => (
-        <p key={paragraph} className="max-w-measure">
+        <p key={paragraph} className="max-w-measure type-body">
           {typography(paragraph)}
         </p>
       ))}
@@ -102,7 +102,7 @@ function DialogueBox() {
           href={`#${AFK.id}`}
           targetId={sectionTitleId(AFK)}
           label={copy.ui.pressAToContinue}
-          icon={<Icon name="caret-down-filled" />}
+          icon={<PixelGlyph name="caret-down" />}
         />
       )}
     </Panel>
@@ -116,20 +116,16 @@ function EducationPanel() {
       <ul className="flex flex-col gap-md">
         {education.degrees.map((degree) => (
           <li key={degree.degree} className="flex flex-col gap-2xs">
-            <span className="type-body-strong text-primary">
-              {degree.degree}
-            </span>
-            <span className="type-body-sm text-text-muted">
+            <span className="type-body text-primary">{degree.degree}</span>
+            <span className="type-body-compact text-text-muted">
               {joinMiddot([degree.school, degree.years])}
             </span>
           </li>
         ))}
         {OTHER_CERTIFICATIONS.map((item) => (
           <li key={item.subject} className="flex flex-col gap-2xs">
-            <span className="type-body-strong text-primary">
-              {item.subject}
-            </span>
-            <span className="type-body-sm text-text-muted">
+            <span className="type-body text-primary">{item.subject}</span>
+            <span className="type-body-compact text-text-muted">
               {joinMiddot(item.credentials)}
             </span>
           </li>
@@ -148,9 +144,9 @@ function LanguagesPanel() {
           const credentials = LANGUAGE_CREDENTIALS.get(language);
           return (
             <li key={language} className="flex flex-col gap-2xs">
-              <span className="type-body-strong text-primary">{language}</span>
+              <span className="type-body text-primary">{language}</span>
               {credentials === undefined ? null : (
-                <span className="type-body-sm text-text-muted">
+                <span className="type-body-compact text-text-muted">
                   {joinMiddot(credentials)}
                 </span>
               )}

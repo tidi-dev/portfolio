@@ -24,40 +24,19 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-// DESIGN.md → Typography: the subsets from `pnpm fonts`. next/font needs
-// literals, so the weights and axis ranges below repeat the manifest
-// (src/assets/fonts/fonts.manifest.json): Chakra Petch 600 and 700; Mona
-// Sans wght 400–600 and wdth 100–112, which the declared font-stretch range
-// selects through `font-stretch`. The Mona Sans subset is served as
-// "Portfolio Sans": the OFL reserves the name "Mona" for the original
+// DESIGN.md → Typography: every word on the site is Portfolio Pixel, the
+// subset from `pnpm fonts` (400 only, as the manifest
+// src/assets/fonts/fonts.manifest.json records; next/font needs literals).
+// It is served under a new name: the OFL reserves the original's name
 // (ruling, 2026-09-28), so the family name next/font derives from this
-// const avoids it too.
-const chakraPetch = localFont({
-  src: [
-    {
-      path: "../assets/fonts/chakra-petch-600.woff2",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../assets/fonts/chakra-petch-700.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-chakra-petch",
+// const avoids it too. The site loads no other face: the Portfolio Sans
+// subset is for the résumé PDF only (`pnpm resume:pdf`).
+const portfolioPixel = localFont({
+  src: "../assets/fonts/portfolio-pixel-400.woff2",
+  variable: "--font-portfolio-pixel",
   display: "swap",
-  fallback: ["system-ui", "sans-serif"],
-  adjustFontFallback: "Arial",
-});
-
-const portfolioSans = localFont({
-  src: "../assets/fonts/portfolio-sans.woff2",
-  variable: "--font-portfolio-sans",
-  display: "swap",
-  weight: "400 600",
+  weight: "400",
   style: "normal",
-  declarations: [{ prop: "font-stretch", value: "100% 112%" }],
   fallback: ["system-ui", "sans-serif"],
   adjustFontFallback: "Arial",
 });
@@ -70,7 +49,7 @@ export default function RootLayout({
     // hydration, so its attributes differ from the server's by design.
     <html
       lang={site.lang}
-      className={`${chakraPetch.variable} ${portfolioSans.variable}`}
+      className={portfolioPixel.variable}
       suppressHydrationWarning
     >
       <head>

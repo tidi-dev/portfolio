@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import { Icon } from "@/components/ui/icon";
 import { Panel, PanelHeading } from "@/components/ui/panel";
+import { PixelGlyph } from "@/components/ui/pixel-glyph";
 import { SectionFrame } from "@/components/ui/section-frame";
 import { about } from "@/content/about";
 import type { Section } from "@/content/schema/sections";
@@ -9,8 +9,8 @@ import { typography } from "@/lib/format/typography";
 
 /**
  * Leveling up (DESIGN.md → Training card): the owner's topics in `nav`
- * type, each led inline by a success filled triangle (the "▲" neither
- * font has), 12 px, centred on the first line.
+ * type, each led inline by a success "▲" (the Portfolio Pixel glyph, in
+ * the card's 12 px type), centred on the first line.
  * Its panel reaching the view is the level-up moment (`data-levelup`): the
  * triangles rise in and a gold bar sweeps across the HUD strip, once.
  */
@@ -27,7 +27,7 @@ function LevelingUp() {
             className="chamfer flex items-start gap-xs p-md type-nav training-card"
           >
             <span className="relative training-marker text-success">
-              <Icon name="triangle-filled" size="marker" />
+              <PixelGlyph name="triangle" />
             </span>
             <span className="relative text-primary">{typography(item)}</span>
           </li>
@@ -53,7 +53,7 @@ export function Inventory({ section }: { readonly section: Section }) {
               <PanelHeading>{group.name}</PanelHeading>
               <ul className="flex flex-wrap gap-xs">
                 {group.items.map((item) => (
-                  <li key={item} className="inventory-slot type-slot">
+                  <li key={item} className="inventory-slot type-nav">
                     {item}
                   </li>
                 ))}
